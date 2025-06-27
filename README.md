@@ -104,11 +104,11 @@ This document presents a comprehensive architecture proposal for a **video strea
 
 | Feature | Description | Technology |
 |---------|-------------|------------|
-| **🎥 Real-time Video Communication** | High-quality video streaming with low latency | AWS Chime SDK |
-| **📱 Multi-platform Support** | Web and mobile applications | React + React Native |
-| **⚡ Scalable Backend** | Robust API with flexible querying | Ruby on Rails + GraphQL |
-| **☁️ Cloud-Native Architecture** | Scalable infrastructure with containerization | AWS ECS/Fargate |
-| **📊 Comprehensive Analytics** | Multi-platform tracking and user behavior analysis | Mixpanel + GA4 + Hotjar |
+| **🎥 Real-time Video Communication**  | High-quality video streaming with low latency | AWS Chime SDK |
+| **📱 Multi-platform Support**         | Web and mobile applications | React + React Native |
+| **⚡ Scalable Backend**                | Robust API with flexible querying | Ruby on Rails + GraphQL |
+| **☁️ Cloud-Native Architecture**      | Scalable infrastructure with containerization | AWS ECS/Fargate |
+| **📊 Comprehensive Analytics**        | Multi-platform tracking and user behavior analysis | Mixpanel + GA4 + Hotjar |
 
 ## 📈 Product View
 
@@ -592,6 +592,8 @@ The video streaming platform is expected to revolutionize the real estate indust
 - **Video**: AWS Chime SDK for JavaScript and React Native
 
 ##### How it works
+
+![System Data Model Diagram](./imgs/system-design-diagram.png)
 
 **Architecture Flow:**
 1. **Client Request**: React/React Native app makes API call
