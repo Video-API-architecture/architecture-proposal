@@ -13,13 +13,11 @@ This document presents a comprehensive **Systems Design solution** for a video s
     - [Rural Connectivity Challenges](#rural-connectivity-challenges)
   - [Team Execution Model](#team-execution-model)
     - [Tech/Product/Design Sync Rhythm](#techproductdesign-sync-rhythm)
-    - [Risks Escalation Model](#risks-escalation-model)
     - [Shipping Milestones (8 Weeks, High-Impact First)](#shipping-milestones-8-weeks-high-impact-first)
   - [Team & Process](#team--process)
   - [Polish & Readability](#polish--readability)
-  - [8 Weeks Plan](#8-weeks-plan)
-    - [Landing Pages](#landing-pages)
-    - [Delivery Plan](#delivery-plan)
+  - [Landing Pages](#landing-pages)
+  - [Delivery Plan](#delivery-plan)
 - [🔧 Technical View](#-technical-view)
   - [Product & Delivery Gaps](#product--delivery-gaps)
   - [Technical Quality Pillars](#technical-quality-pillars)
@@ -207,15 +205,6 @@ The video streaming platform is expected to revolutionize the real estate indust
 | **Bi-weekly Demos** | Every 2 weeks | 30 minutes | Showcase completed features to stakeholders |
 | **Monthly Retrospectives** | Monthly | 1 hour | Process improvement and team feedback |
 
-#### ⚠️ Risks Escalation Model
-
-| Level | Escalation Point | Response Time | Actions |
-|-------|------------------|---------------|---------|
-| **🚨 Level 1** | Team lead handles technical issues | < 4 hours | Technical troubleshooting and resolution |
-| **⚠️ Level 2** | Product manager escalates to stakeholders | < 24 hours | Stakeholder communication and priority adjustment |
-| **🆘 Level 3** | Executive team makes strategic decisions | < 48 hours | Strategic direction and resource allocation |
-| **🚨 Level 4** | External consultants or partners involved | < 72 hours | External expertise and crisis management |
-
 #### 📅 Shipping Milestones (8 Weeks, High-Impact First)
 
 > Given our 2-month timeline and a small engineering team, milestones are prioritized for business impact and demo readiness. Each milestone concludes with a demo to stakeholders.
@@ -329,12 +318,8 @@ The video streaming platform is expected to revolutionize the real estate indust
 - AI-powered property recommendations
 - Virtual reality property tours
 - Advanced analytics and reporting
-- Saved favorites and recent call history (if not completed in MVP)
-- Any additional marketing/landing page enhancements
 
-### 8 Weeks Plan
-
-#### Landing Pages
+### Landing Pages
 
 **Homepage Design:**
 - Hero section with video call demonstration
@@ -389,7 +374,7 @@ The video streaming platform is expected to revolutionize the real estate indust
 |-------|-------------|--------------|----------|
 | **🚀 Phase 1 (MVP)** | Core video calling functionality | Basic video calling between two users, Simple property listing display, User authentication and profiles | Weeks 1-4 |
 | **⚡ Phase 2 (Enhanced)** | Advanced features and improvements | Multi-party video calls, Advanced property search and filters, Recording and playback features | Weeks 5-8 |
-| **🎯 Phase 3 (Advanced)** | AI and advanced capabilities | AI-powered property recommendations, Virtual reality property tours, Advanced analytics and reporting | Post-launch |
+| **🎯 Phase 3 (Advanced)** | AI and advanced capabilities | AI-powered property recommendations, Advanced analytics and reporting | Post-launch |
 
 ### Product & Delivery Gaps
 
@@ -490,7 +475,7 @@ The video streaming platform is expected to revolutionize the real estate indust
 | Layer                      | Choice                              | Reason                                                                 |
 |----------------------------|-------------------------------------|------------------------------------------------------------------------|
 | Video                      | AWS Chime SDK                       | 2-way WebRTC, low-latency, cost-effective, SDK works on mobile         |
-| Recording / Playback       | AWS MediaConvert                    | Recordings are stored and streamed with low ops burden                 |                     
+| Recording / Playback       | AWS MediaConvert                    | Recordings are stored and streamed with low ops burden     |                     
 | API                        | Ruby on Rails (on AWS ECS/Fargate)  | Rapid development, team familiarity, rich gem ecosystem                |
 | Mobile App                 | React Native                        | Realtor already has iOS/Android apps—build on top of them              |
 | Storage                    | Postgres RDS                        | Great for relational joins (buyers, tours, highlights)                 |
@@ -585,10 +570,10 @@ The video streaming platform is expected to revolutionize the real estate indust
 #### Actions
 
 **Core Actions:**
-- **User Management**: Registration, authentication, profile management
+- **User Management**: Registration, authentication
 - **Video Communication**: Call initiation, management, and termination
 - **Property Management**: Listing creation, updates, and search
-- **Appointment Scheduling**: Booking, reminders, and calendar integration
+- **Appointment Scheduling**: Booking and calendar integration
 
 #### Coming Up With A Plan
 
