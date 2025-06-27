@@ -384,7 +384,6 @@ The video streaming platform is expected to revolutionize the real estate indust
 | Cost model             | Chime minutes, ECS hours, media storage ⇒ bill shock if untracked  | Build a 3-row cost table (Dev/MVP/Scale) with ±20% estimates; include recording storage & MediaConvert |
 | Success metrics (SLOs) | Perf targets exist but not customer-facing guarantees              | Publish an SLO table: API p95 < 200 ms, Call-setup < 3 s, Video uptime 99.9 % etc.                     |
 | Regulatory coverage    | Real-estate transactions involve PII & sometimes KYC               | Reference RESA (BC), FINTRAC, and US state privacy rules; define data-retention & deletion windows     |
-| Accessibility (A11y)   | Video UX must support captions & keyboard nav—common interview ask | Commit to WCAG 2.2 AA; add auto-caption roadmap using Chime + Amazon Transcribe                        |
 | Incident playbooks     | Alerting exists but no documented runbooks                         | Link PagerDuty runbook template; codify post-mortem ≤ 48 h SLA                                         |
 
 #### Cost Model (Rough-Order-of-Magnitude)
@@ -861,7 +860,6 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 
 ##### API Integration Strategy
 
-**API Communication:**
 - **Axios**: HTTP client with interceptors
 - **GraphQL Client**: Apollo Client for GraphQL
 - **WebSocket**: Real-time updates
@@ -869,7 +867,6 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 
 ##### Testing Strategy
 
-**Testing Approach:**
 - **Jest**: Unit testing framework
 - **React Testing Library**: Component testing
 - **Cypress**: End-to-end testing
@@ -877,7 +874,6 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 
 ##### Styling & Theming
 
-**Styling Solution:**
 - **Tailwind CSS**: Utility-first styling
 - **CSS Modules**: Component-scoped styles
 - **Design System**: Consistent component library
@@ -885,7 +881,6 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 
 ##### Performance Optimization
 
-**Optimization Techniques:**
 - **Code Splitting**: Lazy loading of components
 - **Memoization**: React.memo and useMemo
 - **Virtual Scrolling**: Large list optimization
@@ -893,7 +888,6 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 
 ##### Security
 
-**Security Measures:**
 - **XSS Prevention**: Input sanitization
 - **CSRF Protection**: Cross-site request forgery prevention
 - **Content Security Policy**: Resource loading restrictions
@@ -903,40 +897,37 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 
 ##### Technologies
 
-**Mobile Stack:**
+##### Mobile Stack
+
 - **React Native**: Cross-platform mobile development
 - **Expo**: Development platform and tools
 - **TypeScript**: Type-safe development
 - **React Navigation**: Navigation library
 - **AWS Amplify**: Mobile backend services
 
-##### Design Patterns
+##### Mobile Design Patterns
 
-**Mobile Patterns:**
 - **Platform-Specific Components**: Native look and feel
 - **Responsive Design**: Adaptive layouts
 - **Offline-First**: Local data persistence
 - **Push Notifications**: Real-time updates
 
-##### State Management
+##### Mobile State Management
 
-**Mobile State:**
 - **Redux Toolkit**: Predictable state management
 - **AsyncStorage**: Local data persistence
 - **Realm**: Local database for offline data
 - **State Synchronization**: Online/offline sync
 
-##### Error Handling
+##### Mobile Error Handling
 
-**Mobile Error Management:**
 - **Crash Reporting**: Sentry integration
 - **Network Error Handling**: Offline mode support
 - **User Feedback**: Toast and alert notifications
 - **Error Recovery**: Automatic retry mechanisms
 
-##### Offline Support & Sync
+##### Offline Capabilities (Support & Sync)
 
-**Offline Capabilities:**
 - **Local Database**: Realm for offline data storage
 - **Queue System**: Offline action queuing
 - **Sync Engine**: Data synchronization when online
@@ -944,23 +935,19 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 
 ##### Video Streaming & SDK Integration
 
-**Video Features:**
 - **AWS Chime SDK**: Native video calling
 - **Adaptive Quality**: Dynamic video quality adjustment
 - **Background Mode**: Call continuation in background
-- **Picture-in-Picture**: Multi-tasking support
 
-##### Testing Strategy
+##### Mobile Testing Strategy
 
-**Mobile Testing:**
 - **Jest**: Unit testing
 - **Detox**: End-to-end testing
 - **Device Testing**: Real device testing
 - **Performance Testing**: Memory and battery optimization
 
-##### Permissions & Device APIs
+##### Permissions & Device APIs Integration
 
-**Device Integration:**
 - **Camera Access**: Video call permissions
 - **Microphone Access**: Audio permissions
 - **Location Services**: Property proximity features
@@ -968,15 +955,13 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 
 ##### Deep Linking & Navigation
 
-**Navigation Features:**
 - **Deep Links**: Direct navigation to specific content
 - **Universal Links**: iOS deep linking
 - **App Links**: Android deep linking
 - **Navigation State**: Persistent navigation state
 
-##### Security
+##### Mobile Security
 
-**Mobile Security:**
 - **Certificate Pinning**: SSL certificate validation
 - **Biometric Authentication**: Touch ID and Face ID
 - **Secure Storage**: Encrypted local storage
