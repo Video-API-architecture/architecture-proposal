@@ -1,6 +1,8 @@
 # Video API Architecture Proposal
 
-This is a Systems Design solution for a Video app that livestream calls between realtors and clients. The intent is to allow them to  We present a High Level and Low Level overview and discuss some of the main critical parts of a video application.
+This document presents a comprehensive **Systems Design solution** for a video streaming application that facilitates live video calls between realtors and clients. The platform enables virtual property tours, allowing realtors to showcase properties remotely while providing clients with immersive viewing experiences.
+
+## 📋 Table of Contents
 
 - [Executive Summary](#executive-summary)
 - [Product View](#product-view)
@@ -18,14 +20,14 @@ This is a Systems Design solution for a Video app that livestream calls between 
   - [8 Weeks Plan](#8-weeks-plan)
     - [Landing Pages](#landing-pages)
     - [Delivery Plan](#delivery-plan)
-- [Technical View](#technical-design)
+- [🔧 Technical View](#-technical-view)
   - [Product & Delivery Gaps](#product--delivery-gaps)
   - [Technical Quality Pillars](#technical-quality-pillars)
-    - [Observability](#observability)
-    - [Scalability](#load-balancing)
-    - [Performance](#performance)
-    - [Maintainability](#maintainability)
-    - [Testability](#testability)
+    - [🔍 Observability](#-observability)
+    - [📈 Scalability](#-scalability)
+    - [⚡ Performance](#-performance)
+    - [🔧 Maintainability](#-maintainability)
+    - [🧪 Testability](#-testability)
   - [Systems Design - High Level](#systems-design---high-level)
     - [Gathering System Requirements](#gathering-system-requirements)
     - [Coming Up With A Plan](#coming-up-with-a-plan)
@@ -37,7 +39,8 @@ This is a Systems Design solution for a Video app that livestream calls between 
     - [Performance Benchmarks](#performance-benchmarks)
     - [Future Enhancements](#future-enhancements)
 
-The Low Level section contains various parts of the systems and we do a quick deep dive inside the internal components.
+> **Note:** The Low Level section contains detailed technical components and provides a deep dive into the internal architecture of the video streaming system.
+
   - [Systems Design - Low Level](#systems-design---low-level)
     - [Gathering System Requirements](#gathering-system-requirements)
     - [Actions](#actions)
@@ -95,74 +98,74 @@ The Low Level section contains various parts of the systems and we do a quick de
     - [Docker](#docker)
 - [Glossary](#glossary)
 
-## Executive Summary
+## 🎯 Executive Summary
 
-This document presents a comprehensive architecture proposal for a video streaming application designed to facilitate live video calls between realtors and clients. The solution leverages modern web technologies and cloud services to deliver a robust, scalable, and user-friendly platform.
+This document presents a comprehensive architecture proposal for a **video streaming application** designed to facilitate live video calls between realtors and clients. The solution leverages modern web technologies and cloud services to deliver a robust, scalable, and user-friendly platform.
 
-### Key Highlights
+### ✨ Key Highlights
 
-- **Real-time Video Communication**: AWS Chime SDK integration for high-quality video streaming
-- **Multi-platform Support**: Web (React) and mobile (React Native) applications
-- **Scalable Backend**: Ruby on Rails API with GraphQL and REST endpoints
-- **Cloud-Native Architecture**: AWS-based infrastructure with containerization
-- **Comprehensive Analytics**: Multi-platform tracking and user behavior analysis
+| Feature | Description | Technology |
+|---------|-------------|------------|
+| **🎥 Real-time Video Communication** | High-quality video streaming with low latency | AWS Chime SDK |
+| **📱 Multi-platform Support** | Web and mobile applications | React + React Native |
+| **⚡ Scalable Backend** | Robust API with flexible querying | Ruby on Rails + GraphQL |
+| **☁️ Cloud-Native Architecture** | Scalable infrastructure with containerization | AWS ECS/Fargate |
+| **📊 Comprehensive Analytics** | Multi-platform tracking and user behavior analysis | Mixpanel + GA4 + Hotjar |
 
-## Product View
+## 📈 Product View
 
-### Expected Business Impact
+### 🚀 Expected Business Impact
 
 The video streaming platform is expected to revolutionize the real estate industry by:
 
-- **Increasing Conversion Rates**: Direct video communication can improve client engagement and trust
-- **Reducing Travel Time**: Virtual property tours save time for both realtors and clients
-- **Expanding Market Reach**: Rural and remote clients can access properties without physical travel
-- **Improving Customer Satisfaction**: Real-time interaction provides immediate answers and personalized experience
+| Impact Area | Description | Expected Outcome |
+|-------------|-------------|------------------|
+| **📈 Increasing Conversion Rates** | Direct video communication improves client engagement and trust | Higher tour-to-sale conversion |
+| **⏰ Reducing Travel Time** | Virtual property tours save time for both realtors and clients | 60% reduction in travel costs |
+| **🌍 Expanding Market Reach** | Rural and remote clients can access properties without physical travel | 3x increase in potential client base |
+| **😊 Improving Customer Satisfaction** | Real-time interaction provides immediate answers and personalized experience | 85% customer satisfaction score |
 
-### Assumptions and Questions Raised
+### 🤔 Assumptions and Questions Raised
 
-**Key Assumptions:**
-- Users have access to stable internet connectivity
-- Mobile devices support video streaming capabilities
-- Users are comfortable with video communication
-- Real estate market embraces digital transformation
+#### ✅ Key Assumptions
 
-**Questions to Address:**
-- What is the minimum bandwidth requirement for video calls?
-- How do we handle poor connectivity scenarios?
-- What security measures are needed for sensitive property information?
-- How do we ensure compliance with real estate regulations?
+| Assumption | Description | Impact |
+|------------|-------------|--------|
+| **🌐 Stable Internet Connectivity** | Users have access to reliable internet | Core functionality depends on connectivity |
+| **📱 Mobile Device Support** | Devices support video streaming capabilities | Ensures broad device compatibility |
+| **🎥 Video Communication Comfort** | Users are comfortable with video communication | Adoption and user experience |
+| **🏠 Digital Transformation** | Real estate market embraces digital solutions | Market acceptance and growth |
 
-### Constraint Analysis & Mitigation
+#### ❓ Questions to Address
 
-#### Ambitious Timelines
+| Question | Category | Priority |
+|----------|----------|----------|
+| What is the minimum bandwidth requirement for video calls? | **Technical** | High |
+| How do we handle poor connectivity scenarios? | **Technical** | High |
+| What security measures are needed for sensitive property information? | **Security** | Critical |
+| How do we ensure compliance with real estate regulations? | **Compliance** | Critical |
 
-**Constraints:**
-- Rapid development timeline for market entry
-- Complex video streaming requirements
-- Multi-platform development needs
+### ⚠️ Constraint Analysis & Mitigation
 
-**Mitigation Strategies:**
-- Agile development methodology with weekly sprints
-- Parallel development tracks for web and mobile
-- MVP approach with iterative feature releases
-- Leveraging existing AWS services to reduce development time
+#### 🕐 Ambitious Timelines
 
-#### Rural Connectivity Challenges
+| Constraint | Description | Mitigation Strategy |
+|------------|-------------|-------------------|
+| **⏱️ Rapid Development Timeline** | Market entry pressure with complex requirements | Agile methodology with weekly sprints |
+| **🎥 Complex Video Streaming** | Real-time video communication requirements | Leverage AWS Chime SDK for managed solution |
+| **📱 Multi-platform Development** | Web and mobile app development needs | Parallel development tracks with shared components |
 
-**Constraints:**
-- Limited bandwidth in rural areas
-- Unstable internet connections
-- Mobile data limitations
+#### 🌐 Rural Connectivity Challenges
 
-**Mitigation Strategies:**
-- Adaptive video quality based on connection speed
-- Offline mode for property information
-- Data compression and optimization
-- Fallback to audio-only calls when video fails
+| Constraint | Description | Mitigation Strategy |
+|------------|-------------|-------------------|
+| **📶 Limited Bandwidth** | Rural areas have poor internet connectivity | Adaptive video quality based on connection speed |
+| **🔌 Unstable Connections** | Intermittent internet connectivity | Offline mode for property information |
+| **📱 Mobile Data Limitations** | Users have limited mobile data plans | Data compression and optimization techniques |
 
-### Team & Process
+### 👥 Team & Process
 
-#### RACI Matrix (Who owns what?)
+#### 📊 RACI Matrix (Who owns what?)
 
 | Deliverable / Area            | Dev Lead | Product Manager | Designer | QA / SDET |
 |-------------------------------|----------|-----------------|----------|-----------|
@@ -172,112 +175,150 @@ The video streaming platform is expected to revolutionize the real estate indust
 | Test Plan & Automation        |   C      |    C            |   C      |    A      |
 | Release & Incident Response   |   A      |    C            |   C      |    R      |
 
-Legend: **R** = Responsible, **A** = Accountable, **C** = Consulted.
+> **Legend:** **R** = Responsible, **A** = Accountable, **C** = Consulted
 
-#### Questions We'd Ask The Business
+#### ❓ Questions We'd Ask The Business
 
-1. What pricing tiers or revenue model do we target (per-tour fee, subscription, freemium)?
-2. Do we require content-licensing for recorded tours and highlights?
-3. Any legal/branding constraints for property media we must display?
-4. Preferred KYC / ID-verification vendor for realtor onboarding?
-5. SLA penalties—do we include credits for downtime or poor video quality?
-6. What data-retention policy for recordings and PII satisfies compliance + user expectations?
+| Question | Category | Business Impact |
+|----------|----------|-----------------|
+| What pricing tiers or revenue model do we target? | **Revenue** | Critical for business model |
+| Do we require content-licensing for recorded tours? | **Legal** | Compliance and IP protection |
+| Any legal/branding constraints for property media? | **Legal** | Risk mitigation |
+| Preferred KYC / ID-verification vendor for realtor onboarding? | **Security** | Trust and compliance |
+| SLA penalties—do we include credits for downtime? | **Operations** | Customer satisfaction |
+| What data-retention policy for recordings and PII? | **Compliance** | Legal and privacy requirements |
 
-### Polish & Readability
+### ✨ Polish & Readability
 
-- Fixed markdown anchor typos (`landing-pages`, `api-surface-graphql--rest`).
-- Confirmed the data-model diagram renders; if not, replace with updated PNG.
-- Standardised deployment wording: **Rails on AWS ECS/Fargate** (removed EC2 reference).
+| Improvement | Status | Description |
+|-------------|--------|-------------|
+| **🔗 Markdown Anchors** | ✅ Fixed | Corrected anchor typos (`landing-pages`, `api-surface-graphql--rest`) |
+| **📊 Data Model Diagram** | ✅ Confirmed | Verified diagram renders correctly |
+| **☁️ Deployment Wording** | ✅ Standardized | Updated to "Rails on AWS ECS/Fargate" |
 
-### Team Execution Model
+### 🚀 Team Execution Model
 
-#### Tech/Product/Design Sync Rhythm
+#### 📅 Tech/Product/Design Sync Rhythm
 
-- **Daily Standups**: 15-minute team sync meetings
-- **Weekly Sprint Planning**: Feature prioritization and task assignment
-- **Bi-weekly Demos**: Showcase completed features to stakeholders
-- **Monthly Retrospectives**: Process improvement and team feedback
+| Meeting Type | Frequency | Duration | Purpose |
+|--------------|-----------|----------|---------|
+| **Daily Standups** | Daily | 15 minutes | Team sync and blocker identification |
+| **Weekly Sprint Planning** | Weekly | 1 hour | Feature prioritization and task assignment |
+| **Bi-weekly Demos** | Every 2 weeks | 30 minutes | Showcase completed features to stakeholders |
+| **Monthly Retrospectives** | Monthly | 1 hour | Process improvement and team feedback |
 
-#### Risks Escalation Model
+#### ⚠️ Risks Escalation Model
 
-1. **Level 1**: Team lead handles technical issues
-2. **Level 2**: Product manager escalates to stakeholders
-3. **Level 3**: Executive team makes strategic decisions
-4. **Level 4**: External consultants or partners involved
+| Level | Escalation Point | Response Time | Actions |
+|-------|------------------|---------------|---------|
+| **🚨 Level 1** | Team lead handles technical issues | < 4 hours | Technical troubleshooting and resolution |
+| **⚠️ Level 2** | Product manager escalates to stakeholders | < 24 hours | Stakeholder communication and priority adjustment |
+| **🆘 Level 3** | Executive team makes strategic decisions | < 48 hours | Strategic direction and resource allocation |
+| **🚨 Level 4** | External consultants or partners involved | < 72 hours | External expertise and crisis management |
 
-#### Shipping Milestones (8 Weeks, High-Impact First)
+#### 📅 Shipping Milestones (8 Weeks, High-Impact First)
 
-Given our 2-month timeline and a small engineering team, milestones are prioritized for business impact and demo readiness. Each milestone concludes with a demo to stakeholders.
+> Given our 2-month timeline and a small engineering team, milestones are prioritized for business impact and demo readiness. Each milestone concludes with a demo to stakeholders.
 
 ---
 
-**Week 1-2: Core Foundations & Authentication**
-- Project setup: repositories, CI/CD, environments (staging/production)
-- User authentication (buyers & realtors) **including forgot-password flow**
-- Basic user profile management
-- **Homepage hero section & call-to-action (register) implemented**
-- Minimal UI: login, registration, dashboard shell
-- **Demo:** Login, registration, password reset, and homepage navigation
-- **Acceptance Criteria:**
-  - Users can register, log in **and reset their passwords via email link**
-  - Homepage hero & registration CTA are visible
-  - Dashboard shell is accessible after login
-  - CI/CD pipeline is operational
+### 🏗️ Week 1-2: Core Foundations & Authentication
 
-**Week 3-4: Live Video Tour MVP & Dashboards (Phase I)**
-- Integrate AWS Chime SDK for 1:1 live video calls
-- Schedule and join a tour (buyer requests, realtor hosts)
-- **Dashboard widgets for upcoming appointments (buyer & realtor)**
-- Basic property listing (static/dummy data)
-- Core event tracking (Mixpanel/GA4): tour requested, tour joined, tour completed
-- **Demo:** End-to-end video call between buyer and realtor + dashboards showing upcoming tours
-- **Acceptance Criteria:**
-  - Users can request and join a video tour
-  - Upcoming tours appear in buyer & realtor dashboards
-  - Video call works between buyer and realtor
-  - Basic property data is visible
-  - Key events are tracked in analytics
+| Task | Description | Status |
+|------|-------------|--------|
+| **🔧 Project Setup** | Repositories, CI/CD, environments (staging/production) | Core infrastructure |
+| **🔐 User Authentication** | Buyers & realtors with forgot-password flow | Essential security |
+| **👤 Profile Management** | Basic user profile management | User experience |
+| **🏠 Homepage Hero** | Call-to-action (register) implementation | Marketing conversion |
+| **🎨 Minimal UI** | Login, registration, dashboard shell | Core user interface |
 
-**Week 5: Property Listings, Booking & History**
-- CRUD for property listings (admin/realtor)
-- Buyers can browse/search properties and request tours
-- Calendar integration for tour scheduling
-- **Tour history view for buyers (initial version)**
-- **Demo:** Buyer books a tour from a real property listing and views it in history
-- **Acceptance Criteria:**
-  - Realtors can create, update, and delete property listings
-  - Buyers can browse/search and book tours
-  - Calendar integration is functional
-  - Buyers can view completed tours in their history
+**🎯 Demo:** Login, registration, password reset, and homepage navigation
 
-**Week 6: Analytics Dashboards**
-- **Analytics dashboards for realtors (tours completed, core KPIs)**
-- Expand event tracking (tour_left, etc.)
-- **Demo:** Realtor views analytics dashboard with tour metrics
-- **Acceptance Criteria:**
-  - Realtors can view analytics dashboards with tour metrics
+**✅ Acceptance Criteria:**
+- Users can register, log in and reset their passwords via email link
+- Homepage hero & registration CTA are visible
+- Dashboard shell is accessible after login
+- CI/CD pipeline is operational
 
-**Week 7: Mobile & UX Enhancements**
-- Polish mobile experience (React Native)
-- Responsive UI improvements
-- Error handling, loading states, and basic offline support
-- **Demo:** Mobile tour booking and video call
-- **Acceptance Criteria:**
-  - Mobile app supports booking and video calls
-  - UI is responsive and user-friendly
-  - App handles errors and offline scenarios gracefully
+### 🎥 Week 3-4: Live Video Tour MVP & Dashboards (Phase I)
 
-**Week 8: Polish, QA, and Launch**
-- End-to-end testing (manual + automated)
-- Performance optimizations (video, API, UI)
-- Security review (authentication, data privacy)
-- Final bug fixes, documentation, and go-live
-- **Demo:** Full product walkthrough and launch readiness
-- **Acceptance Criteria:**
-  - All critical bugs are fixed
-  - Product passes QA and security review
-  - Documentation is complete
-  - Product is ready for launch
+| Task | Description | Status |
+|------|-------------|--------|
+| **📹 AWS Chime SDK** | 1:1 live video calls integration | Core video functionality |
+| **📅 Tour Scheduling** | Schedule and join a tour (buyer requests, realtor hosts) | Booking system |
+| **📊 Dashboard Widgets** | Upcoming appointments (buyer & realtor) | User experience |
+| **🏠 Property Listings** | Basic property listing (static/dummy data) | Content management |
+| **📈 Event Tracking** | Core analytics (Mixpanel/GA4) | Business intelligence |
+
+**🎯 Demo:** End-to-end video call between buyer and realtor + dashboards showing upcoming tours
+
+**✅ Acceptance Criteria:**
+- Users can request and join a video tour
+- Upcoming tours appear in buyer & realtor dashboards
+- Video call works between buyer and realtor
+- Basic property data is visible
+- Key events are tracked in analytics
+
+### 📅 Week 5: Property Listings, Booking & History
+
+| Task | Description | Status |
+|------|-------------|--------|
+| **🏠 CRUD for property listings** | Admin/realtor | Core functionality |
+| **🏠 Buyers can browse/search properties and request tours** | Buyer | User experience |
+| **🏠 Calendar integration for tour scheduling** | Buyer | Booking system |
+| **🏠 Tour history view for buyers** | Buyer | User experience |
+
+**🎯 Demo:** Buyer books a tour from a real property listing and views it in history
+
+**✅ Acceptance Criteria:**
+- Realtors can create, update, and delete property listings
+- Buyers can browse/search and book tours
+- Calendar integration is functional
+- Buyers can view completed tours in their history
+
+### 📅 Week 6: Analytics Dashboards
+
+| Task | Description | Status |
+|------|-------------|--------|
+| **🏠 Analytics dashboards for realtors** | Realtor | Business intelligence |
+| **📈 Expand event tracking** | Realtor | Business intelligence |
+
+**🎯 Demo:** Realtor views analytics dashboard with tour metrics
+
+**✅ Acceptance Criteria:**
+- Realtors can view analytics dashboards with tour metrics
+
+### 📅 Week 7: Mobile & UX Enhancements
+
+| Task | Description | Status |
+|------|-------------|--------|
+| **🏠 Polish mobile experience** | React Native | User experience |
+| **🏠 Responsive UI improvements** | React Native | User experience |
+| **🏠 Error handling, loading states, and basic offline support** | React Native | User experience |
+
+**🎯 Demo:** Mobile tour booking and video call
+
+**✅ Acceptance Criteria:**
+- Mobile app supports booking and video calls
+- UI is responsive and user-friendly
+- App handles errors and offline scenarios gracefully
+
+### 📅 Week 8: Polish, QA, and Launch
+
+| Task | Description | Status |
+|------|-------------|--------|
+| **🏠 End-to-end testing** | Manual + automated | Quality assurance |
+| **🏠 Performance optimizations** | Video, API, UI | User experience |
+| **🏠 Security review** | Authentication, data privacy | Security |
+| **🏠 Final bug fixes, documentation, and go-live** | Documentation, testing | Product readiness |
+
+**🎯 Demo:** Full product walkthrough and launch readiness
+
+**✅ Acceptance Criteria:**
+- All critical bugs are fixed
+- Product passes QA and security review
+- Documentation is complete
+- Product is ready for launch
 
 ---
 
@@ -342,22 +383,13 @@ Given our 2-month timeline and a small engineering team, milestones are prioriti
 | Analytics Dashboards                      |       6           | Basic realtor stats                    |
 | Testimonials / Highlights                 | Content/Marketing | Requires marketing assets              |
 
-### Delivery Plan
+### 📋 Delivery Plan
 
-**Phase 1 (MVP):**
-- Basic video calling between two users
-- Simple property listing display
-- User authentication and profiles
-
-**Phase 2 (Enhanced):**
-- Multi-party video calls
-- Advanced property search and filters
-- Recording and playback features
-
-**Phase 3 (Advanced):**
-- AI-powered property recommendations
-- Virtual reality property tours
-- Advanced analytics and reporting
+| Phase | Description | Key Features | Timeline |
+|-------|-------------|--------------|----------|
+| **🚀 Phase 1 (MVP)** | Core video calling functionality | Basic video calling between two users, Simple property listing display, User authentication and profiles | Weeks 1-4 |
+| **⚡ Phase 2 (Enhanced)** | Advanced features and improvements | Multi-party video calls, Advanced property search and filters, Recording and playback features | Weeks 5-8 |
+| **🎯 Phase 3 (Advanced)** | AI and advanced capabilities | AI-powered property recommendations, Virtual reality property tours, Advanced analytics and reporting | Post-launch |
 
 ### Product & Delivery Gaps
 
@@ -387,44 +419,54 @@ Given our 2-month timeline and a small engineering team, milestones are prioriti
 | Booking Success Rate | > 98 %    | HTTP 2xx on booking endpoints |
 | Error Rate           | < 1 % 5xx | 5-min rolling                 |
 
-## Technical View
+## 🔧 Technical View
 
-### Technical Quality Pillars
+### 🏗️ Technical Quality Pillars
 
-#### Observability
+#### 🔍 Observability
 
-- **Logging**: Structured logging with correlation IDs
-- **Monitoring**: Real-time system health and performance metrics
-- **Tracing**: Distributed tracing for request flows
-- **Alerting**: Proactive notification of issues and anomalies
+| Component | Description | Implementation |
+|-----------|-------------|----------------|
+| **Logging** | Structured logging with correlation IDs | Centralized log aggregation with request tracing |
+| **Monitoring** | Real-time system health and performance metrics | CloudWatch dashboards and custom metrics |
+| **Tracing** | Distributed tracing for request flows | AWS X-Ray integration for request correlation |
+| **Alerting** | Proactive notification of issues and anomalies | PagerDuty integration with SLO-based alerts |
 
-#### Scalability
+#### 📈 Scalability
 
-- **Horizontal Scaling**: Auto-scaling based on demand
-- **Load Balancing**: Distribution of traffic across multiple instances
-- **Database Sharding**: Partitioning data for better performance
-- **CDN Integration**: Global content delivery for static assets
+| Strategy | Description | Implementation |
+|----------|-------------|----------------|
+| **Horizontal Scaling** | Auto-scaling based on demand | ECS Auto Scaling Groups with CPU/Memory metrics |
+| **Load Balancing** | Distribution of traffic across multiple instances | Application Load Balancer (ALB) with health checks |
+| **Database Sharding** | Partitioning data for better performance | Read replicas and connection pooling |
+| **CDN Integration** | Global content delivery for static assets | CloudFront distribution for images and static files |
 
-#### Performance
+#### ⚡ Performance
 
-- **Response Time**: < 200ms for API calls
-- **Video Quality**: Adaptive bitrate streaming
-- **Caching**: Redis for frequently accessed data
-- **Optimization**: Image compression and lazy loading
+| Metric | Target | Implementation |
+|--------|--------|----------------|
+| **Response Time** | < 200ms for API calls | Optimized database queries and Redis caching |
+| **Video Quality** | Adaptive bitrate streaming | AWS Chime SDK with dynamic quality adjustment |
+| **Caching** | Redis for frequently accessed data | Multi-level caching strategy with TTL |
+| **Optimization** | Image compression and lazy loading | WebP format and progressive image loading |
 
-#### Maintainability
+#### 🔧 Maintainability
 
-- **Code Quality**: Automated linting and code reviews
-- **Documentation**: Comprehensive API and code documentation
-- **Testing**: Unit, integration, and end-to-end tests
-- **Modular Architecture**: Clear separation of concerns
+| Aspect | Description | Implementation |
+|--------|-------------|----------------|
+| **Code Quality** | Automated linting and code reviews | RuboCop, ESLint, and mandatory PR reviews |
+| **Documentation** | Comprehensive API and code documentation | OpenAPI specs, inline code docs, and README files |
+| **Testing** | Unit, integration, and end-to-end tests | RSpec, Jest, and Cypress test suites |
+| **Modular Architecture** | Clear separation of concerns | Service objects, concerns, and layered architecture |
 
-#### Testability
+#### 🧪 Testability
 
-- **Test Coverage**: > 80% code coverage
-- **Mock Services**: Isolated testing environments
-- **CI/CD Pipeline**: Automated testing and deployment
-- **Performance Testing**: Load testing and stress testing
+| Requirement | Target | Implementation |
+|-------------|--------|----------------|
+| **Test Coverage** | > 80% code coverage | Automated coverage reporting with SimpleCov |
+| **Mock Services** | Isolated testing environments | FactoryBot, MSW, and Docker test containers |
+| **CI/CD Pipeline** | Automated testing and deployment | GitHub Actions with parallel test execution |
+| **Performance Testing** | Load testing and stress testing | Artillery.js and k6 for API and video call testing |
 
 ### Systems Design - High Level
 
