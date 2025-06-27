@@ -321,28 +321,29 @@ The video streaming platform is expected to revolutionize the real estate indust
 
 ### Landing Pages
 
-**Homepage Design:**
+**Homepage Design:** [Link](https://realtyforyou.lovable.app)
 - Hero section with video call demonstration
 - Feature highlights and benefits
 - Testimonials from realtors and clients
 - Call-to-action for registration
 
 **Authentication**
-- Login
-- Sign up
-- Forgot Password
+- Login [Link](https://realtyforyou.lovable.app/signin)
+- Sign up [Link](https://realtyforyou.lovable.app/signup)
+- Forgot Password [Link](https://realtyforyou.lovable.app/forgot-password)
 
-**Realtor Dashboard:**
-- Property listings
+**Realtor Dashboard:** 
+- Property listings [Link](https://realtyforyou.lovable.app/admin/dashboard)
+- View property [Link](https://realtyforyou.lovable.app/admin/properties/1)
 - Upcoming video appointments
 - See a list of users
 
 **User Dashboard**
-- Recent tour appointments history
-- Upcoming video appointments
-- Browse active property listings
-- See active property listing
-- Book/Reschedule/Cancel an appointment
+- Recent tour appointments history [Link](https://realtyforyou.lovable.app/tours)
+  - Upcoming tour appointments [Link](https://realtyforyou.lovable.app/tours?query=upcoming)
+  - Browse active property listings [Link](https://realtyforyou.lovable.app/tours?query=active)
+    - See property listing [Link](https://realtyforyou.lovable.app/admin/properties/:id)
+- Book/Reschedule/Cancel an appointment [Link](https://realtyforyou.lovable.app/book-tour)
 
 ---
 
