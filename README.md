@@ -15,7 +15,6 @@ This document presents a comprehensive **Systems Design solution** for a video s
     - [Tech/Product/Design Sync Rhythm](#techproductdesign-sync-rhythm)
     - [Shipping Milestones (8 Weeks, High-Impact First)](#shipping-milestones-8-weeks-high-impact-first)
   - [Team & Process](#team--process)
-  - [Polish & Readability](#polish--readability)
   - [Landing Pages](#landing-pages)
   - [Delivery Plan](#delivery-plan)
 - [🔧 Technical View](#-technical-view)
@@ -186,14 +185,6 @@ The video streaming platform is expected to revolutionize the real estate indust
 | SLA penalties—do we include credits for downtime? | **Operations** | Customer satisfaction |
 | What data-retention policy for recordings and PII? | **Compliance** | Legal and privacy requirements |
 
-### ✨ Polish & Readability
-
-| Improvement | Status | Description |
-|-------------|--------|-------------|
-| **🔗 Markdown Anchors** | ✅ Fixed | Corrected anchor typos (`landing-pages`, `api-surface-graphql--rest`) |
-| **📊 Data Model Diagram** | ✅ Confirmed | Verified diagram renders correctly |
-| **☁️ Deployment Wording** | ✅ Standardized | Updated to "Rails on AWS ECS/Fargate" |
-
 ### 🚀 Team Execution Model
 
 #### 📅 Tech/Product/Design Sync Rhythm
@@ -347,6 +338,14 @@ The video streaming platform is expected to revolutionize the real estate indust
 
 ---
 
+### 📋 Delivery Plan
+
+| Phase | Description | Key Features | Timeline |
+|-------|-------------|--------------|----------|
+| **🚀 Phase 1 (MVP)** | Core video calling functionality | Basic video calling between two users, Simple property listing display, User authentication and profiles | Weeks 1-4 |
+| **⚡ Phase 2 (Enhanced)** | Advanced features and improvements | Multi-party video calls, Advanced property search and filters, Recording and playback features | Weeks 5-8 |
+| **🎯 Phase 3 (Advanced)** | AI and advanced capabilities | AI-powered property recommendations, Advanced analytics and reporting | Post-launch |
+
 ### Mapping: Landing Page Features to Milestones
 
 | Landing Page Feature                      | Milestone (Week)  | Notes/Dependencies                     |
@@ -368,14 +367,6 @@ The video streaming platform is expected to revolutionize the real estate indust
 | Recent Call History                       |      5-6          | Optional for MVP                       |
 | Analytics Dashboards                      |       6           | Basic realtor stats                    |
 | Testimonials / Highlights                 | Content/Marketing | Requires marketing assets              |
-
-### 📋 Delivery Plan
-
-| Phase | Description | Key Features | Timeline |
-|-------|-------------|--------------|----------|
-| **🚀 Phase 1 (MVP)** | Core video calling functionality | Basic video calling between two users, Simple property listing display, User authentication and profiles | Weeks 1-4 |
-| **⚡ Phase 2 (Enhanced)** | Advanced features and improvements | Multi-party video calls, Advanced property search and filters, Recording and playback features | Weeks 5-8 |
-| **🎯 Phase 3 (Advanced)** | AI and advanced capabilities | AI-powered property recommendations, Advanced analytics and reporting | Post-launch |
 
 ### Product & Delivery Gaps
 
