@@ -13,10 +13,13 @@ This is a Systems Design solution for a Video app that livestream calls between 
     - [Tech/Product/Design Sync Rhythm](#techproductdesign-sync-rhythm)
     - [Risks Escalation Model](#risks-escalation-model)
     - [Shipping Milestones (8 Weeks, High-Impact First)](#shipping-milestones-8-weeks-high-impact-first)
-  - [Wireframes](#wireframes)
-    - [Landing Pages](#landin-pages)
+  - [Team & Process](#team--process)
+  - [Polish & Readability](#polish--readability)
+  - [8 Weeks Plan](#8-weeks-plan)
+    - [Landing Pages](#landing-pages)
     - [Delivery Plan](#delivery-plan)
 - [Technical View](#technical-design)
+  - [Product & Delivery Gaps](#product--delivery-gaps)
   - [Technical Quality Pillars](#technical-quality-pillars)
     - [Observability](#observability)
     - [Scalability](#load-balancing)
@@ -39,13 +42,13 @@ The Low Level section contains various parts of the systems and we do a quick de
     - [Gathering System Requirements](#gathering-system-requirements)
     - [Actions](#actions)
     - [Coming Up With A Plan](#coming-up-with-a-plan)
-    - [Technology & Framework Rationale](#Technology & Framework Rationale)
+    - [Technology & Framework Rationale](#technology-&-framework-rationale)
     - [Ruby on Rails + React + React Native + AWS Chime SDK](#nodejs---redis---socketio)
       - [How it works](#how-it-works)
     - [C4](#c4)
       - [System Context](#system-context)
       - [Container Diagram](#container-diagram)
-        - [API Surface (GraphQL + REST)](#API-Surface-(GraphQL-+-REST))
+        - [API Surface (GraphQL + REST)](#api-surface-graphql--rest)
       - [Component Diagram](#component-diagram)
         - [Api engine](#api-engine)
         - [Authentication engine](#authentication-engine)
@@ -90,7 +93,6 @@ The Low Level section contains various parts of the systems and we do a quick de
       - [Google Analytics](#google-analytics)
     - [Tests and Delivery Automation](#tests-and-delivery-automation)
     - [Docker](#docker)
-- [Appendix](#appendix)
 - [Glossary](#glossary)
 
 ## Executive Summary
@@ -158,6 +160,35 @@ The video streaming platform is expected to revolutionize the real estate indust
 - Data compression and optimization
 - Fallback to audio-only calls when video fails
 
+### Team & Process
+
+#### RACI Matrix (Who owns what?)
+
+| Deliverable / Area            | Dev Lead | Product Manager | Designer | QA / SDET |
+|-------------------------------|----------|-----------------|----------|-----------|
+| Architecture & Infrastructure |   R      |    A            |   C      |    C      |
+| Feature Spec & Roadmap        |   C      |    A            |   C      |    C      |
+| UI/UX Wireframes & Assets     |   C      |    C            |   A      |    C      |
+| Test Plan & Automation        |   C      |    C            |   C      |    A      |
+| Release & Incident Response   |   A      |    C            |   C      |    R      |
+
+Legend: **R** = Responsible, **A** = Accountable, **C** = Consulted.
+
+#### Questions We'd Ask The Business
+
+1. What pricing tiers or revenue model do we target (per-tour fee, subscription, freemium)?
+2. Do we require content-licensing for recorded tours and highlights?
+3. Any legal/branding constraints for property media we must display?
+4. Preferred KYC / ID-verification vendor for realtor onboarding?
+5. SLA penalties—do we include credits for downtime or poor video quality?
+6. What data-retention policy for recordings and PII satisfies compliance + user expectations?
+
+### Polish & Readability
+
+- Fixed markdown anchor typos (`landing-pages`, `api-surface-graphql--rest`).
+- Confirmed the data-model diagram renders; if not, replace with updated PNG.
+- Standardised deployment wording: **Rails on AWS ECS/Fargate** (removed EC2 reference).
+
 ### Team Execution Model
 
 #### Tech/Product/Design Sync Rhythm
@@ -182,46 +213,49 @@ Given our 2-month timeline and a small engineering team, milestones are prioriti
 
 **Week 1-2: Core Foundations & Authentication**
 - Project setup: repositories, CI/CD, environments (staging/production)
-- User authentication (buyers & realtors)
+- User authentication (buyers & realtors) **including forgot-password flow**
 - Basic user profile management
+- **Homepage hero section & call-to-action (register) implemented**
 - Minimal UI: login, registration, dashboard shell
-- **Demo:** Login, registration, and basic navigation
+- **Demo:** Login, registration, password reset, and homepage navigation
 - **Acceptance Criteria:**
-  - Users can register and log in
+  - Users can register, log in **and reset their passwords via email link**
+  - Homepage hero & registration CTA are visible
   - Dashboard shell is accessible after login
   - CI/CD pipeline is operational
 
-**Week 3-4: Live Video Tour MVP**
+**Week 3-4: Live Video Tour MVP & Dashboards (Phase I)**
 - Integrate AWS Chime SDK for 1:1 live video calls
 - Schedule and join a tour (buyer requests, realtor hosts)
+- **Dashboard widgets for upcoming appointments (buyer & realtor)**
 - Basic property listing (static/dummy data)
 - Core event tracking (Mixpanel/GA4): tour requested, tour joined, tour completed
-- **Demo:** End-to-end video call between buyer and realtor
+- **Demo:** End-to-end video call between buyer and realtor + dashboards showing upcoming tours
 - **Acceptance Criteria:**
   - Users can request and join a video tour
+  - Upcoming tours appear in buyer & realtor dashboards
   - Video call works between buyer and realtor
   - Basic property data is visible
   - Key events are tracked in analytics
 
-**Week 5: Property Listings & Booking**
+**Week 5: Property Listings, Booking & History**
 - CRUD for property listings (admin/realtor)
 - Buyers can browse/search properties and request tours
 - Calendar integration for tour scheduling
-- **Demo:** Buyer books a tour from a real property listing
+- **Tour history view for buyers (initial version)**
+- **Demo:** Buyer books a tour from a real property listing and views it in history
 - **Acceptance Criteria:**
   - Realtors can create, update, and delete property listings
   - Buyers can browse/search and book tours
   - Calendar integration is functional
+  - Buyers can view completed tours in their history
 
-**Week 6: Feedback & Analytics**
-- Post-tour feedback (buyers rate/comment on tours)
-- Analytics dashboard for realtors (basic stats: tours completed, feedback received)
-- Expand event tracking (feedback_submitted, tour_left, etc.)
-- **Demo:** Realtor views analytics and feedback from completed tours
+**Week 6: Analytics Dashboards**
+- **Analytics dashboards for realtors (tours completed, core KPIs)**
+- Expand event tracking (tour_left, etc.)
+- **Demo:** Realtor views analytics dashboard with tour metrics
 - **Acceptance Criteria:**
-  - Buyers can submit feedback after tours
-  - Realtors can view analytics and feedback
-  - Additional events are tracked
+  - Realtors can view analytics dashboards with tour metrics
 
 **Week 7: Mobile & UX Enhancements**
 - Polish mobile experience (React Native)
@@ -257,7 +291,7 @@ Given our 2-month timeline and a small engineering team, milestones are prioriti
 - Saved favorites and recent call history (if not completed in MVP)
 - Any additional marketing/landing page enhancements
 
-### Wireframes
+### 8 Weeks Plan
 
 #### Landing Pages
 
@@ -267,113 +301,46 @@ Given our 2-month timeline and a small engineering team, milestones are prioriti
 - Testimonials from realtors and clients
 - Call-to-action for registration
 
-**User Dashboard:**
-- Property listings and saved favorites
+**Authentication**
+- Login
+- Sign up
+- Forgot Password
+
+**Realtor Dashboard:**
+- Property listings
 - Upcoming video appointments
-- Recent call history
-- Profile and settings management
+- See a list of users
+
+**User Dashboard**
+- Recent tour appointments history
+- Upcoming video appointments
+- Browse active property listings
+- See active property listing
+- Book/Reschedule/Cancel an appointment
 
 ---
 
 ### Mapping: Landing Page Features to Milestones
 
-| Landing Page Feature         | Milestone (Week) | Notes/Dependencies                |
-|-----------------------------|------------------|-----------------------------------|
-| Registration/Login          | 1-2              |                                   |
-| Dashboard Shell             | 1-2              |                                   |
-| Property Listings           | 3-5              |                                   |
-| Video Call Demo             | 3-4              |                                   |
-| Booking/Scheduling          | 5                |                                   |
-| Feedback                    | 6                |                                   |
-| Saved Favorites             | 5-6              | Optional for MVP                  |
-| Recent Call History         | 5-6              | Optional for MVP                  |
-| Testimonials/Highlights     | (Content/Marketing) | Needs marketing/content input   |
-| Call-to-Action              | 1-2              |                                   |
-
----
-
-#### Shipping Milestones (8 Weeks, High-Impact First)
-
-Given our 2-month timeline and a small engineering team, milestones are prioritized for business impact and demo readiness. Each milestone concludes with a demo to stakeholders.
-
----
-
-**Week 1-2: Core Foundations & Authentication**
-- Project setup: repositories, CI/CD, environments (staging/production)
-- User authentication (buyers & realtors)
-- Basic user profile management
-- Minimal UI: login, registration, dashboard shell
-- **Demo:** Login, registration, and basic navigation
-- **Acceptance Criteria:**
-  - Users can register and log in
-  - Dashboard shell is accessible after login
-  - CI/CD pipeline is operational
-
-**Week 3-4: Live Video Tour MVP**
-- Integrate AWS Chime SDK for 1:1 live video calls
-- Schedule and join a tour (buyer requests, realtor hosts)
-- Basic property listing (static/dummy data)
-- Core event tracking (Mixpanel/GA4): tour requested, tour joined, tour completed
-- **Demo:** End-to-end video call between buyer and realtor
-- **Acceptance Criteria:**
-  - Users can request and join a video tour
-  - Video call works between buyer and realtor
-  - Basic property data is visible
-  - Key events are tracked in analytics
-
-**Week 5: Property Listings & Booking**
-- CRUD for property listings (admin/realtor)
-- Buyers can browse/search properties and request tours
-- Calendar integration for tour scheduling
-- **Demo:** Buyer books a tour from a real property listing
-- **Acceptance Criteria:**
-  - Realtors can create, update, and delete property listings
-  - Buyers can browse/search and book tours
-  - Calendar integration is functional
-
-**Week 6: Feedback & Analytics**
-- Post-tour feedback (buyers rate/comment on tours)
-- Analytics dashboard for realtors (basic stats: tours completed, feedback received)
-- Expand event tracking (feedback_submitted, tour_left, etc.)
-- **Demo:** Realtor views analytics and feedback from completed tours
-- **Acceptance Criteria:**
-  - Buyers can submit feedback after tours
-  - Realtors can view analytics and feedback
-  - Additional events are tracked
-
-**Week 7: Mobile & UX Enhancements**
-- Polish mobile experience (React Native)
-- Responsive UI improvements
-- Error handling, loading states, and basic offline support
-- **Demo:** Mobile tour booking and video call
-- **Acceptance Criteria:**
-  - Mobile app supports booking and video calls
-  - UI is responsive and user-friendly
-  - App handles errors and offline scenarios gracefully
-
-**Week 8: Polish, QA, and Launch**
-- End-to-end testing (manual + automated)
-- Performance optimizations (video, API, UI)
-- Security review (authentication, data privacy)
-- Final bug fixes, documentation, and go-live
-- **Demo:** Full product walkthrough and launch readiness
-- **Acceptance Criteria:**
-  - All critical bugs are fixed
-  - Product passes QA and security review
-  - Documentation is complete
-  - Product is ready for launch
-
----
-
-### Deferred Features (Post-Launch)
-- Multi-party video calls
-- Advanced property search and filters
-- Recording playback features
-- AI-powered property recommendations
-- Virtual reality property tours
-- Advanced analytics and reporting
-- Saved favorites and recent call history (if not completed in MVP)
-- Any additional marketing/landing page enhancements
+| Landing Page Feature                      | Milestone (Week)  | Notes/Dependencies                     |
+|-------------------------------------------|-------------------|----------------------------------------|
+| Homepage Hero & Highlights                |      1-2          | Marketing content; hero video demo     |
+| Call-to-Action (Register)                 |      1-2          | Must align with auth availability      |
+| Registration / Login                      |      1-2          | Core authentication                    |
+| Forgot Password                           |      1-2          | Part of authentication flows           |
+| Dashboard Shell (Layout)                  |      1-2          | Navigation skeleton                    |
+| Realtor Dashboard – Property Listings     |      3-5          | Depends on Property Management CRUD    |
+| Realtor Dashboard – Upcoming Appointments |      3-4          | Requires scheduling logic              |
+| Realtor Dashboard – Users List            |      3-5          | Pulls from User service                |
+| User Dashboard – Upcoming Appointments    |      3-4          | Requires booking flow                  |
+| User Dashboard – Tour History             |      5-6          | Post-tour data available               |
+| Property Management (CRUD)                |      3-5          | Realtors create/update listings        |
+| Browse Property Listings (Buyer)          |      3-5          | Uses property listings; search filters |
+| Video Call Demo (1:1 Tour)                |      3-4          | AWS Chime integration                  |
+| Booking / Scheduling                      |       5           | Calendar integration                   |
+| Recent Call History                       |      5-6          | Optional for MVP                       |
+| Analytics Dashboards                      |       6           | Basic realtor stats                    |
+| Testimonials / Highlights                 | Content/Marketing | Requires marketing assets              |
 
 ### Delivery Plan
 
@@ -391,6 +358,34 @@ Given our 2-month timeline and a small engineering team, milestones are prioriti
 - AI-powered property recommendations
 - Virtual reality property tours
 - Advanced analytics and reporting
+
+### Product & Delivery Gaps
+
+| Gap                    | Why it matters                                                     | Quick fix                                                                                              |
+|------------------------|--------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------|
+| Cost model             | Chime minutes, ECS hours, media storage ⇒ bill shock if untracked  | Build a 3-row cost table (Dev/MVP/Scale) with ±20% estimates; include recording storage & MediaConvert |
+| Success metrics (SLOs) | Perf targets exist but not customer-facing guarantees              | Publish an SLO table: API p95 < 200 ms, Call-setup < 3 s, Video uptime 99.9 % etc.                     |
+| Regulatory coverage    | Real-estate transactions involve PII & sometimes KYC               | Reference RESA (BC), FINTRAC, and US state privacy rules; define data-retention & deletion windows     |
+| Accessibility (A11y)   | Video UX must support captions & keyboard nav—common interview ask | Commit to WCAG 2.2 AA; add auto-caption roadmap using Chime + Amazon Transcribe                        |
+| Incident playbooks     | Alerting exists but no documented runbooks                         | Link PagerDuty runbook template; codify post-mortem ≤ 48 h SLA                                         |
+
+#### Cost Model (Rough-Order-of-Magnitude)
+
+| Environment | Monthly cost drivers                                                       | Est. USD |
+|-------------|----------------------------------------------------------------------------|----------|
+| Dev         | 200 Chime minutes, 2 × ECS t3.small, 50 GB S3                              | ~$150    |
+| MVP         | 10 k Chime minutes, 8 × ECS t3.medium, 500 GB S3, MediaConvert hours       | ~$2 500  |
+| Scale (10×) | 100 k Chime minutes, 30 × ECS t3.large, 5 TB S3, higher MediaConvert usage | ~$20 000 |
+
+#### Service Level Objectives (SLOs)
+
+| Metric               | SLO       | Measurement window            |
+|----------------------|-----------|-------------------------------|
+| API Latency (p95)    | < 200 ms  | 1-min, ALB metric             |
+| Call Setup Time      | < 3 s     | Client → first video frame    |
+| Video Uptime         | 99.9 %    | Weekly                        |
+| Booking Success Rate | > 98 %    | HTTP 2xx on booking endpoints |
+| Error Rate           | < 1 % 5xx | 5-min rolling                 |
 
 ## Technical View
 
@@ -453,11 +448,11 @@ Given our 2-month timeline and a small engineering team, milestones are prioriti
 | Layer                      | Choice                              | Reason                                                                 |
 |----------------------------|-------------------------------------|------------------------------------------------------------------------|
 | Video                      | AWS Chime SDK                       | 2-way WebRTC, low-latency, cost-effective, SDK works on mobile         |
-| Recording / Playback       | AWS MediaConvert                    | Recordings are stored and streamed with low ops burden                 |
-| API                        | Ruby on Rails (on EC2)              | Rapid development, team familiarity, rich gem ecosystem                |
+| Recording / Playback       | AWS MediaConvert                    | Recordings are stored and streamed with low ops burden                 |                     
+| API                        | Ruby on Rails (on AWS ECS/Fargate)  | Rapid development, team familiarity, rich gem ecosystem                |
 | Mobile App                 | React Native                        | Realtor already has iOS/Android apps—build on top of them              |
 | Storage                    | Postgres RDS                        | Great for relational joins (buyers, tours, highlights)                 |
-| Observability              | CloudWatch Agent + Fluent Bit on EC2| Logs, metrics, health checks                                           |
+| Observability              | CloudWatch Agent + Fluent Bit on ECS| Logs, metrics, health checks                                           |
 | Transcription & Notes (P2) | AWS Transcribe + LLM summarizer     | Enables AI-enhanced summaries and note generation later                |
 
 #### Coming Up With A Plan
@@ -589,7 +584,7 @@ Given our 2-month timeline and a small engineering team, milestones are prioriti
 
 **System Boundaries:**
 - **External Users**: Realtors and clients
-- **External Systems**: Payment gateways, email services, SMS services
+- **External Systems**: Email services
 - **Internal Systems**: Video platform, property database, user management
 
 ##### Container Diagram
@@ -645,6 +640,8 @@ Given our 2-month timeline and a small engineering team, milestones are prioriti
 - **Service Objects**: Business logic encapsulation
 - **Concerns**: Shared functionality across models
 - **Tests**: Comprehensive test coverage
+- **Factories & Fixtures**: Reusable test data for users, properties, bookings
+- **Tests**: Comprehensive unit, integration, and end-to-end coverage for auth, property CRUD, booking flow, dashboards, analytics events, and background jobs
 
 #### Rails API
 
@@ -660,31 +657,57 @@ Given our 2-month timeline and a small engineering team, milestones are prioriti
 ##### API Surface (GraphQL + REST)
 
 **REST Endpoints:**
-- `GET /api/v1/users` - User management
-- `POST /api/v1/auth/login` - Authentication
-- `GET /api/v1/properties` - Property listings
-- `POST /api/v1/calls` - Video call management
+- `POST /api/v1/auth/register` – User registration
+- `POST /api/v1/auth/login` – User authentication
+- `POST /api/v1/auth/password-reset/request` – Trigger reset e-mail/SMS
+- `POST /api/v1/auth/password-reset/confirm` – Complete password reset
+- `GET  /api/v1/users/:id` – User profile
+- `GET  /api/v1/properties` – List properties
+- `POST /api/v1/properties` – Create property (realtor)
+- `PATCH /api/v1/properties/:id` – Update property
+- `DELETE /api/v1/properties/:id` – Delete property
+- `POST /api/v1/bookings` – Schedule tour booking
+- `PATCH /api/v1/bookings/:id` – Reschedule booking
+- `DELETE /api/v1/bookings/:id` – Cancel booking
+- `GET  /api/v1/dashboards/realtor` – Realtor dashboard metrics & upcoming tours
+- `GET  /api/v1/dashboards/buyer` – Buyer dashboard upcoming & history
+- `GET  /api/v1/analytics/realtor` – Realtor analytics dashboard data
+- `POST /api/v1/calls` – Video call (tour) management
 
 **GraphQL Schema:**
 - User types and queries
 - Property types and filters
 - Call types and mutations
 - Real-time subscriptions
+- Auth mutations: `register`, `login`, `requestPasswordReset`, `confirmPasswordReset`
+- User queries: `currentUser`, `user(id)`
+- Property queries & mutations: `properties`, `property(id)`, `createProperty`, `updateProperty`, `deleteProperty`
+- Booking queries & mutations: `bookings`, `booking(id)`, `createBooking`, `updateBooking`, `cancelBooking`
+- Call mutations: `startCall`, `endCall`
+- Dashboard queries: `realtorDashboard`, `buyerDashboard`
+- Analytics query: `realtorAnalytics`
+- Real-time subscriptions: `bookingStatusChanged`, `callUpdated`
 
 ##### Databases
 
 **Database Design:**
 - **Users Table**: User profiles and authentication
+- **PasswordResetTokens Table**: One-time reset tokens (user_id, token, expires_at, used_at)
 - **Properties Table**: Property listings and details
-- **Appointments Table**: Scheduled video calls
-- **Calls Table**: Call history and recordings
+- **Bookings Table**: Tour bookings (buyer_id, property_id, scheduled_at, status)
+- **Calls Table**: Call history and recordings (maps to bookings)
+- **AnalyticsAggregates Table** _(optional)_: Cached stats for realtor dashboards
+- **AuditLogs Table** _(optional)_: Immutable system & user actions for compliance (actor_id, action, target_id, meta, created_at)
 
 ##### Asynchronous Jobs
 
 **Background Processing:**
-- **Email Notifications**: Appointment reminders
+- **Email Notifications**: Appointment reminders **and password-reset emails**
+- **Booking Reminder Job**: Send reminders & push notifications X minutes before a tour
 - **Video Processing**: Recording compression and storage
-- **Analytics**: User behavior tracking
+- **Dashboard Aggregation**: Nightly roll-up of metrics into AnalyticsAggregates
+- **Analytics Ingestion**: Stream events → warehouse (e.g., Snowflake/Kinesis)
+- **Property Image Processing**: Resize/compress images on upload
 - **Data Sync**: External service synchronization
 
 ##### Error Handling
@@ -727,13 +750,55 @@ Given our 2-month timeline and a small engineering team, milestones are prioriti
 - **AWS ECS**: Container orchestration
 - **Blue-Green Deployment**: Zero-downtime deployments
 
-##### Observability
+**Additional DevOps Considerations:**
+- **Infrastructure as Code (IaC)**: Terraform modules provision VPCs, ECS clusters, RDS, and S3 buckets.
+- **Branching Strategy:** Trunk-based development with short-lived feature branches; protected `main` branch with required status checks.
+- **Environment Strategy:** Isolated **dev**, **staging**, and **production** accounts; feature flags for risky features.
+- **Secrets Management:** AWS Secrets Manager and SSM Parameter Store; rotation policies for DB and JWT secrets.
+- **Rollback & Release:** Blue-green by default; canary releases for high-risk changes; one-click rollback via ECS task definition history.
+- **CI Quality Gates:** Linting, tests, security scans (Snyk) must pass before merge.
 
-**Monitoring Tools:**
-- **CloudWatch**: AWS native monitoring
-- **DataDog**: Application performance monitoring
-- **Sentry**: Error tracking and alerting
-- **Custom Metrics**: Business-specific KPIs
+##### Observability  
+
+**Monitoring & Alerting Enhancements:**
+- **Key Metrics:** API p95 latency, video call setup time, Chime meeting duration, error rates, CPU/Memory of ECS tasks.
+- **Dashboards:** Real-time Grafana dashboards for business KPIs (tours per day) and system KPIs.
+- **Alerting:** PagerDuty integration; SLO-based alerts (e.g., >1% error rate for 5 min) route to on-call engineer.
+- **Synthetic Checks:** CloudWatch Synthetics canaries hit critical endpoints every minute.
+- **Log Aggregation:** Fluent Bit ships JSON logs to CloudWatch Logs and DataDog for correlation.
+
+#### Scalability & Availability
+
+- **Target Scale:** 10 k concurrent users / 500 simultaneous video tours in MVP phase.
+- **Multi-AZ Deployment:** ECS services span at least 2 AZs; RDS in Multi-AZ mode with automatic fail-over.
+- **Auto-Scaling:** ALB request count and custom Chime metrics drive ECS task scaling.
+- **Read Replicas & Caching:** Add RDS read replicas and Redis caching tier when read QPS > 2 k.
+- **Disaster Recovery:** Daily RDS snapshots (retain 7 days) + S3 cross-region replication; RTO < 60 min, RPO < 15 min.
+
+#### Security & Compliance (Expanded)
+
+- **Data Classification:** User PII, recordings, and transcripts stored in encrypted S3 buckets (SSE-KMS).
+- **Vulnerability Management:** Weekly Snyk scans; monthly dependency upgrades.
+- **Pen-Testing:** External penetration test prior to launch and annually thereafter.
+- **Incident Response:** Runbooks in OpsGenie; post-mortems within 48 h.
+- **Logging & Audit:** CloudTrail enabled for all accounts; immutable logs stored in Glacier.
+
+**API Documentation & Tooling:**
+- **OpenAPI (Swagger):** Auto-generated YAML spec from Rails controllers; hosted at `/docs`.
+- **GraphQL Docs:** Voyager or GraphiQL explorer deployed with schema introspection.
+- **Postman Collection:** Exported nightly via CI; shared with frontend & partners.
+- **SDKs:** OpenAPI generator produces TypeScript / Ruby SDKs for consumers.
+
+#### User Roles & Permissions
+
+| Role      | Description                               | Key Permissions                                             |
+|-----------|-------------------------------------------|-------------------------------------------------------------|
+| Buyer     | End-user interested in properties         | View listings, request tours, join video calls              |
+| Realtor   | Property owner/agent                      | Create/update listings, host video calls, view analytics    |
+| Admin     | Internal operations/support               | Manage users & listings, view all analytics, system settings|
+| System    | Background jobs & services                | Recording processing, analytics aggregation                 |
+
+Role-based access control (RBAC) is enforced via **Pundit** policies in Rails and JWT claims on the client side.
 
 #### React
 
@@ -901,8 +966,8 @@ A robust analytics strategy is essential for understanding user behavior, optimi
 
 ### Analytics Stack Overview
 
-| Tool           | Strengths                                 | Best Use Cases                                  |
-|----------------|-------------------------------------------|-------------------------------------------------|
+| Tool           | Strengths                                 | Best Use Cases                                   |
+|----------------|-------------------------------------------|--------------------------------------------------|
 | **Mixpanel**   | Event-level user tracking & cohorts       | Product insights, funnel drop-offs, retention    |
 | **Hotjar**     | Session replays & heatmaps                | UX issues, behavioral pain points, UI analysis   |
 | **GA4**        | Marketing analytics & attribution         | Campaigns, traffic, geo/device segmentation      |
@@ -912,7 +977,7 @@ A robust analytics strategy is essential for understanding user behavior, optimi
 ### How We Use Analytics
 
 - **Product Analytics (Mixpanel):**
-  - Track key user events (tour requested, joined, completed, feedback submitted, etc.)
+  - Track key user events (tour requested, joined, completed, registration_started, password_reset_requested/completed, booking_scheduled, booking_rescheduled/cancelled, property_created/updated/deleted, analytics_dashboard_viewed, etc.)
   - Analyze conversion funnels (e.g., "Tour Requested" → "Tour Joined" → "Tour Completed")
   - Segment users by role (buyer, realtor) and behavior
   - Cohort analysis to measure retention and engagement over time
@@ -933,32 +998,30 @@ A robust analytics strategy is essential for understanding user behavior, optimi
 
 ### Remote Tour Tracking Plan
 
-See the [Remote Tour Tracking Plan](#remote-tour-tracking-plan) below for a detailed breakdown of tracked events, properties, triggers, and instrumentation points.
-
----
-
-### Best Practices
-
-- **Data Privacy:** Ensure all analytics tools comply with GDPR and other relevant privacy regulations. Mask or anonymize sensitive data (e.g., user notes, personal info).
-- **Consistent Event Naming:** Use a clear, consistent naming convention for all tracked events.
-- **Cross-Tool Integration:** Where possible, link user IDs across Mixpanel, Hotjar, and GA4 for unified user journeys.
-- **Regular Review:** Periodically review analytics dashboards and tracking plans to ensure alignment with business goals and product changes.
-
-## Remote Tour Tracking Plan
-
-| Event Name           | Properties                                                      | Triggered By      | Tracked On                |
-|----------------------|-----------------------------------------------------------------|-------------------|---------------------------|
-| tour_requested       | tour_id, property_id, user_id, scheduled_time                   | Buyer             | Frontend (React)          |
-| tour_joined          | tour_id, user_id, role, timestamp                               | Buyer + Realtor   | React / React Native      |
-| tour_left            | tour_id, user_id, duration_in_session, role                     | Buyer + Realtor   | React Native              |
-| recording_started    | tour_id, user_id, timestamp, recording_method                   | Realtor           | Backend (Chime webhook)   |
-| recording_saved      | tour_id, video_url, duration, file_size                         | System            | Backend (Rails job)       |
-| highlight_created    | highlight_id, tour_id, user_id, timestamp, note                 | Buyer             | Frontend                  |
-| note_added           | tour_id, user_id, timestamp, text_length, media_type            | Buyer             | Frontend                  |
-| recording_played     | tour_id, user_id, start_time, device_type, geo                  | Buyer             | React (Web)               |
-| call_quality_warning | tour_id, user_id, signal_strength, packet_loss, latency         | System (SDK)      | React Native SDK          |
-| tour_completed       | tour_id, user_id, duration, participants_count                  | System            | Backend                   |
-| feedback_submitted   | tour_id, rating, comments, user_id, role                        | Buyer             | React      
+| Event Name                 | Properties                                                      | Triggered By      | Tracked On                |
+|----------------------------|-----------------------------------------------------------------|-------------------|---------------------------|
+| tour_requested             | tour_id, property_id, user_id, scheduled_time                   | Buyer             | Frontend (React)          |
+| tour_joined                | tour_id, user_id, role, timestamp                               | Buyer + Realtor   | React / React Native      |
+| tour_left                  | tour_id, user_id, duration_in_session, role                     | Buyer + Realtor   | React Native              |
+| recording_started          | tour_id, user_id, timestamp, recording_method                   | Realtor           | Backend (Chime webhook)   |
+| recording_saved            | tour_id, video_url, duration, file_size                         | System            | Backend (Rails job)       |
+| highlight_created          | highlight_id, tour_id, user_id, timestamp, note                 | Buyer             | Frontend                  |
+| note_added                 | tour_id, user_id, timestamp, text_length, media_type            | Buyer             | Frontend                  |
+| recording_played           | tour_id, user_id, start_time, device_type, geo                  | Buyer             | React (Web)               |
+| call_quality_warning       | tour_id, user_id, signal_strength, packet_loss, latency         | System (SDK)      | React Native SDK          |
+| tour_completed             | tour_id, user_id, duration, participants_count                  | System            | Backend                   |
+| password_reset_requested   | user_id, method (email/sms), timestamp                          | Buyer/Realtor     | Frontend (React/Native)   |
+| password_reset_completed   | user_id, timestamp                                              | Buyer/Realtor     | Backend (Rails)           |
+| homepage_cta_clicked       | user_id (anon if logged out), location (hero/footer), timestamp | Visitor           | Frontend (React)          |
+| registration_started       | user_id (anon), referral_source, timestamp                      | Visitor           | Frontend                  |
+| property_created           | property_id, realtor_id, timestamp                              | Realtor           | Frontend                  |
+| property_updated           | property_id, realtor_id, fields_changed, timestamp              | Realtor           | Frontend                  |
+| property_deleted           | property_id, realtor_id, timestamp                              | Realtor           | Frontend                  |
+| booking_scheduled          | booking_id, tour_id, user_id, scheduled_time                    | Buyer             | Frontend                  |
+| booking_rescheduled        | booking_id, tour_id, user_id, new_time                          | Buyer             | Frontend                  |
+| booking_cancelled          | booking_id, tour_id, user_id, cancel_reason                     | Buyer             | Frontend                  |
+| dashboard_viewed           | user_id, role, dashboard_type (realtor|buyer), timestamp        | Buyer/Realtor     | Frontend                  |
+| analytics_dashboard_viewed | realtor_id, timestamp, filters_applied                          | Realtor           | Frontend                  |
 
 #### Tests and Delivery Automation
 
@@ -981,52 +1044,6 @@ See the [Remote Tour Tracking Plan](#remote-tour-tracking-plan) below for a deta
 - **Environment Configuration**: Environment-specific settings
 - **Service Orchestration**: Docker Compose for local development
 - **Production Deployment**: Containerized production deployment
-
-## Appendix
-
-### Additional Resources
-
-**Documentation:**
-- API Documentation
-- Deployment Guides
-- Troubleshooting Guides
-- Performance Benchmarks
-
-**Tools and Services:**
-- AWS Service Documentation
-- React and React Native Guides
-- Ruby on Rails Documentation
-- Testing Framework Documentation
-
-### Configuration Examples
-
-**Environment Variables:**
-```bash
-# Database Configuration
-DATABASE_URL=postgresql://user:password@localhost:5432/video_app
-REDIS_URL=redis://localhost:6379
-
-# AWS Configuration
-AWS_ACCESS_KEY_ID=your_access_key
-AWS_SECRET_ACCESS_KEY=your_secret_key
-AWS_REGION=us-east-1
-
-# Video Service Configuration
-CHIME_APP_INSTANCE_ARN=arn:aws:chime:us-east-1:123456789012:app-instance/abc123
-CHIME_MEETING_REGION=us-east-1
-```
-
-**Docker Configuration:**
-```dockerfile
-# Dockerfile for Rails API
-FROM ruby:3.2-alpine
-WORKDIR /app
-COPY Gemfile* ./
-RUN bundle install
-COPY . .
-EXPOSE 3000
-CMD ["rails", "server", "-b", "0.0.0.0"]
-```
 
 ## Glossary
 
@@ -1069,5 +1086,3 @@ CMD ["rails", "server", "-b", "0.0.0.0"]
 **User Engagement**: The degree of attention, curiosity, interest, and passion that users show when using the application.
 
 **Market Reach**: The total number of potential customers that can be reached through the platform.
-
-
