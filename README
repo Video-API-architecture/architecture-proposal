@@ -1,0 +1,1073 @@
+# Video API Architecture Proposal
+
+This is a Systems Design solution for a Video app that livestream calls between realtors and clients. The intent is to allow them to  We present a High Level and Low Level overview and discuss some of the main critical parts of a video application.
+
+- [Executive Summary](#executive-summary)
+- [Product View](#product-view)
+  - [Expected Business Impact](#expected-business-impact)
+  - [Assumptions and Questions Raised](#assumptions-and-questions-raised)
+  - [Constraint Analysis & Mitigation](#constraint-analysis--mitigation)
+    - [Ambitious Timelines](#ambitious-timelines)
+    - [Rural Connectivity Challenges](#rural-connectivity-challenges)
+  - [Team Execution Model](#team-execution-model)
+    - [Tech/Product/Design Sync Rhythm](#techproductdesign-sync-rhythm)
+    - [Risks Escalation Model](#risks-escalation-model)
+    - [Shipping Milestones (8 Weeks, High-Impact First)](#shipping-milestones-8-weeks-high-impact-first)
+  - [Wireframes](#wireframes)
+    - [Landing Pages](#landin-pages)
+    - [Delivery Plan](#delivery-plan)
+- [Technical View](#technical-design)
+  - [Technical Quality Pillars](#technical-quality-pillars)
+    - [Observability](#observability)
+    - [Scalability](#load-balancing)
+    - [Performance](#performance)
+    - [Maintainability](#maintainability)
+    - [Testability](#testability)
+  - [Systems Design - High Level](#systems-design---high-level)
+    - [Gathering System Requirements](#gathering-system-requirements)
+    - [Coming Up With A Plan](#coming-up-with-a-plan)
+    - [Persistent Storage Solution and App Load](#persistent-storage-solution-and-app-load)
+    - [Load Balancing](#load-balancing)
+    - [Pub-Sub System for Real-Time Behavior](#pub-sub-system-for-real-time-behavior)
+    - [Observability & Monitoring](#observability--monitoring)
+    - [Security & Compliance](#security--compliance)
+    - [Performance Benchmarks](#performance-benchmarks)
+    - [Future Enhancements](#future-enhancements)
+
+The Low Level section contains various parts of the systems and we do a quick deep dive inside the internal components.
+  - [Systems Design - Low Level](#systems-design---low-level)
+    - [Gathering System Requirements](#gathering-system-requirements)
+    - [Actions](#actions)
+    - [Coming Up With A Plan](#coming-up-with-a-plan)
+    - [Technology & Framework Rationale](#Technology & Framework Rationale)
+    - [Ruby on Rails + React + React Native + AWS Chime SDK](#nodejs---redis---socketio)
+      - [How it works](#how-it-works)
+    - [C4](#c4)
+      - [System Context](#system-context)
+      - [Container Diagram](#container-diagram)
+        - [API Surface (GraphQL + REST)](#API-Surface-(GraphQL-+-REST))
+      - [Component Diagram](#component-diagram)
+        - [Api engine](#api-engine)
+        - [Authentication engine](#authentication-engine)
+        - [Video Tours engine](#tour-engine)
+      - [Code](#code)
+    - [Rails API](#rails-api)
+      - [Technologies](#technologies)
+      - [API Surface (GraphQL + REST)](#api-surface-graphql--rest)
+      - [Databases](#databases)
+      - [Asynchronous Jobs](#asynchronous-jobs)
+      - [Error Handling](#error-handling)
+      - [MVC and Services](#mvc-and-services)
+      - [Concerns](#concerns)
+      - [Authorization & Security](#authorization--security)
+      - [DevOps & CI/CD](#devops--ci-cd)
+      - [Observability](#observability)
+    - [React](#react)
+      - [Technologies](#technologies)
+      - [Design Patterns](#design-patterns)
+      - [State Management](#state-management)
+      - [Error Handling](#error-handling)
+      - [API Integration Strategy](#api-integration-strategy)
+      - [Testing Strategy](#testing-strategy)
+      - [Styling & Theming](#styling--theming)
+      - [Performance Optimization](#performance-optimization)
+      - [Security](#security)
+    - [React Native](#react-native)
+      - [Technologies](#technologies)
+      - [Design Patterns](#design-patterns)
+      - [State Management](#state-management)
+      - [Error Handling](#error-handling)
+      - [Offline Support & Sync](#offline-support--sync)
+      - [Video Streaming & SDK Integration](#video-streaming--sdk-integration)
+      - [Testing Strategy](#testing-strategy)
+      - [Permissions & Device APIs](#permissions--device-apis)
+      - [Deep Linking & Navigation](#deep-linking--navigation)
+      - [Security](#security)
+    - [Analytics](#analytics)
+      - [Remote Tour Tracking Plan](#remote-tour-tracking-plan)
+      - [Hotjar](#hotjar)
+      - [Mixpanel](#mixpanel)
+      - [Google Analytics](#google-analytics)
+    - [Tests and Delivery Automation](#tests-and-delivery-automation)
+    - [Docker](#docker)
+- [Appendix](#appendix)
+- [Glossary](#glossary)
+
+## Executive Summary
+
+This document presents a comprehensive architecture proposal for a video streaming application designed to facilitate live video calls between realtors and clients. The solution leverages modern web technologies and cloud services to deliver a robust, scalable, and user-friendly platform.
+
+### Key Highlights
+
+- **Real-time Video Communication**: AWS Chime SDK integration for high-quality video streaming
+- **Multi-platform Support**: Web (React) and mobile (React Native) applications
+- **Scalable Backend**: Ruby on Rails API with GraphQL and REST endpoints
+- **Cloud-Native Architecture**: AWS-based infrastructure with containerization
+- **Comprehensive Analytics**: Multi-platform tracking and user behavior analysis
+
+## Product View
+
+### Expected Business Impact
+
+The video streaming platform is expected to revolutionize the real estate industry by:
+
+- **Increasing Conversion Rates**: Direct video communication can improve client engagement and trust
+- **Reducing Travel Time**: Virtual property tours save time for both realtors and clients
+- **Expanding Market Reach**: Rural and remote clients can access properties without physical travel
+- **Improving Customer Satisfaction**: Real-time interaction provides immediate answers and personalized experience
+
+### Assumptions and Questions Raised
+
+**Key Assumptions:**
+- Users have access to stable internet connectivity
+- Mobile devices support video streaming capabilities
+- Users are comfortable with video communication
+- Real estate market embraces digital transformation
+
+**Questions to Address:**
+- What is the minimum bandwidth requirement for video calls?
+- How do we handle poor connectivity scenarios?
+- What security measures are needed for sensitive property information?
+- How do we ensure compliance with real estate regulations?
+
+### Constraint Analysis & Mitigation
+
+#### Ambitious Timelines
+
+**Constraints:**
+- Rapid development timeline for market entry
+- Complex video streaming requirements
+- Multi-platform development needs
+
+**Mitigation Strategies:**
+- Agile development methodology with weekly sprints
+- Parallel development tracks for web and mobile
+- MVP approach with iterative feature releases
+- Leveraging existing AWS services to reduce development time
+
+#### Rural Connectivity Challenges
+
+**Constraints:**
+- Limited bandwidth in rural areas
+- Unstable internet connections
+- Mobile data limitations
+
+**Mitigation Strategies:**
+- Adaptive video quality based on connection speed
+- Offline mode for property information
+- Data compression and optimization
+- Fallback to audio-only calls when video fails
+
+### Team Execution Model
+
+#### Tech/Product/Design Sync Rhythm
+
+- **Daily Standups**: 15-minute team sync meetings
+- **Weekly Sprint Planning**: Feature prioritization and task assignment
+- **Bi-weekly Demos**: Showcase completed features to stakeholders
+- **Monthly Retrospectives**: Process improvement and team feedback
+
+#### Risks Escalation Model
+
+1. **Level 1**: Team lead handles technical issues
+2. **Level 2**: Product manager escalates to stakeholders
+3. **Level 3**: Executive team makes strategic decisions
+4. **Level 4**: External consultants or partners involved
+
+#### Shipping Milestones (8 Weeks, High-Impact First)
+
+Given our 2-month timeline and a small engineering team, milestones are prioritized for business impact and demo readiness. Each milestone concludes with a demo to stakeholders.
+
+---
+
+**Week 1-2: Core Foundations & Authentication**
+- Project setup: repositories, CI/CD, environments (staging/production)
+- User authentication (buyers & realtors)
+- Basic user profile management
+- Minimal UI: login, registration, dashboard shell
+- **Demo:** Login, registration, and basic navigation
+- **Acceptance Criteria:**
+  - Users can register and log in
+  - Dashboard shell is accessible after login
+  - CI/CD pipeline is operational
+
+**Week 3-4: Live Video Tour MVP**
+- Integrate AWS Chime SDK for 1:1 live video calls
+- Schedule and join a tour (buyer requests, realtor hosts)
+- Basic property listing (static/dummy data)
+- Core event tracking (Mixpanel/GA4): tour requested, tour joined, tour completed
+- **Demo:** End-to-end video call between buyer and realtor
+- **Acceptance Criteria:**
+  - Users can request and join a video tour
+  - Video call works between buyer and realtor
+  - Basic property data is visible
+  - Key events are tracked in analytics
+
+**Week 5: Property Listings & Booking**
+- CRUD for property listings (admin/realtor)
+- Buyers can browse/search properties and request tours
+- Calendar integration for tour scheduling
+- **Demo:** Buyer books a tour from a real property listing
+- **Acceptance Criteria:**
+  - Realtors can create, update, and delete property listings
+  - Buyers can browse/search and book tours
+  - Calendar integration is functional
+
+**Week 6: Feedback & Analytics**
+- Post-tour feedback (buyers rate/comment on tours)
+- Analytics dashboard for realtors (basic stats: tours completed, feedback received)
+- Expand event tracking (feedback_submitted, tour_left, etc.)
+- **Demo:** Realtor views analytics and feedback from completed tours
+- **Acceptance Criteria:**
+  - Buyers can submit feedback after tours
+  - Realtors can view analytics and feedback
+  - Additional events are tracked
+
+**Week 7: Mobile & UX Enhancements**
+- Polish mobile experience (React Native)
+- Responsive UI improvements
+- Error handling, loading states, and basic offline support
+- **Demo:** Mobile tour booking and video call
+- **Acceptance Criteria:**
+  - Mobile app supports booking and video calls
+  - UI is responsive and user-friendly
+  - App handles errors and offline scenarios gracefully
+
+**Week 8: Polish, QA, and Launch**
+- End-to-end testing (manual + automated)
+- Performance optimizations (video, API, UI)
+- Security review (authentication, data privacy)
+- Final bug fixes, documentation, and go-live
+- **Demo:** Full product walkthrough and launch readiness
+- **Acceptance Criteria:**
+  - All critical bugs are fixed
+  - Product passes QA and security review
+  - Documentation is complete
+  - Product is ready for launch
+
+---
+
+### Deferred Features (Post-Launch)
+- Multi-party video calls
+- Advanced property search and filters
+- Recording playback features
+- AI-powered property recommendations
+- Virtual reality property tours
+- Advanced analytics and reporting
+- Saved favorites and recent call history (if not completed in MVP)
+- Any additional marketing/landing page enhancements
+
+### Wireframes
+
+#### Landing Pages
+
+**Homepage Design:**
+- Hero section with video call demonstration
+- Feature highlights and benefits
+- Testimonials from realtors and clients
+- Call-to-action for registration
+
+**User Dashboard:**
+- Property listings and saved favorites
+- Upcoming video appointments
+- Recent call history
+- Profile and settings management
+
+---
+
+### Mapping: Landing Page Features to Milestones
+
+| Landing Page Feature         | Milestone (Week) | Notes/Dependencies                |
+|-----------------------------|------------------|-----------------------------------|
+| Registration/Login          | 1-2              |                                   |
+| Dashboard Shell             | 1-2              |                                   |
+| Property Listings           | 3-5              |                                   |
+| Video Call Demo             | 3-4              |                                   |
+| Booking/Scheduling          | 5                |                                   |
+| Feedback                    | 6                |                                   |
+| Saved Favorites             | 5-6              | Optional for MVP                  |
+| Recent Call History         | 5-6              | Optional for MVP                  |
+| Testimonials/Highlights     | (Content/Marketing) | Needs marketing/content input   |
+| Call-to-Action              | 1-2              |                                   |
+
+---
+
+#### Shipping Milestones (8 Weeks, High-Impact First)
+
+Given our 2-month timeline and a small engineering team, milestones are prioritized for business impact and demo readiness. Each milestone concludes with a demo to stakeholders.
+
+---
+
+**Week 1-2: Core Foundations & Authentication**
+- Project setup: repositories, CI/CD, environments (staging/production)
+- User authentication (buyers & realtors)
+- Basic user profile management
+- Minimal UI: login, registration, dashboard shell
+- **Demo:** Login, registration, and basic navigation
+- **Acceptance Criteria:**
+  - Users can register and log in
+  - Dashboard shell is accessible after login
+  - CI/CD pipeline is operational
+
+**Week 3-4: Live Video Tour MVP**
+- Integrate AWS Chime SDK for 1:1 live video calls
+- Schedule and join a tour (buyer requests, realtor hosts)
+- Basic property listing (static/dummy data)
+- Core event tracking (Mixpanel/GA4): tour requested, tour joined, tour completed
+- **Demo:** End-to-end video call between buyer and realtor
+- **Acceptance Criteria:**
+  - Users can request and join a video tour
+  - Video call works between buyer and realtor
+  - Basic property data is visible
+  - Key events are tracked in analytics
+
+**Week 5: Property Listings & Booking**
+- CRUD for property listings (admin/realtor)
+- Buyers can browse/search properties and request tours
+- Calendar integration for tour scheduling
+- **Demo:** Buyer books a tour from a real property listing
+- **Acceptance Criteria:**
+  - Realtors can create, update, and delete property listings
+  - Buyers can browse/search and book tours
+  - Calendar integration is functional
+
+**Week 6: Feedback & Analytics**
+- Post-tour feedback (buyers rate/comment on tours)
+- Analytics dashboard for realtors (basic stats: tours completed, feedback received)
+- Expand event tracking (feedback_submitted, tour_left, etc.)
+- **Demo:** Realtor views analytics and feedback from completed tours
+- **Acceptance Criteria:**
+  - Buyers can submit feedback after tours
+  - Realtors can view analytics and feedback
+  - Additional events are tracked
+
+**Week 7: Mobile & UX Enhancements**
+- Polish mobile experience (React Native)
+- Responsive UI improvements
+- Error handling, loading states, and basic offline support
+- **Demo:** Mobile tour booking and video call
+- **Acceptance Criteria:**
+  - Mobile app supports booking and video calls
+  - UI is responsive and user-friendly
+  - App handles errors and offline scenarios gracefully
+
+**Week 8: Polish, QA, and Launch**
+- End-to-end testing (manual + automated)
+- Performance optimizations (video, API, UI)
+- Security review (authentication, data privacy)
+- Final bug fixes, documentation, and go-live
+- **Demo:** Full product walkthrough and launch readiness
+- **Acceptance Criteria:**
+  - All critical bugs are fixed
+  - Product passes QA and security review
+  - Documentation is complete
+  - Product is ready for launch
+
+---
+
+### Deferred Features (Post-Launch)
+- Multi-party video calls
+- Advanced property search and filters
+- Recording playback features
+- AI-powered property recommendations
+- Virtual reality property tours
+- Advanced analytics and reporting
+- Saved favorites and recent call history (if not completed in MVP)
+- Any additional marketing/landing page enhancements
+
+### Delivery Plan
+
+**Phase 1 (MVP):**
+- Basic video calling between two users
+- Simple property listing display
+- User authentication and profiles
+
+**Phase 2 (Enhanced):**
+- Multi-party video calls
+- Advanced property search and filters
+- Recording and playback features
+
+**Phase 3 (Advanced):**
+- AI-powered property recommendations
+- Virtual reality property tours
+- Advanced analytics and reporting
+
+## Technical View
+
+### Technical Quality Pillars
+
+#### Observability
+
+- **Logging**: Structured logging with correlation IDs
+- **Monitoring**: Real-time system health and performance metrics
+- **Tracing**: Distributed tracing for request flows
+- **Alerting**: Proactive notification of issues and anomalies
+
+#### Scalability
+
+- **Horizontal Scaling**: Auto-scaling based on demand
+- **Load Balancing**: Distribution of traffic across multiple instances
+- **Database Sharding**: Partitioning data for better performance
+- **CDN Integration**: Global content delivery for static assets
+
+#### Performance
+
+- **Response Time**: < 200ms for API calls
+- **Video Quality**: Adaptive bitrate streaming
+- **Caching**: Redis for frequently accessed data
+- **Optimization**: Image compression and lazy loading
+
+#### Maintainability
+
+- **Code Quality**: Automated linting and code reviews
+- **Documentation**: Comprehensive API and code documentation
+- **Testing**: Unit, integration, and end-to-end tests
+- **Modular Architecture**: Clear separation of concerns
+
+#### Testability
+
+- **Test Coverage**: > 80% code coverage
+- **Mock Services**: Isolated testing environments
+- **CI/CD Pipeline**: Automated testing and deployment
+- **Performance Testing**: Load testing and stress testing
+
+### Systems Design - High Level
+
+#### Gathering System Requirements
+
+**Functional Requirements:**
+- User authentication and authorization
+- Real-time video communication
+- Property listing and search
+- Appointment scheduling
+- Call recording and playback
+
+**Non-Functional Requirements:**
+- High availability (99.9% uptime)
+- Low latency (< 200ms)
+- Scalability to 10,000 concurrent users
+- Security and data privacy compliance
+
+#### Technology & Framework Rationale
+
+| Layer                      | Choice                              | Reason                                                                 |
+|----------------------------|-------------------------------------|------------------------------------------------------------------------|
+| Video                      | AWS Chime SDK                       | 2-way WebRTC, low-latency, cost-effective, SDK works on mobile         |
+| Recording / Playback       | AWS MediaConvert                    | Recordings are stored and streamed with low ops burden                 |
+| API                        | Ruby on Rails (on EC2)              | Rapid development, team familiarity, rich gem ecosystem                |
+| Mobile App                 | React Native                        | Realtor already has iOS/Android apps—build on top of them              |
+| Storage                    | Postgres RDS                        | Great for relational joins (buyers, tours, highlights)                 |
+| Observability              | CloudWatch Agent + Fluent Bit on EC2| Logs, metrics, health checks                                           |
+| Transcription & Notes (P2) | AWS Transcribe + LLM summarizer     | Enables AI-enhanced summaries and note generation later                |
+
+#### Coming Up With A Plan
+
+**Architecture Decisions:**
+- Microservices vs Monolithic: Hybrid approach with modular Rails API
+- Database: PostgreSQL for relational data, Redis for caching
+- Video Service: AWS Chime SDK for managed video infrastructure
+- Frontend: React for web, React Native for mobile
+
+#### Persistent Storage Solution and App Load
+
+**Database Design:**
+- **PostgreSQL**: User data, property listings, appointments
+
+![System Data Model Diagram](./imgs/data-model.png)
+
+- **Redis**: Session management, caching, real-time data
+- **S3**: File storage for images and recordings
+- **CloudFront**: CDN for static assets
+
+**Data Flow:**
+1. User requests → Load Balancer
+2. Load Balancer → Application Servers
+3. Application Servers → Database/Cache
+4. Response → User through CDN
+
+#### Load Balancing
+
+**Strategy:**
+- **Application Load Balancer (ALB)**: Route traffic to healthy instances
+- **Auto Scaling Group**: Automatically adjust capacity based on demand
+- **Health Checks**: Monitor instance health and remove unhealthy ones
+- **Session Affinity**: Maintain user sessions across requests
+
+#### Pub-Sub System for Real-Time Behavior
+
+**Implementation:**
+- **Redis Pub/Sub**: Real-time notifications and updates
+- **WebSocket Connections**: Persistent connections for live updates
+- **Event-Driven Architecture**: Decoupled services communication
+- **Message Queues**: Asynchronous processing of heavy tasks
+
+#### Observability & Monitoring
+
+**Tools and Metrics:**
+- **CloudWatch**: AWS native monitoring and logging
+- **DataDog**: Application performance monitoring
+- **Sentry**: Error tracking and performance monitoring
+- **Custom Dashboards**: Business metrics and KPIs
+
+#### Security & Compliance
+
+**Security Measures:**
+- **Authentication**: JWT tokens with refresh mechanism
+- **Authorization**: Role-based access control (RBAC)
+- **Data Encryption**: TLS for data in transit, AES for data at rest
+- **API Security**: Rate limiting, input validation, CORS
+
+**Compliance:**
+- **GDPR**: Data privacy and user consent
+- **SOC 2**: Security controls and audit trails
+- **Real Estate Regulations**: Industry-specific compliance
+
+#### Performance Benchmarks
+
+**Target Metrics:**
+- **API Response Time**: < 200ms (95th percentile)
+- **Video Call Latency**: < 150ms
+- **Page Load Time**: < 3 seconds
+- **Database Query Time**: < 100ms
+
+#### Future Enhancements
+
+**Planned Features:**
+- **AI Integration**: Smart property recommendations
+- **Virtual Reality**: Immersive property tours
+- **Blockchain**: Secure property transactions
+- **IoT Integration**: Smart home features and sensors
+
+### Systems Design - Low Level
+
+#### Gathering System Requirements
+
+**Detailed Requirements Analysis:**
+- **User Stories**: Detailed breakdown of user interactions
+- **Technical Specifications**: API contracts and data models
+- **Integration Requirements**: Third-party service integrations
+- **Performance Requirements**: Specific latency and throughput targets
+
+#### Actions
+
+**Core Actions:**
+- **User Management**: Registration, authentication, profile management
+- **Video Communication**: Call initiation, management, and termination
+- **Property Management**: Listing creation, updates, and search
+- **Appointment Scheduling**: Booking, reminders, and calendar integration
+
+#### Coming Up With A Plan
+
+**Implementation Strategy:**
+- **Phase 1**: Core video calling functionality
+- **Phase 2**: Property management features
+- **Phase 3**: Advanced features and optimizations
+- **Phase 4**: Scale and performance improvements
+
+#### Ruby on Rails + React + React Native + AWS Chime SDK
+
+**Technology Stack:**
+- **Backend**: Ruby on Rails 7 with API mode
+- **Frontend Web**: React 18 with TypeScript
+- **Mobile**: React Native with Expo
+- **Video**: AWS Chime SDK for JavaScript and React Native
+
+##### How it works
+
+**Architecture Flow:**
+1. **Client Request**: React/React Native app makes API call
+2. **API Gateway**: Rails API receives and validates request
+3. **Business Logic**: Rails controllers and services process request
+4. **Video Service**: AWS Chime SDK handles video communication
+5. **Database**: PostgreSQL stores persistent data
+6. **Cache**: Redis provides fast access to frequently used data
+7. **Response**: JSON response sent back to client
+
+#### C4
+
+##### System Context
+
+**System Boundaries:**
+- **External Users**: Realtors and clients
+- **External Systems**: Payment gateways, email services, SMS services
+- **Internal Systems**: Video platform, property database, user management
+
+##### Container Diagram
+
+**Container Architecture:**
+- **Web Application**: React SPA served by CDN
+- **Mobile Application**: React Native app distributed via app stores
+- **API Gateway**: Rails API handling all requests
+- **Video Service**: AWS Chime SDK for video communication
+- **Database**: PostgreSQL for persistent storage
+- **Cache**: Redis for session and cache data
+- **File Storage**: S3 for images and recordings
+
+###### API Surface (GraphQL + REST)
+
+**API Design:**
+- **REST Endpoints**: CRUD operations for resources
+- **GraphQL**: Flexible queries for complex data requirements
+- **WebSocket**: Real-time updates and notifications
+- **File Upload**: Multipart form data for images and videos
+
+##### Component Diagram
+
+###### Api engine
+
+**Components:**
+- **Controllers**: Handle HTTP requests and responses
+- **Services**: Business logic and external integrations
+- **Models**: Data models and database interactions
+- **Serializers**: JSON response formatting
+- **Validators**: Input validation and sanitization
+
+###### Authentication engine
+
+**Components:**
+- **JWT Service**: Token generation and validation
+- **OAuth Integration**: Social login providers
+- **Password Management**: Secure password handling
+- **Session Management**: User session tracking
+
+###### Video Tours engine
+
+**Components:**
+- **Call Management**: Video call lifecycle management
+- **Recording Service**: Call recording and storage
+- **Quality Control**: Video quality monitoring and adjustment
+- **Analytics**: Call metrics and user behavior tracking
+
+##### Code
+
+**Code Organization:**
+- **Modular Structure**: Clear separation of concerns
+- **Service Objects**: Business logic encapsulation
+- **Concerns**: Shared functionality across models
+- **Tests**: Comprehensive test coverage
+
+#### Rails API
+
+##### Technologies
+
+**Core Technologies:**
+- **Ruby on Rails 7**: Web framework with API mode
+- **PostgreSQL**: Primary database
+- **Redis**: Caching and session storage
+- **GraphQL**: Flexible API queries
+- **JWT**: Authentication tokens
+
+##### API Surface (GraphQL + REST)
+
+**REST Endpoints:**
+- `GET /api/v1/users` - User management
+- `POST /api/v1/auth/login` - Authentication
+- `GET /api/v1/properties` - Property listings
+- `POST /api/v1/calls` - Video call management
+
+**GraphQL Schema:**
+- User types and queries
+- Property types and filters
+- Call types and mutations
+- Real-time subscriptions
+
+##### Databases
+
+**Database Design:**
+- **Users Table**: User profiles and authentication
+- **Properties Table**: Property listings and details
+- **Appointments Table**: Scheduled video calls
+- **Calls Table**: Call history and recordings
+
+##### Asynchronous Jobs
+
+**Background Processing:**
+- **Email Notifications**: Appointment reminders
+- **Video Processing**: Recording compression and storage
+- **Analytics**: User behavior tracking
+- **Data Sync**: External service synchronization
+
+##### Error Handling
+
+**Error Management:**
+- **Global Exception Handler**: Centralized error processing
+- **Custom Error Classes**: Domain-specific errors
+- **Error Logging**: Structured error logging
+- **Client Error Responses**: User-friendly error messages
+
+##### MVC and Services
+
+**Architecture Pattern:**
+- **Models**: Data validation and business rules
+- **Views**: JSON response formatting
+- **Controllers**: Request handling and routing
+- **Services**: Complex business logic
+
+##### Concerns
+
+**Shared Functionality:**
+- **Authentication**: User authentication and authorization
+- **Caching**: Response caching strategies
+- **Logging**: Request and response logging
+- **Validation**: Input validation and sanitization
+
+##### Authorization & Security
+
+**Security Measures:**
+- **JWT Authentication**: Secure token-based authentication
+- **Role-Based Access**: User permission management
+- **API Rate Limiting**: Request throttling
+- **Input Validation**: SQL injection and XSS prevention
+
+##### DevOps & CI/CD
+
+**Deployment Pipeline:**
+- **GitHub Actions**: Automated testing and deployment
+- **Docker**: Containerized application deployment
+- **AWS ECS**: Container orchestration
+- **Blue-Green Deployment**: Zero-downtime deployments
+
+##### Observability
+
+**Monitoring Tools:**
+- **CloudWatch**: AWS native monitoring
+- **DataDog**: Application performance monitoring
+- **Sentry**: Error tracking and alerting
+- **Custom Metrics**: Business-specific KPIs
+
+#### React
+
+##### Technologies
+
+**Frontend Stack:**
+- **React 18**: UI library with hooks
+- **TypeScript**: Type-safe JavaScript
+- **Vite**: Fast build tool and dev server
+- **Tailwind CSS**: Utility-first CSS framework
+- **React Query**: Server state management
+
+##### Design Patterns
+
+**Architecture Patterns:**
+- **Component Composition**: Reusable component design
+- **Custom Hooks**: Shared logic extraction
+- **Context API**: Global state management
+- **Render Props**: Flexible component patterns
+
+##### State Management
+
+**State Strategy:**
+- **React Query**: Server state and caching
+- **Context API**: Global application state
+- **Local State**: Component-specific state
+- **URL State**: Navigation and routing state
+
+##### Error Handling
+
+**Error Management:**
+- **Error Boundaries**: Component error isolation
+- **Toast Notifications**: User-friendly error messages
+- **Retry Mechanisms**: Automatic retry for failed requests
+- **Fallback UI**: Graceful degradation
+
+##### API Integration Strategy
+
+**API Communication:**
+- **Axios**: HTTP client with interceptors
+- **GraphQL Client**: Apollo Client for GraphQL
+- **WebSocket**: Real-time updates
+- **Request Caching**: Optimistic updates and caching
+
+##### Testing Strategy
+
+**Testing Approach:**
+- **Jest**: Unit testing framework
+- **React Testing Library**: Component testing
+- **Cypress**: End-to-end testing
+- **MSW**: API mocking for tests
+
+##### Styling & Theming
+
+**Styling Solution:**
+- **Tailwind CSS**: Utility-first styling
+- **CSS Modules**: Component-scoped styles
+- **Design System**: Consistent component library
+- **Dark Mode**: Theme switching capability
+
+##### Performance Optimization
+
+**Optimization Techniques:**
+- **Code Splitting**: Lazy loading of components
+- **Memoization**: React.memo and useMemo
+- **Virtual Scrolling**: Large list optimization
+- **Image Optimization**: Lazy loading and compression
+
+##### Security
+
+**Security Measures:**
+- **XSS Prevention**: Input sanitization
+- **CSRF Protection**: Cross-site request forgery prevention
+- **Content Security Policy**: Resource loading restrictions
+- **HTTPS**: Secure communication
+
+#### React Native
+
+##### Technologies
+
+**Mobile Stack:**
+- **React Native**: Cross-platform mobile development
+- **Expo**: Development platform and tools
+- **TypeScript**: Type-safe development
+- **React Navigation**: Navigation library
+- **AWS Amplify**: Mobile backend services
+
+##### Design Patterns
+
+**Mobile Patterns:**
+- **Platform-Specific Components**: Native look and feel
+- **Responsive Design**: Adaptive layouts
+- **Offline-First**: Local data persistence
+- **Push Notifications**: Real-time updates
+
+##### State Management
+
+**Mobile State:**
+- **Redux Toolkit**: Predictable state management
+- **AsyncStorage**: Local data persistence
+- **Realm**: Local database for offline data
+- **State Synchronization**: Online/offline sync
+
+##### Error Handling
+
+**Mobile Error Management:**
+- **Crash Reporting**: Sentry integration
+- **Network Error Handling**: Offline mode support
+- **User Feedback**: Toast and alert notifications
+- **Error Recovery**: Automatic retry mechanisms
+
+##### Offline Support & Sync
+
+**Offline Capabilities:**
+- **Local Database**: Realm for offline data storage
+- **Queue System**: Offline action queuing
+- **Sync Engine**: Data synchronization when online
+- **Conflict Resolution**: Merge strategies for conflicts
+
+##### Video Streaming & SDK Integration
+
+**Video Features:**
+- **AWS Chime SDK**: Native video calling
+- **Adaptive Quality**: Dynamic video quality adjustment
+- **Background Mode**: Call continuation in background
+- **Picture-in-Picture**: Multi-tasking support
+
+##### Testing Strategy
+
+**Mobile Testing:**
+- **Jest**: Unit testing
+- **Detox**: End-to-end testing
+- **Device Testing**: Real device testing
+- **Performance Testing**: Memory and battery optimization
+
+##### Permissions & Device APIs
+
+**Device Integration:**
+- **Camera Access**: Video call permissions
+- **Microphone Access**: Audio permissions
+- **Location Services**: Property proximity features
+- **Push Notifications**: Real-time alerts
+
+##### Deep Linking & Navigation
+
+**Navigation Features:**
+- **Deep Links**: Direct navigation to specific content
+- **Universal Links**: iOS deep linking
+- **App Links**: Android deep linking
+- **Navigation State**: Persistent navigation state
+
+##### Security
+
+**Mobile Security:**
+- **Certificate Pinning**: SSL certificate validation
+- **Biometric Authentication**: Touch ID and Face ID
+- **Secure Storage**: Encrypted local storage
+- **App Integrity**: Code signing and validation
+
+#### Analytics
+
+A robust analytics strategy is essential for understanding user behavior, optimizing product features, and driving business outcomes. This platform leverages a multi-tool analytics stack to provide both qualitative and quantitative insights.
+
+---
+
+### Analytics Stack Overview
+
+| Tool           | Strengths                                 | Best Use Cases                                  |
+|----------------|-------------------------------------------|-------------------------------------------------|
+| **Mixpanel**   | Event-level user tracking & cohorts       | Product insights, funnel drop-offs, retention    |
+| **Hotjar**     | Session replays & heatmaps                | UX issues, behavioral pain points, UI analysis   |
+| **GA4**        | Marketing analytics & attribution         | Campaigns, traffic, geo/device segmentation      |
+
+---
+
+### How We Use Analytics
+
+- **Product Analytics (Mixpanel):**
+  - Track key user events (tour requested, joined, completed, feedback submitted, etc.)
+  - Analyze conversion funnels (e.g., "Tour Requested" → "Tour Joined" → "Tour Completed")
+  - Segment users by role (buyer, realtor) and behavior
+  - Cohort analysis to measure retention and engagement over time
+
+- **User Experience Insights (Hotjar):**
+  - Record user sessions to identify pain points and drop-off moments
+  - Generate heatmaps to visualize user focus areas on landing pages and video tours
+  - Collect direct feedback via in-app surveys
+  - Use session recordings to guide UI/UX improvements
+
+- **Acquisition & Marketing Analytics (Google Analytics 4):**
+  - Track user acquisition channels (SEO, email, paid, etc.)
+  - Monitor conversion rates from landing page to booked tour
+  - Set and track goals (e.g., "Tour Scheduled", "Video Joined")
+  - Analyze geo/device breakdown to optimize for rural/mobile users
+
+---
+
+### Remote Tour Tracking Plan
+
+See the [Remote Tour Tracking Plan](#remote-tour-tracking-plan) below for a detailed breakdown of tracked events, properties, triggers, and instrumentation points.
+
+---
+
+### Best Practices
+
+- **Data Privacy:** Ensure all analytics tools comply with GDPR and other relevant privacy regulations. Mask or anonymize sensitive data (e.g., user notes, personal info).
+- **Consistent Event Naming:** Use a clear, consistent naming convention for all tracked events.
+- **Cross-Tool Integration:** Where possible, link user IDs across Mixpanel, Hotjar, and GA4 for unified user journeys.
+- **Regular Review:** Periodically review analytics dashboards and tracking plans to ensure alignment with business goals and product changes.
+
+## Remote Tour Tracking Plan
+
+| Event Name           | Properties                                                      | Triggered By      | Tracked On                |
+|----------------------|-----------------------------------------------------------------|-------------------|---------------------------|
+| tour_requested       | tour_id, property_id, user_id, scheduled_time                   | Buyer             | Frontend (React)          |
+| tour_joined          | tour_id, user_id, role, timestamp                               | Buyer + Realtor   | React / React Native      |
+| tour_left            | tour_id, user_id, duration_in_session, role                     | Buyer + Realtor   | React Native              |
+| recording_started    | tour_id, user_id, timestamp, recording_method                   | Realtor           | Backend (Chime webhook)   |
+| recording_saved      | tour_id, video_url, duration, file_size                         | System            | Backend (Rails job)       |
+| highlight_created    | highlight_id, tour_id, user_id, timestamp, note                 | Buyer             | Frontend                  |
+| note_added           | tour_id, user_id, timestamp, text_length, media_type            | Buyer             | Frontend                  |
+| recording_played     | tour_id, user_id, start_time, device_type, geo                  | Buyer             | React (Web)               |
+| call_quality_warning | tour_id, user_id, signal_strength, packet_loss, latency         | System (SDK)      | React Native SDK          |
+| tour_completed       | tour_id, user_id, duration, participants_count                  | System            | Backend                   |
+| feedback_submitted   | tour_id, rating, comments, user_id, role                        | Buyer             | React      
+
+#### Tests and Delivery Automation
+
+**Testing Strategy:**
+- **Unit Tests**: Individual component testing
+- **Integration Tests**: API and service testing
+- **End-to-End Tests**: Complete user journey testing
+- **Performance Tests**: Load and stress testing
+
+**Automation Pipeline:**
+- **CI/CD**: Automated testing and deployment
+- **Code Quality**: Automated linting and formatting
+- **Security Scanning**: Automated vulnerability detection
+- **Performance Monitoring**: Automated performance testing
+
+#### Docker
+
+**Containerization:**
+- **Multi-stage Builds**: Optimized image creation
+- **Environment Configuration**: Environment-specific settings
+- **Service Orchestration**: Docker Compose for local development
+- **Production Deployment**: Containerized production deployment
+
+## Appendix
+
+### Additional Resources
+
+**Documentation:**
+- API Documentation
+- Deployment Guides
+- Troubleshooting Guides
+- Performance Benchmarks
+
+**Tools and Services:**
+- AWS Service Documentation
+- React and React Native Guides
+- Ruby on Rails Documentation
+- Testing Framework Documentation
+
+### Configuration Examples
+
+**Environment Variables:**
+```bash
+# Database Configuration
+DATABASE_URL=postgresql://user:password@localhost:5432/video_app
+REDIS_URL=redis://localhost:6379
+
+# AWS Configuration
+AWS_ACCESS_KEY_ID=your_access_key
+AWS_SECRET_ACCESS_KEY=your_secret_key
+AWS_REGION=us-east-1
+
+# Video Service Configuration
+CHIME_APP_INSTANCE_ARN=arn:aws:chime:us-east-1:123456789012:app-instance/abc123
+CHIME_MEETING_REGION=us-east-1
+```
+
+**Docker Configuration:**
+```dockerfile
+# Dockerfile for Rails API
+FROM ruby:3.2-alpine
+WORKDIR /app
+COPY Gemfile* ./
+RUN bundle install
+COPY . .
+EXPOSE 3000
+CMD ["rails", "server", "-b", "0.0.0.0"]
+```
+
+## Glossary
+
+### Technical Terms
+
+**API (Application Programming Interface)**: A set of rules and protocols for building and integrating application software.
+
+**AWS Chime SDK**: Amazon's software development kit for adding real-time audio, video, and messaging capabilities to applications.
+
+**CDN (Content Delivery Network)**: A distributed network of servers that deliver web content to users based on their geographic location.
+
+**CI/CD (Continuous Integration/Continuous Deployment)**: A method to frequently deliver apps to customers by introducing automation into the stages of app development.
+
+**GraphQL**: A query language for APIs that provides a complete description of the data in your API.
+
+**JWT (JSON Web Token)**: An open standard for securely transmitting information between parties as a JSON object.
+
+**Microservices**: An architectural style that structures an application as a collection of loosely coupled services.
+
+**Pub/Sub (Publish/Subscribe)**: A messaging pattern where senders of messages, called publishers, do not program the messages to be sent directly to specific receivers, called subscribers.
+
+**REST (Representational State Transfer)**: An architectural style for distributed hypermedia systems.
+
+**WebSocket**: A computer communications protocol, providing full-duplex communication channels over a single TCP connection.
+
+### Business Terms
+
+**Real Estate Agent**: A licensed professional who represents buyers or sellers in real estate transactions.
+
+**Property Listing**: A detailed description of a property available for sale or rent.
+
+**Virtual Tour**: A digital representation of a property that allows potential buyers to view it remotely.
+
+**Appointment Scheduling**: The process of booking time slots for video calls between realtors and clients.
+
+**Lead Management**: The process of tracking and managing potential clients through the sales funnel.
+
+**Conversion Rate**: The percentage of visitors who take a desired action, such as scheduling a video call.
+
+**User Engagement**: The degree of attention, curiosity, interest, and passion that users show when using the application.
+
+**Market Reach**: The total number of potential customers that can be reached through the platform.
+
+
