@@ -529,9 +529,6 @@ Given our 2-month timeline and a small engineering team, milestones are prioriti
 
 **Planned Features:**
 - **AI Integration**: Smart property recommendations
-- **Virtual Reality**: Immersive property tours
-- **Blockchain**: Secure property transactions
-- **IoT Integration**: Smart home features and sensors
 
 ### Systems Design - Low Level
 
@@ -615,7 +612,6 @@ Given our 2-month timeline and a small engineering team, milestones are prioriti
 - **Services**: Business logic and external integrations
 - **Models**: Data models and database interactions
 - **Serializers**: JSON response formatting
-- **Validators**: Input validation and sanitization
 
 ###### Authentication engine
 
@@ -775,7 +771,7 @@ Given our 2-month timeline and a small engineering team, milestones are prioriti
 - **Read Replicas & Caching:** Add RDS read replicas and Redis caching tier when read QPS > 2 k.
 - **Disaster Recovery:** Daily RDS snapshots (retain 7 days) + S3 cross-region replication; RTO < 60 min, RPO < 15 min.
 
-#### Security & Compliance (Expanded)
+#### Security & Compliance
 
 - **Data Classification:** User PII, recordings, and transcripts stored in encrypted S3 buckets (SSE-KMS).
 - **Vulnerability Management:** Weekly Snyk scans; monthly dependency upgrades.
