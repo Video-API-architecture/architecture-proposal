@@ -95,6 +95,39 @@ The video streaming platform is expected to revolutionize the real estate indust
 | **Bi-weekly Demos** | Every 2 weeks | 30 minutes | Showcase completed features to stakeholders |
 | **Monthly Retrospectives** | Monthly | 1 hour | Process improvement and team feedback |
 
+
+#### Product-Engineering-Business Impact/Effort Matrix
+
+To prioritize tasks and features in this project, use the matrix below to score each item by its impact and effort across Product, Engineering, and Business dimensions between the stakeholders. This helps ensure we focus on high-impact, manageable-effort work that aligns with both user and business goals.
+
+| Task/Feature                        | Product Impact | Engineering Effort | Business Impact | Business Effort | Priority (suggested) |
+|-------------------------------------|:--------------:|:-----------------:|:--------------:|:---------------:|:--------------------:|
+| 1:1 Video Calls (MVP)               |     High       |      Medium       |     High       |      Low        |        High          |
+| User Authentication & Profiles      |     High       |      Low          |     High       |      Low        |        High          |
+| Property Listings (CRUD)            |    Medium      |      Low          |    Medium      |      Low        |       Medium         |
+| Tour Scheduling/Booking             |     High       |      Medium       |    Medium      |      Medium     |        High          |
+| Dashboard Shell/Layout              |    Medium      |      Low          |    Medium      |      Low        |       Medium         |
+| Analytics/Event Tracking (MVP)      |    Medium      |      Medium       |     High       |     Medium      |       Medium         |
+| Multi-party Video Calls             |    Medium      |      High         |     High       |      Medium     |       Medium         |
+| Advanced Property Search/Filters    |    Medium      |      Medium       |    Medium      |      Medium     |       Medium         |
+| Recording & Playback                |    Medium      |      High         |     High       |      Medium     |       Medium         |
+| Mobile App (React Native)           |     High       |      High         |     High       |      High       |       Medium         |
+| Responsive UI/UX Enhancements       |    Medium      |      Medium       |    Medium      |      Low        |       Medium         |
+| Error Handling/Offline Support      |    Medium      |      Medium       |    Medium      |      Low        |       Medium         |
+| Analytics Dashboards (Realtor)      |    Medium      |      Medium       |     High       |     Medium      |       Medium         |
+| End-to-End Testing/QA               |     High       |      Medium       |     High       |      Medium     |        High          |
+| Security Review/Compliance          |     High       |      Medium       |     High       |      High       |        High          |
+| Performance Optimizations           |    Medium      |      Medium       |    Medium      |      Low        |       Medium         |
+| Final Bug Fixes/Go-Live             |     High       |      Medium       |     High       |      Medium     |        High          |
+| AI-powered Recommendations (Post)   |    Medium      |      High         |     High       |      Medium     |        Low           |
+| Advanced Analytics/Reporting (Post) |    Medium      |      High         |     High       |      Medium     |        Low           |
+
+- **Impact:** High/Medium/Low (relative to user value or business outcome)
+- **Effort:** High/Medium/Low (relative to resources, complexity, or time)
+- **Priority:** Use the matrix to discuss and align on what to tackle first (e.g., High Impact + Low Effort = Quick Win)
+
+_Note: These are initial estimates based on the delivery plan and should be refined collaboratively by the team during planning and sprint reviews._
+
 #### 📅 Shipping Milestones (8 Weeks, High-Impact First)
 
 > Given our 2-month timeline and a small engineering team, milestones are prioritized for business impact and demo readiness. Each milestone concludes with a demo to stakeholders.
@@ -308,8 +341,6 @@ Effective incident response minimizes impact and ensures compliance. The team sh
 | Video Uptime         | 99.9 %    | Weekly                        |
 | Booking Success Rate | > 98 %    | HTTP 2xx on booking endpoints |
 | Error Rate           | < 1 % 5xx | 5-min rolling                 |
-
-
 
 </details>
 
