@@ -395,7 +395,9 @@ The video streaming platform is expected to revolutionize the real estate indust
 
 ### Systems Design
 
-For detailed technical architecture, see [Systems Design Documentation](system-design.md).
+For detailed technical architecture, see [System Design Documentation](system-design.md).
+
+The System Design contains the following architecture files:
 
 🖥️ [Backend Architecture](architecture/BACKEND_ARCHITECTURE.md)
 
