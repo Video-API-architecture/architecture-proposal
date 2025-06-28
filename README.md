@@ -426,4 +426,12 @@ The video streaming platform is expected to revolutionize the real estate indust
 
 For detailed technical architecture, see [Systems Design Documentation](system-design.md).
 
+🖥️ [Backend Architecture](BACKEND_ARCHITECTURE.md)
+
+💻 [Frontend Architecture](FRONTEND_ARCHITECTURE.md)
+
+📱 [Mobile Architecture](MOBILE_ARCHITECTURE.md)
+
+☁️ [Infrastructure Architecture](INFRA_ARCHITECTURE.md)
+
 </details>
