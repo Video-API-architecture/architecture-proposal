@@ -4,7 +4,9 @@
 
 The frontend is built with **React 18**, **TypeScript**, and **Vite**, using a modern component-based architecture with the following key technologies:
 
-### Core Technologies
+<details>
+<summary><strong>🔧 Core Technologies</strong></summary>
+
 - **React 18** with Hooks and Functional Components
 - **TypeScript** for type safety
 - **Vite** for fast development and building
@@ -16,7 +18,12 @@ The frontend is built with **React 18**, **TypeScript**, and **Vite**, using a m
 - **React Hook Form** for form management
 - **Zod** for schema validation
 
+</details>
+
 ## Directory Structure
+
+<details>
+<summary><strong>📁 Directory Structure</strong></summary>
 
 ```
 src/
@@ -42,9 +49,13 @@ src/
 └── index.css          # Global styles
 ```
 
+</details>
+
 ## Pages Architecture
 
-### Public Pages
+<details>
+<summary><strong>🌐 Public Pages</strong></summary>
+
 - **`Index.tsx`** - Landing page with marketing content
 - **`SignIn.tsx`** - User authentication
 - **`SignUp.tsx`** - User registration
@@ -53,7 +64,11 @@ src/
 - **`BookTour.tsx`** - Tour booking interface
 - **`PropertyBooking.tsx`** - Property-specific booking
 
-### Admin Pages
+</details>
+
+<details>
+<summary><strong>👨‍💼 Admin Pages</strong></summary>
+
 - **`AdminDashboard.tsx`** - Main admin dashboard with metrics
 - **`AdminProperties.tsx`** - Property management
 - **`PropertyNew.tsx`** - Create new property
@@ -63,13 +78,21 @@ src/
 - **`AdminUsers.tsx`** - User management
 - **`AdminUserEdit.tsx`** - Create/edit users
 
-### Tour Pages
+</details>
+
+<details>
+<summary><strong>🏠 Tour Pages</strong></summary>
+
 - **`RemoteTourLibrary.tsx`** - Tour library/archive
 - **`TourDetail.tsx`** - Individual tour details
 
+</details>
+
 ## Component Architecture
 
-### UI Components (`components/ui/`)
+<details>
+<summary><strong>🎨 UI Components (`components/ui/`)</strong></summary>
+
 Built on **Radix UI** primitives with **Shadcn/ui** styling:
 
 - **Layout**: `sidebar.tsx`, `sheet.tsx`, `drawer.tsx`
@@ -79,14 +102,22 @@ Built on **Radix UI** primitives with **Shadcn/ui** styling:
 - **Data Display**: `table.tsx`, `card.tsx`, `avatar.tsx`
 - **Overlays**: `dialog.tsx`, `popover.tsx`, `tooltip.tsx`
 
-### Custom Components
+</details>
+
+<details>
+<summary><strong>🔧 Custom Components</strong></summary>
+
 - **`AdminSidebar.tsx`** - Navigation sidebar for admin pages
 - **`PropertyForm.tsx`** - Reusable property creation/editing form
 - **`TourNavigation.tsx`** - Tour-specific navigation component
 
+</details>
+
 ## Hooks Architecture
 
-### Custom Hooks
+<details>
+<summary><strong>🎣 Custom Hooks</strong></summary>
+
 - **`use-mobile.tsx`** - Responsive design hook for mobile detection
 - **`use-toast.ts`** - Toast notification management
 
@@ -113,30 +144,45 @@ export const useTours = () => {
 };
 ```
 
+</details>
+
 ## State Management Strategy
 
-### 1. React Query (TanStack Query)
+<details>
+<summary><strong>📊 React Query (TanStack Query)</strong></summary>
+
 For server state management:
 - **Caching** - Automatic caching of API responses
 - **Background updates** - Keep data fresh
 - **Optimistic updates** - Immediate UI feedback
 - **Error handling** - Built-in error states
 
-### 2. Context API
+</details>
+
+<details>
+<summary><strong>🌍 Context API</strong></summary>
+
 For global application state:
 - **Authentication** - User session and permissions
 - **Theme** - Dark/light mode preferences
 - **Notifications** - Global notification state
 
-### 3. Local State
+</details>
+
+<details>
+<summary><strong>🏠 Local State</strong></summary>
+
 For component-specific state:
 - **Form state** - Using React Hook Form
 - **UI state** - Modal open/close, loading states
 - **Component interactions** - Local component behavior
 
+</details>
+
 ## API Integration Strategy
 
-### Recommended API Client Setup
+<details>
+<summary><strong>🔧 Recommended API Client Setup</strong></summary>
 
 ```typescript
 // lib/api-client.ts
@@ -178,7 +224,10 @@ apiClient.interceptors.response.use(
 );
 ```
 
-### API Service Modules
+</details>
+
+<details>
+<summary><strong>📡 API Service Modules</strong></summary>
 
 ```typescript
 // services/auth.service.ts
@@ -198,149 +247,688 @@ export const authService = {
 
 // services/properties.service.ts
 export const propertiesService = {
-  getProperties: (params?: PropertyFilters) => 
+  getAll: (params?: PropertyFilters) => 
     apiClient.get('/properties', { params }),
   
-  getProperty: (id: string) => 
+  getById: (id: string) => 
     apiClient.get(`/properties/${id}`),
   
-  createProperty: (propertyData: CreatePropertyData) => 
-    apiClient.post('/properties', propertyData),
+  create: (property: CreatePropertyData) => 
+    apiClient.post('/properties', property),
   
-  updateProperty: (id: string, propertyData: UpdatePropertyData) => 
-    apiClient.patch(`/properties/${id}`, propertyData),
+  update: (id: string, property: UpdatePropertyData) => 
+    apiClient.put(`/properties/${id}`, property),
   
-  deleteProperty: (id: string) => 
+  delete: (id: string) => 
     apiClient.delete(`/properties/${id}`),
   
-  uploadImages: (propertyId: string, images: File[]) => {
+  uploadImages: (id: string, images: File[]) => {
     const formData = new FormData();
     images.forEach(image => formData.append('images[]', image));
-    return apiClient.post(`/properties/${propertyId}/upload/images`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
+    return apiClient.post(`/properties/${id}/images`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
     });
-  },
+  }
 };
 
 // services/bookings.service.ts
 export const bookingsService = {
-  getBookings: (params?: BookingFilters) => 
+  getAll: (params?: BookingFilters) => 
     apiClient.get('/bookings', { params }),
   
-  createBooking: (bookingData: CreateBookingData) => 
-    apiClient.post('/bookings', bookingData),
+  getById: (id: string) => 
+    apiClient.get(`/bookings/${id}`),
   
-  updateBooking: (id: string, bookingData: UpdateBookingData) => 
-    apiClient.patch(`/bookings/${id}`, bookingData),
+  create: (booking: CreateBookingData) => 
+    apiClient.post('/bookings', booking),
   
-  cancelBooking: (id: string) => 
+  update: (id: string, booking: UpdateBookingData) => 
+    apiClient.put(`/bookings/${id}`, booking),
+  
+  cancel: (id: string) => 
     apiClient.delete(`/bookings/${id}`),
 };
 
-// services/calls.service.ts
-export const callsService = {
-  createCall: (callData: CreateCallData) => 
-    apiClient.post('/calls', callData),
+// services/tours.service.ts
+export const toursService = {
+  getAll: (params?: TourFilters) => 
+    apiClient.get('/tours', { params }),
   
-  joinCall: (callId: string) => 
-    apiClient.post(`/calls/${callId}/join`),
+  getById: (id: string) => 
+    apiClient.get(`/tours/${id}`),
   
-  endCall: (callId: string) => 
-    apiClient.post(`/calls/${callId}/end`),
+  start: (id: string) => 
+    apiClient.post(`/tours/${id}/start`),
+  
+  end: (id: string) => 
+    apiClient.post(`/tours/${id}/end`),
+  
+  getNotes: (id: string) => 
+    apiClient.get(`/tours/${id}/notes`),
+  
+  addNote: (id: string, note: CreateNoteData) => 
+    apiClient.post(`/tours/${id}/notes`, note),
 };
 ```
 
-### React Query Integration
+</details>
+
+## Form Management
+
+<details>
+<summary><strong>📝 React Hook Form Integration</strong></summary>
 
 ```typescript
-// hooks/use-properties.ts
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { propertiesService } from '@/services/properties.service';
+// components/PropertyForm.tsx
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { propertySchema } from '../schemas/property';
 
-export const useProperties = (filters?: PropertyFilters) => {
-  return useQuery({
-    queryKey: ['properties', filters],
-    queryFn: () => propertiesService.getProperties(filters),
-  });
-};
+interface PropertyFormProps {
+  property?: Property;
+  onSubmit: (data: PropertyFormData) => void;
+  onCancel: () => void;
+}
 
-export const useProperty = (id: string) => {
-  return useQuery({
-    queryKey: ['property', id],
-    queryFn: () => propertiesService.getProperty(id),
-    enabled: !!id,
+export const PropertyForm: React.FC<PropertyFormProps> = ({
+  property,
+  onSubmit,
+  onCancel
+}) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset
+  } = useForm<PropertyFormData>({
+    resolver: zodResolver(propertySchema),
+    defaultValues: property || {
+      address: '',
+      price: '',
+      bedrooms: '',
+      bathrooms: '',
+      sqft: '',
+      description: ''
+    }
   });
-};
 
-export const useCreateProperty = () => {
-  const queryClient = useQueryClient();
-  
-  return useMutation({
-    mutationFn: propertiesService.createProperty,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['properties'] });
-    },
-  });
-};
+  const onSubmitHandler = async (data: PropertyFormData) => {
+    try {
+      await onSubmit(data);
+      reset();
+    } catch (error) {
+      console.error('Form submission error:', error);
+    }
+  };
 
-export const useUpdateProperty = () => {
-  const queryClient = useQueryClient();
-  
-  return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: UpdatePropertyData }) =>
-      propertiesService.updateProperty(id, data),
-    onSuccess: (_, { id }) => {
-      queryClient.invalidateQueries({ queryKey: ['properties'] });
-      queryClient.invalidateQueries({ queryKey: ['property', id] });
-    },
-  });
+  return (
+    <form onSubmit={handleSubmit(onSubmitHandler)} className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <Label htmlFor="address">Address</Label>
+          <Input
+            id="address"
+            {...register('address')}
+            placeholder="123 Main St, City, State"
+          />
+          {errors.address && (
+            <p className="text-sm text-red-600">{errors.address.message}</p>
+          )}
+        </div>
+
+        <div>
+          <Label htmlFor="price">Price</Label>
+          <Input
+            id="price"
+            type="number"
+            {...register('price')}
+            placeholder="500000"
+          />
+          {errors.price && (
+            <p className="text-sm text-red-600">{errors.price.message}</p>
+          )}
+        </div>
+
+        <div>
+          <Label htmlFor="bedrooms">Bedrooms</Label>
+          <Input
+            id="bedrooms"
+            type="number"
+            {...register('bedrooms')}
+            placeholder="3"
+          />
+          {errors.bedrooms && (
+            <p className="text-sm text-red-600">{errors.bedrooms.message}</p>
+          )}
+        </div>
+
+        <div>
+          <Label htmlFor="bathrooms">Bathrooms</Label>
+          <Input
+            id="bathrooms"
+            type="number"
+            {...register('bathrooms')}
+            placeholder="2"
+          />
+          {errors.bathrooms && (
+            <p className="text-sm text-red-600">{errors.bathrooms.message}</p>
+          )}
+        </div>
+
+        <div>
+          <Label htmlFor="sqft">Square Feet</Label>
+          <Input
+            id="sqft"
+            type="number"
+            {...register('sqft')}
+            placeholder="2000"
+          />
+          {errors.sqft && (
+            <p className="text-sm text-red-600">{errors.sqft.message}</p>
+          )}
+        </div>
+      </div>
+
+      <div>
+        <Label htmlFor="description">Description</Label>
+        <Textarea
+          id="description"
+          {...register('description')}
+          placeholder="Describe the property..."
+          rows={4}
+        />
+        {errors.description && (
+          <p className="text-sm text-red-600">{errors.description.message}</p>
+        )}
+      </div>
+
+      <div className="flex justify-end space-x-4">
+        <Button type="button" variant="outline" onClick={onCancel}>
+          Cancel
+        </Button>
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Saving...' : 'Save Property'}
+        </Button>
+      </div>
+    </form>
+  );
 };
 ```
 
-## Routing Strategy
+</details>
 
-### Route Structure
+<details>
+<summary><strong>✅ Schema Validation</strong></summary>
+
 ```typescript
-// App.tsx routing
-<Routes>
-  {/* Public Routes */}
-  <Route path="/" element={<Index />} />
-  <Route path="/signin" element={<SignIn />} />
-  <Route path="/signup" element={<SignUp />} />
-  <Route path="/forgot-password" element={<ForgotPassword />} />
-  <Route path="/property/:id" element={<Property />} />
-  
-  {/* Admin Routes */}
-  <Route path="/admin/dashboard" element={<AdminDashboard />} />
-  <Route path="/admin/properties" element={<AdminProperties />} />
-  <Route path="/admin/properties/new" element={<PropertyNew />} />
-  <Route path="/admin/properties/:id" element={<PropertyView />} />
-  <Route path="/admin/properties/:id/edit" element={<PropertyEdit />} />
-  <Route path="/admin/tours" element={<AdminTourAppointments />} />
-  <Route path="/admin/users" element={<AdminUsers />} />
-  <Route path="/admin/users/new" element={<AdminUserEdit />} />
-  <Route path="/admin/users/:id/edit" element={<AdminUserEdit />} />
-  
-  {/* Tour Routes */}
-  <Route path="/tours" element={<RemoteTourLibrary />} />
-  <Route path="/tours/:id" element={<TourDetail />} />
-  <Route path="/book-tour" element={<BookTour />} />
-  <Route path="/book-tour/:id" element={<PropertyBooking />} />
-  
-  {/* Catch-all */}
-  <Route path="*" element={<NotFound />} />
-</Routes>
+// schemas/property.ts
+import { z } from 'zod';
+
+export const propertySchema = z.object({
+  address: z.string().min(1, 'Address is required'),
+  price: z.string().min(1, 'Price is required'),
+  bedrooms: z.string().min(1, 'Number of bedrooms is required'),
+  bathrooms: z.string().min(1, 'Number of bathrooms is required'),
+  sqft: z.string().min(1, 'Square footage is required'),
+  description: z.string().optional()
+});
+
+export type PropertyFormData = z.infer<typeof propertySchema>;
+
+// schemas/booking.ts
+export const bookingSchema = z.object({
+  propertyId: z.string().min(1, 'Property is required'),
+  scheduledAt: z.string().min(1, 'Date and time is required'),
+  durationMinutes: z.number().min(15).max(120),
+  notes: z.string().optional()
+});
+
+export type BookingFormData = z.infer<typeof bookingSchema>;
+
+// schemas/auth.ts
+export const loginSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(6, 'Password must be at least 6 characters')
+});
+
+export const registerSchema = z.object({
+  fullName: z.string().min(1, 'Full name is required'),
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+  confirmPassword: z.string()
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"]
+});
 ```
 
-## Error Handling Strategy
+</details>
 
-### Global Error Handling
+## Routing & Navigation
+
+<details>
+<summary><strong>🧭 React Router Setup</strong></summary>
+
+```typescript
+// App.tsx
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Toaster } from './components/ui/toaster';
+
+// Pages
+import Index from './pages/Index';
+import SignIn from './pages/SignIn';
+import SignUp from './pages/SignUp';
+import ForgotPassword from './pages/ForgotPassword';
+import Property from './pages/Property';
+import BookTour from './pages/BookTour';
+import PropertyBooking from './pages/PropertyBooking';
+import AdminDashboard from './pages/AdminDashboard';
+import AdminProperties from './pages/AdminProperties';
+import PropertyNew from './pages/PropertyNew';
+import PropertyView from './pages/PropertyView';
+import PropertyEdit from './pages/PropertyEdit';
+import AdminTourAppointments from './pages/AdminTourAppointments';
+import AdminUsers from './pages/AdminUsers';
+import AdminUserEdit from './pages/AdminUserEdit';
+import RemoteTourLibrary from './pages/RemoteTourLibrary';
+import TourDetail from './pages/TourDetail';
+import NotFound from './pages/NotFound';
+
+// Components
+import ProtectedRoute from './components/ProtectedRoute';
+import AdminRoute from './components/AdminRoute';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      cacheTime: 10 * 60 * 1000, // 10 minutes
+      retry: 3,
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    },
+  },
+});
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Router>
+        <div className="min-h-screen bg-background">
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<Index />} />
+            <Route path="/signin" element={<SignIn />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/property/:id" element={<Property />} />
+            <Route path="/book-tour" element={<BookTour />} />
+            <Route path="/property/:id/book" element={<PropertyBooking />} />
+
+            {/* Protected Routes */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/tour-library" element={<RemoteTourLibrary />} />
+              <Route path="/tour/:id" element={<TourDetail />} />
+            </Route>
+
+            {/* Admin Routes */}
+            <Route element={<AdminRoute />}>
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/properties" element={<AdminProperties />} />
+              <Route path="/admin/properties/new" element={<PropertyNew />} />
+              <Route path="/admin/properties/:id" element={<PropertyView />} />
+              <Route path="/admin/properties/:id/edit" element={<PropertyEdit />} />
+              <Route path="/admin/tours" element={<AdminTourAppointments />} />
+              <Route path="/admin/users" element={<AdminUsers />} />
+              <Route path="/admin/users/new" element={<AdminUserEdit />} />
+              <Route path="/admin/users/:id/edit" element={<AdminUserEdit />} />
+            </Route>
+
+            {/* 404 Route */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </div>
+        <Toaster />
+      </Router>
+    </QueryClientProvider>
+  );
+}
+
+export default App;
+```
+
+</details>
+
+<details>
+<summary><strong>🛡️ Route Protection</strong></summary>
+
+```typescript
+// components/ProtectedRoute.tsx
+import { Navigate, Outlet } from 'react-router-dom';
+import { useAuth } from '../hooks/use-auth';
+
+const ProtectedRoute = () => {
+  const { user, isLoading } = useAuth();
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!user) {
+    return <Navigate to="/signin" replace />;
+  }
+
+  return <Outlet />;
+};
+
+// components/AdminRoute.tsx
+import { Navigate, Outlet } from 'react-router-dom';
+import { useAuth } from '../hooks/use-auth';
+
+const AdminRoute = () => {
+  const { user, isLoading } = useAuth();
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!user) {
+    return <Navigate to="/signin" replace />;
+  }
+
+  if (user.role !== 'admin' && user.role !== 'realtor') {
+    return <Navigate to="/" replace />;
+  }
+
+  return <Outlet />;
+};
+```
+
+</details>
+
+## Styling & Design System
+
+<details>
+<summary><strong>🎨 Tailwind CSS Configuration</strong></summary>
+
+```typescript
+// tailwind.config.ts
+import type { Config } from 'tailwindcss';
+
+const config: Config = {
+  darkMode: ['class'],
+  content: [
+    './pages/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
+    './app/**/*.{ts,tsx}',
+    './src/**/*.{ts,tsx}',
+  ],
+  prefix: '',
+  theme: {
+    container: {
+      center: true,
+      padding: '2rem',
+      screens: {
+        '2xl': '1400px',
+      },
+    },
+    extend: {
+      colors: {
+        border: 'hsl(var(--border))',
+        input: 'hsl(var(--input))',
+        ring: 'hsl(var(--ring))',
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
+        primary: {
+          DEFAULT: 'hsl(var(--primary))',
+          foreground: 'hsl(var(--primary-foreground))',
+        },
+        secondary: {
+          DEFAULT: 'hsl(var(--secondary))',
+          foreground: 'hsl(var(--secondary-foreground))',
+        },
+        destructive: {
+          DEFAULT: 'hsl(var(--destructive))',
+          foreground: 'hsl(var(--destructive-foreground))',
+        },
+        muted: {
+          DEFAULT: 'hsl(var(--muted))',
+          foreground: 'hsl(var(--muted-foreground))',
+        },
+        accent: {
+          DEFAULT: 'hsl(var(--accent))',
+          foreground: 'hsl(var(--accent-foreground))',
+        },
+        popover: {
+          DEFAULT: 'hsl(var(--popover))',
+          foreground: 'hsl(var(--popover-foreground))',
+        },
+        card: {
+          DEFAULT: 'hsl(var(--card))',
+          foreground: 'hsl(var(--card-foreground))',
+        },
+      },
+      borderRadius: {
+        lg: 'var(--radius)',
+        md: 'calc(var(--radius) - 2px)',
+        sm: 'calc(var(--radius) - 4px)',
+      },
+      keyframes: {
+        'accordion-down': {
+          from: { height: '0' },
+          to: { height: 'var(--radix-accordion-content-height)' },
+        },
+        'accordion-up': {
+          from: { height: 'var(--radix-accordion-content-height)' },
+          to: { height: '0' },
+        },
+      },
+      animation: {
+        'accordion-down': 'accordion-down 0.2s ease-out',
+        'accordion-up': 'accordion-up 0.2s ease-out',
+      },
+    },
+  },
+  plugins: [require('tailwindcss-animate')],
+};
+
+export default config;
+```
+
+</details>
+
+<details>
+<summary><strong>🎯 Design Tokens</strong></summary>
+
+```css
+/* index.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 84% 4.9%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 94.1%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+```
+
+</details>
+
+## Performance Optimization
+
+<details>
+<summary><strong>⚡ Code Splitting</strong></summary>
+
+```typescript
+// Lazy loading for better performance
+import { lazy, Suspense } from 'react';
+
+// Lazy load admin pages
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
+const AdminProperties = lazy(() => import('./pages/AdminProperties'));
+const AdminUsers = lazy(() => import('./pages/AdminUsers'));
+
+// Loading component
+const LoadingSpinner = () => (
+  <div className="flex items-center justify-center min-h-screen">
+    <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+  </div>
+);
+
+// Wrap lazy components with Suspense
+<Suspense fallback={<LoadingSpinner />}>
+  <AdminDashboard />
+</Suspense>
+```
+
+</details>
+
+<details>
+<summary><strong>🖼️ Image Optimization</strong></summary>
+
+```typescript
+// components/OptimizedImage.tsx
+import { useState } from 'react';
+
+interface OptimizedImageProps {
+  src: string;
+  alt: string;
+  className?: string;
+  placeholder?: string;
+}
+
+export const OptimizedImage: React.FC<OptimizedImageProps> = ({
+  src,
+  alt,
+  className,
+  placeholder = '/placeholder.svg'
+}) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+
+  return (
+    <div className={`relative overflow-hidden ${className}`}>
+      {isLoading && (
+        <div className="absolute inset-0 bg-gray-200 animate-pulse" />
+      )}
+      <img
+        src={hasError ? placeholder : src}
+        alt={alt}
+        className={`w-full h-full object-cover transition-opacity duration-300 ${
+          isLoading ? 'opacity-0' : 'opacity-100'
+        }`}
+        onLoad={() => setIsLoading(false)}
+        onError={() => {
+          setHasError(true);
+          setIsLoading(false);
+        }}
+        loading="lazy"
+      />
+    </div>
+  );
+};
+```
+
+</details>
+
+<details>
+<summary><strong>💾 Caching Strategy</strong></summary>
+
+```typescript
+// hooks/use-cached-query.ts
+import { useQuery, UseQueryOptions } from '@tanstack/react-query';
+
+export const useCachedQuery = <T>(
+  queryKey: string[],
+  queryFn: () => Promise<T>,
+  options?: UseQueryOptions<T>
+) => {
+  return useQuery({
+    queryKey,
+    queryFn,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    cacheTime: 10 * 60 * 1000, // 10 minutes
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    ...options,
+  });
+};
+
+// Usage example
+const { data: properties } = useCachedQuery(
+  ['properties', filters],
+  () => propertiesService.getAll(filters),
+  {
+    enabled: !!filters,
+  }
+);
+```
+
+</details>
+
+## Error Handling
+
+<details>
+<summary><strong>🚨 Error Boundaries</strong></summary>
+
 ```typescript
 // components/ErrorBoundary.tsx
-import { Component, ReactNode } from 'react';
+import React, { Component, ErrorInfo, ReactNode } from 'react';
 
 interface Props {
   children: ReactNode;
+  fallback?: ReactNode;
 }
 
 interface State {
@@ -348,299 +936,323 @@ interface State {
   error?: Error;
 }
 
-export class ErrorBoundary extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = { hasError: false };
-  }
+class ErrorBoundary extends Component<Props, State> {
+  public state: State = {
+    hasError: false,
+  };
 
-  static getDerivedStateFromError(error: Error): State {
+  public static getDerivedStateFromError(error: Error): State {
     return { hasError: true, error };
   }
 
-  render() {
+  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error('Uncaught error:', error, errorInfo);
+    // Send to error reporting service
+  }
+
+  public render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">
-              Something went wrong
-            </h1>
-            <button
-              onClick={() => window.location.reload()}
-              className="bg-blue-600 text-white px-4 py-2 rounded"
-            >
-              Reload Page
-            </button>
+        this.props.fallback || (
+          <div className="min-h-screen flex items-center justify-center">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                Something went wrong
+              </h2>
+              <p className="text-gray-600 mb-4">
+                We're sorry, but something unexpected happened.
+              </p>
+              <button
+                onClick={() => window.location.reload()}
+                className="bg-primary text-primary-foreground px-4 py-2 rounded hover:bg-primary/90"
+              >
+                Reload Page
+              </button>
+            </div>
           </div>
-        </div>
+        )
       );
     }
 
     return this.props.children;
   }
 }
+
+export default ErrorBoundary;
 ```
 
-### API Error Handling
+</details>
+
+<details>
+<summary><strong>📝 Error Handling Hooks</strong></summary>
+
 ```typescript
-// lib/api-error.ts
-export class ApiError extends Error {
-  constructor(
-    public status: number,
-    public message: string,
-    public errors?: Record<string, string[]>
-  ) {
-    super(message);
-    this.name = 'ApiError';
-  }
-}
+// hooks/use-error-handler.ts
+import { useCallback } from 'react';
+import { useToast } from './use-toast';
 
-// Enhanced error handling in services
-export const handleApiError = (error: any): never => {
-  if (error.response) {
-    throw new ApiError(
-      error.response.status,
-      error.response.data.message || 'An error occurred',
-      error.response.data.errors
-    );
-  }
-  throw new ApiError(500, 'Network error');
-};
-```
+export const useErrorHandler = () => {
+  const { toast } = useToast();
 
-## Form Handling Strategy
+  const handleError = useCallback((error: unknown) => {
+    console.error('Error:', error);
 
-### React Hook Form + Zod Integration
-```typescript
-// schemas/property.schema.ts
-import { z } from 'zod';
+    let message = 'An unexpected error occurred';
 
-export const propertySchema = z.object({
-  title: z.string().min(1, 'Title is required'),
-  address: z.string().min(1, 'Address is required'),
-  price: z.number().min(0, 'Price must be positive'),
-  bedrooms: z.number().min(0),
-  bathrooms: z.number().min(0),
-  sqft: z.number().min(0),
-  description: z.string().optional(),
-});
-
-export type PropertyFormData = z.infer<typeof propertySchema>;
-
-// components/PropertyForm.tsx
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { propertySchema, type PropertyFormData } from '@/schemas/property.schema';
-
-export const PropertyForm = ({ onSubmit, defaultValues }: PropertyFormProps) => {
-  const form = useForm<PropertyFormData>({
-    resolver: zodResolver(propertySchema),
-    defaultValues,
-  });
-
-  const handleSubmit = async (data: PropertyFormData) => {
-    try {
-      await onSubmit(data);
-    } catch (error) {
-      // Handle form submission errors
+    if (error instanceof Error) {
+      message = error.message;
+    } else if (typeof error === 'string') {
+      message = error;
+    } else if (error && typeof error === 'object' && 'message' in error) {
+      message = String(error.message);
     }
-  };
 
-  return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)}>
-        {/* Form fields */}
-      </form>
-    </Form>
-  );
+    toast({
+      title: 'Error',
+      description: message,
+      variant: 'destructive',
+    });
+  }, [toast]);
+
+  return { handleError };
 };
-```
 
-## Performance Optimization
+// Usage in components
+const { handleError } = useErrorHandler();
 
-### Code Splitting
-```typescript
-// Lazy load admin pages
-const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
-const AdminProperties = lazy(() => import('./pages/AdminProperties'));
-
-// Wrap with Suspense
-<Suspense fallback={<LoadingSpinner />}>
-  <AdminDashboard />
-</Suspense>
-```
-
-### React Query Optimizations
-```typescript
-// Optimistic updates
-const useUpdateProperty = () => {
-  const queryClient = useQueryClient();
-  
-  return useMutation({
-    mutationFn: updateProperty,
-    onMutate: async (newProperty) => {
-      // Cancel outgoing refetches
-      await queryClient.cancelQueries({ queryKey: ['properties'] });
-      
-      // Snapshot previous value
-      const previousProperties = queryClient.getQueryData(['properties']);
-      
-      // Optimistically update
-      queryClient.setQueryData(['properties'], (old: Property[]) =>
-        old.map(p => p.id === newProperty.id ? newProperty : p)
-      );
-      
-      return { previousProperties };
-    },
-    onError: (err, newProperty, context) => {
-      // Rollback on error
-      queryClient.setQueryData(['properties'], context?.previousProperties);
-    },
-    onSettled: () => {
-      // Always refetch after error or success
-      queryClient.invalidateQueries({ queryKey: ['properties'] });
-    },
-  });
-};
-```
-
-## Security Considerations
-
-### Authentication Flow
-```typescript
-// hooks/use-auth.ts
-export const useAuth = () => {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Check for stored token and validate
-    const token = localStorage.getItem('auth_token');
-    if (token) {
-      validateToken(token);
-    } else {
-      setLoading(false);
-    }
-  }, []);
-
-  const login = async (credentials: LoginCredentials) => {
-    const response = await authService.login(credentials);
-    const { token, user } = response.data;
-    
-    localStorage.setItem('auth_token', token);
-    setUser(user);
-  };
-
-  const logout = () => {
-    localStorage.removeItem('auth_token');
-    setUser(null);
-  };
-
-  return { user, loading, login, logout };
-};
-```
-
-### Protected Routes
-```typescript
-// components/ProtectedRoute.tsx
-export const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
-  const { user, loading } = useAuth();
-  const location = useLocation();
-
-  if (loading) {
-    return <LoadingSpinner />;
+const handleSubmit = async (data: FormData) => {
+  try {
+    await submitData(data);
+    toast({ title: 'Success', description: 'Data saved successfully' });
+  } catch (error) {
+    handleError(error);
   }
-
-  if (!user) {
-    return <Navigate to="/signin" state={{ from: location }} replace />;
-  }
-
-  if (requiredRole && user.role !== requiredRole) {
-    return <Navigate to="/unauthorized" replace />;
-  }
-
-  return <>{children}</>;
 };
 ```
+
+</details>
 
 ## Testing Strategy
 
-### Unit Testing
-```typescript
-// __tests__/components/PropertyForm.test.tsx
-import { render, screen, fireEvent } from '@testing-library/react';
-import { PropertyForm } from '@/components/PropertyForm';
+<details>
+<summary><strong>🧪 Testing Setup</strong></summary>
 
-describe('PropertyForm', () => {
-  it('should validate required fields', async () => {
-    render(<PropertyForm onSubmit={jest.fn()} />);
-    
-    fireEvent.click(screen.getByText('Submit'));
-    
-    expect(await screen.findByText('Title is required')).toBeInTheDocument();
-  });
+```typescript
+// vitest.config.ts
+import { defineConfig } from 'vitest/config';
+import react from '@vitejs/plugin-react';
+import path from 'path';
+
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    environment: 'jsdom',
+    setupFiles: ['./src/test/setup.ts'],
+    globals: true,
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
 });
+
+// src/test/setup.ts
+import '@testing-library/jest-dom';
+import { vi } from 'vitest';
+
+// Mock IntersectionObserver
+global.IntersectionObserver = vi.fn().mockImplementation(() => ({
+  observe: vi.fn(),
+  unobserve: vi.fn(),
+  disconnect: vi.fn(),
+}));
+
+// Mock ResizeObserver
+global.ResizeObserver = vi.fn().mockImplementation(() => ({
+  observe: vi.fn(),
+  unobserve: vi.fn(),
+  disconnect: vi.fn(),
+}));
 ```
 
-### Integration Testing
+</details>
+
+<details>
+<summary><strong>🔧 Component Testing</strong></summary>
+
 ```typescript
-// __tests__/pages/AdminProperties.test.tsx
-import { render, screen, waitFor } from '@testing-library/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { AdminProperties } from '@/pages/AdminProperties';
+// components/PropertyForm.test.tsx
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { PropertyForm } from './PropertyForm';
+import { vi } from 'vitest';
 
-const queryClient = new QueryClient({
-  defaultOptions: { queries: { retry: false } },
-});
+describe('PropertyForm', () => {
+  const mockOnSubmit = vi.fn();
+  const mockOnCancel = vi.fn();
 
-describe('AdminProperties', () => {
-  it('should load and display properties', async () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('renders form fields correctly', () => {
     render(
-      <QueryClientProvider client={queryClient}>
-        <AdminProperties />
-      </QueryClientProvider>
+      <PropertyForm onSubmit={mockOnSubmit} onCancel={mockOnCancel} />
     );
-    
+
+    expect(screen.getByLabelText(/address/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/price/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/bedrooms/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/bathrooms/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/square feet/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/description/i)).toBeInTheDocument();
+  });
+
+  it('validates required fields', async () => {
+    render(
+      <PropertyForm onSubmit={mockOnSubmit} onCancel={mockOnCancel} />
+    );
+
+    const submitButton = screen.getByRole('button', { name: /save property/i });
+    fireEvent.click(submitButton);
+
     await waitFor(() => {
-      expect(screen.getByText('Modern Downtown Condo')).toBeInTheDocument();
+      expect(screen.getByText(/address is required/i)).toBeInTheDocument();
+      expect(screen.getByText(/price is required/i)).toBeInTheDocument();
+    });
+
+    expect(mockOnSubmit).not.toHaveBeenCalled();
+  });
+
+  it('submits form with valid data', async () => {
+    render(
+      <PropertyForm onSubmit={mockOnSubmit} onCancel={mockOnCancel} />
+    );
+
+    fireEvent.change(screen.getByLabelText(/address/i), {
+      target: { value: '123 Main St' },
+    });
+    fireEvent.change(screen.getByLabelText(/price/i), {
+      target: { value: '500000' },
+    });
+    fireEvent.change(screen.getByLabelText(/bedrooms/i), {
+      target: { value: '3' },
+    });
+    fireEvent.change(screen.getByLabelText(/bathrooms/i), {
+      target: { value: '2' },
+    });
+    fireEvent.change(screen.getByLabelText(/square feet/i), {
+      target: { value: '2000' },
+    });
+
+    const submitButton = screen.getByRole('button', { name: /save property/i });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(mockOnSubmit).toHaveBeenCalledWith({
+        address: '123 Main St',
+        price: '500000',
+        bedrooms: '3',
+        bathrooms: '2',
+        sqft: '2000',
+        description: '',
+      });
     });
   });
 });
 ```
 
-## Deployment Considerations
+</details>
 
-### Environment Configuration
+## Build & Deployment
+
+<details>
+<summary><strong>⚙️ Vite Configuration</strong></summary>
+
 ```typescript
 // vite.config.ts
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import path from 'path';
+
 export default defineConfig({
   plugins: [react()],
-  define: {
-    'process.env.VITE_API_BASE_URL': JSON.stringify(process.env.VITE_API_BASE_URL),
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
   },
-});
-
-// .env files
-VITE_API_BASE_URL=http://localhost:3000/api/v1
-VITE_APP_NAME=RealtyForYou
-```
-
-### Build Optimization
-```typescript
-// vite.config.ts
-export default defineConfig({
   build: {
+    outDir: 'dist',
+    sourcemap: true,
     rollupOptions: {
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom'],
+          router: ['react-router-dom'],
           ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu'],
         },
+      },
+    },
+  },
+  server: {
+    port: 3000,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
       },
     },
   },
 });
 ```
 
-This architecture provides a solid foundation for a scalable, maintainable React application with proper separation of concerns, type safety, and modern development practices. 
+</details>
+
+<details>
+<summary><strong>🚀 Deployment Configuration</strong></summary>
+
+```yaml
+# .github/workflows/deploy.yml
+name: Deploy Frontend
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run tests
+        run: npm test
+      
+      - name: Build application
+        run: npm run build
+        env:
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+      
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'
+```
+
+</details>
+
+This comprehensive frontend architecture provides a modern, scalable foundation for the real estate video tour platform with proper state management, form handling, routing, and performance optimizations.

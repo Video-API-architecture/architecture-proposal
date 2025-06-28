@@ -4,7 +4,9 @@
 
 The backend is built with **Ruby on Rails 7** in API mode, designed to support real estate video tours with real-time communication, property management, and comprehensive analytics.
 
-### Core Technologies
+<details>
+<summary><strong>🔧 Core Technologies</strong></summary>
+
 - **Ruby on Rails 7** - Web framework with API mode
 - **PostgreSQL** - Primary relational database
 - **Redis** - Caching and session storage
@@ -12,6 +14,8 @@ The backend is built with **Ruby on Rails 7** in API mode, designed to support r
 - **AWS Chime SDK** - Video communication
 - **Active Job** - Background job processing
 - **Sidekiq** - Job queue management
+
+</details>
 
 ## 📁 Project Structure
 
@@ -76,9 +80,12 @@ app/
     └── validation.rb
 ```
 
+</details>
+
 ## 🗄️ Database Schema
 
-### Core Tables
+<details>
+<summary><strong>📊 Core Tables</strong></summary>
 
 #### Users Table
 ```sql
@@ -240,654 +247,916 @@ CREATE TABLE password_reset_tokens (
 );
 ```
 
-## 🌐 API Endpoints
+</details>
 
-### Authentication Endpoints
-```ruby
-# POST /api/v1/auth/register
-# Create new user account
-{
-  "user": {
-    "full_name": "John Doe",
-    "email": "john@example.com",
-    "password": "secure_password",
-    "role": "buyer"
-  }
-}
+<details>
+<summary><strong>📈 Analytics Tables</strong></summary>
 
-# POST /api/v1/auth/login
-# Authenticate user and return JWT
-{
-  "email": "john@example.com",
-  "password": "secure_password"
-}
-
-# POST /api/v1/auth/password-reset/request
-# Send password reset email
-{
-  "email": "john@example.com"
-}
-
-# POST /api/v1/auth/password-reset/confirm
-# Reset password with token
-{
-  "token": "reset_token_here",
-  "password": "new_password"
-}
+#### Analytics Aggregates Table
+```sql
+CREATE TABLE analytics_aggregates (
+  id BIGSERIAL PRIMARY KEY,
+  date DATE NOT NULL,
+  realtor_id BIGINT REFERENCES users(id),
+  metric_name VARCHAR(100) NOT NULL,
+  metric_value DECIMAL(10,2),
+  metadata JSONB,
+  created_at TIMESTAMP NOT NULL,
+  updated_at TIMESTAMP NOT NULL,
+  UNIQUE(date, realtor_id, metric_name)
+);
 ```
 
-### User Management
-```ruby
-# GET /api/v1/users/:id
-# Get user profile
-# Returns: User object with profile data
-
-# PATCH /api/v1/users/:id
-# Update user profile
-{
-  "user": {
-    "full_name": "John Smith",
-    "phone": "+1234567890"
-  }
-}
+#### Audit Logs Table
+```sql
+CREATE TABLE audit_logs (
+  id BIGSERIAL PRIMARY KEY,
+  user_id BIGINT REFERENCES users(id),
+  action VARCHAR(100) NOT NULL,
+  resource_type VARCHAR(50),
+  resource_id BIGINT,
+  changes JSONB,
+  ip_address INET,
+  user_agent TEXT,
+  created_at TIMESTAMP NOT NULL
+);
 ```
 
-### Property Management
-```ruby
-# GET /api/v1/properties
-# List properties with filters
-# Query params: page, per_page, status, price_min, price_max, bedrooms, bathrooms
+</details>
 
-# POST /api/v1/properties
-# Create new property (realtor only)
-{
-  "property": {
-    "address": "123 Main St, City, State",
-    "mls_id": "MLS123456",
-    "description": "Beautiful home with great views",
-    "price": 750000,
-    "bedrooms": 3,
-    "bathrooms": 2,
-    "sqft": 2000
-  }
-}
+<details>
+<summary><strong>🔄 Relationships & Indexes</strong></summary>
 
-# GET /api/v1/properties/:id
-# Get property details
-# Returns: Property object with full details
+#### Key Indexes
+```sql
+-- Performance indexes
+CREATE INDEX idx_users_email ON users(email);
+CREATE INDEX idx_properties_realtor_id ON properties(realtor_id);
+CREATE INDEX idx_properties_status ON properties(status);
+CREATE INDEX idx_bookings_buyer_id ON bookings(buyer_id);
+CREATE INDEX idx_bookings_property_id ON bookings(property_id);
+CREATE INDEX idx_bookings_scheduled_at ON bookings(scheduled_at);
+CREATE INDEX idx_tours_property_id ON tours(property_id);
+CREATE INDEX idx_tours_realtor_id ON tours(realtor_id);
+CREATE INDEX idx_tours_buyer_id ON tours(buyer_id);
+CREATE INDEX idx_tours_scheduled_at ON tours(scheduled_at);
+CREATE INDEX idx_calls_tour_id ON calls(tour_id);
+CREATE INDEX idx_tour_notes_tour_id ON tour_notes(tour_id);
+CREATE INDEX idx_analytics_aggregates_date_realtor ON analytics_aggregates(date, realtor_id);
+CREATE INDEX idx_audit_logs_user_id ON audit_logs(user_id);
+CREATE INDEX idx_audit_logs_created_at ON audit_logs(created_at);
 
-# PATCH /api/v1/properties/:id
-# Update property
-{
-  "property": {
-    "price": 725000,
-    "description": "Updated description"
-  }
-}
-
-# DELETE /api/v1/properties/:id
-# Delete property (realtor only)
-
-# POST /api/v1/properties/upload/images
-# Upload property images
-# Multipart form data with images[]
+-- Full-text search indexes
+CREATE INDEX idx_properties_address_gin ON properties USING gin(to_tsvector('english', address));
+CREATE INDEX idx_properties_description_gin ON properties USING gin(to_tsvector('english', description));
 ```
 
-### Booking Management
+</details>
+
+## 🔐 Authentication & Authorization
+
+<details>
+<summary><strong>🔑 JWT Implementation</strong></summary>
+
 ```ruby
-# GET /api/v1/bookings
-# List user's bookings
-# Query params: status, page, per_page
+# app/controllers/concerns/authentication.rb
+module Authentication
+  extend ActiveSupport::Concern
 
-# POST /api/v1/bookings
-# Create new booking
-{
-  "booking": {
-    "property_id": 123,
-    "scheduled_at": "2024-07-15T14:00:00Z",
-    "duration_minutes": 45,
-    "notes": "Interested in the backyard"
-  }
-}
-
-# GET /api/v1/bookings/:id
-# Get booking details
-
-# PATCH /api/v1/bookings/:id
-# Update booking (reschedule)
-{
-  "booking": {
-    "scheduled_at": "2024-07-16T15:00:00Z"
-  }
-}
-
-# DELETE /api/v1/bookings/:id
-# Cancel booking
-```
-
-### Video Call Management
-```ruby
-# POST /api/v1/calls
-# Create new video call
-{
-  "call": {
-    "tour_id": 456,
-    "duration_minutes": 30
-  }
-}
-
-# GET /api/v1/calls/:id
-# Get call details
-# Returns: Call object with Chime meeting info
-
-# POST /api/v1/calls/:id/join
-# Join video call
-# Returns: Chime meeting credentials
-
-# POST /api/v1/calls/:id/end
-# End video call
-```
-
-### Dashboard Endpoints
-```ruby
-# GET /api/v1/dashboards/realtor
-# Get realtor dashboard data
-# Returns: {
-#   "total_properties": 25,
-#   "active_listings": 18,
-#   "pending_sales": 3,
-#   "properties_sold": 4,
-#   "upcoming_tours": [...],
-#   "recent_activity": [...]
-# }
-
-# GET /api/v1/dashboards/buyer
-# Get buyer dashboard data
-# Returns: {
-#   "upcoming_tours": [...],
-#   "tour_history": [...],
-#   "favorite_properties": [...]
-# }
-```
-
-### Analytics Endpoints
-```ruby
-# GET /api/v1/analytics/realtor
-# Get realtor analytics
-# Returns: {
-#   "tours_per_month": [...],
-#   "conversion_rate": 0.15,
-#   "average_tour_duration": 28.5,
-#   "top_properties": [...]
-# }
-```
-
-### Upload Endpoints
-```ruby
-# POST /api/v1/upload/recordings
-# Upload tour recording
-# Multipart form data with recording file
-```
-
-## 🔄 Background Jobs
-
-### Job Categories
-
-#### High Priority Jobs (default queue)
-```ruby
-class BookingReminderJob < ApplicationJob
-  queue_as :default
-  
-  def perform(booking_id)
-    booking = Booking.find(booking_id)
-    # Send email/SMS reminders 15 minutes before tour
-    NotificationService.send_reminder(booking)
-  end
-end
-
-class TourStartJob < ApplicationJob
-  queue_as :default
-  
-  def perform(tour_id)
-    tour = Tour.find(tour_id)
-    TourLifecycleService.start(tour)
-    # Notify participants, update status
-  end
-end
-
-class TourEndJob < ApplicationJob
-  queue_as :default
-  
-  def perform(tour_id)
-    tour = Tour.find(tour_id)
-    TourLifecycleService.end(tour)
-    # Trigger recording processing, generate summary
-  end
-end
-```
-
-#### Media Processing Jobs
-```ruby
-class RecordingProcessingJob < ApplicationJob
-  queue_as :default
-  
-  def perform(recording_id)
-    recording = Recording.find(recording_id)
-    VideoProcessingService.process(recording)
-    # Fetch from Mux, compress, store in S3
-  end
-end
-
-class TranscriptionJob < ApplicationJob
-  queue_as :default
-  
-  def perform(recording_id)
-    recording = Recording.find(recording_id)
-    TranscriptionService.process(recording)
-    # Use AWS Transcribe, save transcript
-  end
-end
-
-class ImageProcessingJob < ApplicationJob
-  queue_as :default
-  
-  def perform(image_id)
-    image = ActiveStorage::Blob.find(image_id)
-    ImageProcessingService.process(image)
-    # Resize, compress, generate thumbnails
-  end
-end
-```
-
-#### AI/ML Jobs
-```ruby
-class HighlightJob < ApplicationJob
-  queue_as :default
-  
-  def perform(tour_id)
-    tour = Tour.find(tour_id)
-    HighlightDetectionService.generate(tour)
-    # Analyze video, extract key moments
-  end
-end
-
-class TourSummaryJob < ApplicationJob
-  queue_as :default
-  
-  def perform(tour_id)
-    tour = Tour.find(tour_id)
-    SummaryService.generate(tour)
-    # Generate AI summary from transcript and notes
-  end
-end
-```
-
-#### Analytics Jobs
-```ruby
-class DashboardAggregatorJob < ApplicationJob
-  queue_as :default
-  
-  def perform
-    # Nightly aggregation of dashboard metrics
-    User.find_each do |user|
-      AnalyticsAggregator.aggregate_for_user(user)
-    end
-  end
-end
-
-class AnalyticsIngestionJob < ApplicationJob
-  queue_as :analytics
-  
-  def perform(event_payload)
-    # Stream events to data warehouse
-    AnalyticsService.ingest_event(event_payload)
-  end
-end
-```
-
-#### Maintenance Jobs
-```ruby
-class RecordingCleanupJob < ApplicationJob
-  queue_as :low_priority
-  
-  def perform
-    # Archive old recordings based on retention policy
-    Recording.where('recorded_at < ?', 90.days.ago).find_each do |recording|
-      RecordingCleanupService.archive(recording)
-    end
-  end
-end
-
-class AuditLogProcessingJob < ApplicationJob
-  queue_as :compliance
-  
-  def perform(batch)
-    # Process audit logs for compliance reporting
-    AuditLogProcessor.process(batch)
-  end
-end
-```
-
-## 🛠️ Service Layer
-
-### Authentication Services
-```ruby
-class PasswordResetService
-  def self.request_reset(user)
-    token = SecureRandom.hex(32)
-    expires_at = 1.hour.from_now
-    
-    PasswordResetToken.create!(
-      user: user,
-      token: token,
-      expires_at: expires_at
-    )
-    
-    # Send email with reset link
-    PasswordResetMailer.reset_email(user, token).deliver_later
+  included do
+    before_action :authenticate_user!
   end
 
-  def self.confirm_reset(token, new_password)
-    reset_token = PasswordResetToken.find_by(token: token)
-    
-    return false unless reset_token && reset_token.expires_at > Time.current
-    
-    reset_token.user.update!(password: new_password)
-    reset_token.update!(used_at: Time.current)
-    true
-  end
-end
-```
-
-### Tour Lifecycle Services
-```ruby
-class TourLifecycleService
-  def self.start(tour)
-    tour.update!(
-      status: 'in_progress',
-      started_at: Time.current
-    )
-    
-    # Create Chime meeting
-    call = Call.create!(
-      tour: tour,
-      chime_meeting_id: ChimeService.create_meeting(tour),
-      status: 'created'
-    )
-    
-    # Notify participants
-    TourNotificationService.notify_start(tour)
-  end
-
-  def self.end(tour)
-    tour.update!(
-      status: 'completed',
-      ended_at: Time.current
-    )
-    
-    # End Chime meeting
-    tour.call&.update!(status: 'ended', ended_at: Time.current)
-    
-    # Trigger post-tour processing
-    RecordingProcessingJob.perform_later(tour.recording.id) if tour.recording
-    TranscriptionJob.perform_later(tour.recording.id) if tour.recording
-    HighlightJob.perform_later(tour.id)
-    TourSummaryJob.perform_later(tour.id)
-  end
-end
-```
-
-### Media Processing Services
-```ruby
-class VideoProcessingService
-  def self.process(recording)
-    # Fetch from Mux
-    mux_asset = MuxService.get_asset(recording.mux_asset_id)
-    
-    # Download and compress
-    compressed_file = VideoCompressor.compress(mux_asset.playback_url)
-    
-    # Upload to S3
-    s3_url = S3Service.upload_recording(compressed_file, recording.id)
-    
-    # Update recording
-    recording.update!(
-      playback_url: s3_url,
-      duration_seconds: mux_asset.duration,
-      file_size_bytes: compressed_file.size
-    )
-  end
-end
-
-class TranscriptionService
-  def self.process(recording)
-    # Use AWS Transcribe
-    transcript_data = AwsTranscribeService.transcribe(recording.playback_url)
-    
-    # Create transcript record
-    Transcript.create!(
-      tour: recording.tour,
-      full_text: transcript_data.full_text,
-      segments: transcript_data.segments,
-      confidence_score: transcript_data.confidence
-    )
-  end
-end
-```
-
-### AI/ML Services
-```ruby
-class HighlightDetectionService
-  def self.generate(tour)
-    # Analyze video for key moments
-    highlights = VideoAnalyzer.analyze(tour.recording.playback_url)
-    
-    highlights.each do |highlight|
-      Highlight.create!(
-        tour: tour,
-        timestamp_ms: highlight.timestamp,
-        note: highlight.description,
-        image_url: highlight.screenshot_url,
-        highlight_type: highlight.type
-      )
-    end
-  end
-end
-
-class SummaryService
-  def self.generate(tour)
-    # Combine transcript and notes for AI summary
-    content = [
-      tour.transcript&.full_text,
-      tour.tour_notes.pluck(:content)
-    ].compact.join("\n")
-    
-    # Generate summary using OpenAI
-    summary = OpenAIService.generate_summary(content)
-    
-    # Store summary (could be in a separate table or as a note)
-    TourNote.create!(
-      tour: tour,
-      user: tour.realtor,
-      content: summary,
-      tag: 'ai_summary'
-    )
-  end
-end
-```
-
-## 🔐 Security & Authentication
-
-### JWT Implementation
-```ruby
-class JwtService
-  SECRET_KEY = Rails.application.credentials.jwt_secret_key
-
-  def self.encode(payload)
-    JWT.encode(payload, SECRET_KEY, 'HS256')
-  end
-
-  def self.decode(token)
-    JWT.decode(token, SECRET_KEY, true, { algorithm: 'HS256' })[0]
-  rescue JWT::DecodeError
-    nil
-  end
-end
-
-class ApplicationController < ActionController::API
-  before_action :authenticate_user!
-  
   private
-  
+
   def authenticate_user!
-    token = request.headers['Authorization']&.split(' ')&.last
-    payload = JwtService.decode(token)
+    header = request.headers['Authorization']
+    token = header.split(' ').last if header
     
-    if payload && payload['user_id']
-      @current_user = User.find(payload['user_id'])
-    else
-      render json: { error: 'Unauthorized' }, status: :unauthorized
+    begin
+      @decoded = JWT.decode(token, Rails.application.credentials.secret_key_base, true, { algorithm: 'HS256' })
+      @current_user = User.find(@decoded[0]['user_id'])
+    rescue ActiveRecord::RecordNotFound => e
+      render json: { errors: e.message }, status: :unauthorized
+    rescue JWT::DecodeError => e
+      render json: { errors: e.message }, status: :unauthorized
     end
   end
-  
+
   def current_user
     @current_user
   end
+
+  def user_signed_in?
+    !!current_user
+  end
 end
 ```
 
-### Role-Based Access Control
+</details>
+
+<details>
+<summary><strong>🛡️ Authorization Policies</strong></summary>
+
 ```ruby
-class PunditPolicy
-  def initialize(user, record)
-    @user = user
-    @record = record
+# app/policies/property_policy.rb
+class PropertyPolicy < ApplicationPolicy
+  def index?
+    user.realtor? || user.admin?
+  end
+
+  def show?
+    user.realtor? || user.admin? || record.realtor_id == user.id
   end
 
   def create?
-    @user.realtor? || @user.admin?
+    user.realtor? || user.admin?
   end
 
   def update?
-    @user.realtor? && @record.realtor_id == @user.id || @user.admin?
+    user.realtor? && record.realtor_id == user.id || user.admin?
   end
 
   def destroy?
-    @user.realtor? && @record.realtor_id == @user.id || @user.admin?
+    user.realtor? && record.realtor_id == user.id || user.admin?
   end
-end
-```
 
-### Rate Limiting
-```ruby
-class RateLimiter
-  def self.check_limit(key, limit, window)
-    current = Redis.current.get(key)
-    
-    if current && current.to_i >= limit
-      false
-    else
-      Redis.current.multi do |multi|
-        multi.incr(key)
-        multi.expire(key, window)
+  class Scope < Scope
+    def resolve
+      if user.admin?
+        scope.all
+      elsif user.realtor?
+        scope.where(realtor_id: user.id)
+      else
+        scope.none
       end
-      true
-    end
-  end
-end
-
-class ApplicationController < ActionController::API
-  before_action :check_rate_limit
-  
-  private
-  
-  def check_rate_limit
-    key = "rate_limit:#{current_user.id}:#{action_name}"
-    unless RateLimiter.check_limit(key, 100, 3600) # 100 requests per hour
-      render json: { error: 'Rate limit exceeded' }, status: :too_many_requests
     end
   end
 end
 ```
 
-## 📊 Monitoring & Observability
+</details>
 
-### Key Metrics
+## 🎯 API Design
+
+<details>
+<summary><strong>📋 API Endpoints</strong></summary>
+
+### Authentication Endpoints
+```
+POST   /api/v1/auth/register          # User registration
+POST   /api/v1/auth/login             # User login
+POST   /api/v1/auth/logout            # User logout
+POST   /api/v1/auth/refresh           # Token refresh
+POST   /api/v1/auth/password-reset    # Password reset request
+POST   /api/v1/auth/password-reset/confirm # Password reset confirmation
+```
+
+### Property Endpoints
+```
+GET    /api/v1/properties             # List properties
+POST   /api/v1/properties             # Create property
+GET    /api/v1/properties/:id         # Get property details
+PUT    /api/v1/properties/:id         # Update property
+DELETE /api/v1/properties/:id         # Delete property
+GET    /api/v1/properties/:id/tours   # Get property tours
+```
+
+### Booking Endpoints
+```
+GET    /api/v1/bookings               # List bookings
+POST   /api/v1/bookings               # Create booking
+GET    /api/v1/bookings/:id           # Get booking details
+PUT    /api/v1/bookings/:id           # Update booking
+DELETE /api/v1/bookings/:id           # Cancel booking
+```
+
+### Tour Endpoints
+```
+GET    /api/v1/tours                  # List tours
+POST   /api/v1/tours                  # Create tour
+GET    /api/v1/tours/:id              # Get tour details
+PUT    /api/v1/tours/:id              # Update tour
+POST   /api/v1/tours/:id/start        # Start tour
+POST   /api/v1/tours/:id/end          # End tour
+GET    /api/v1/tours/:id/notes        # Get tour notes
+POST   /api/v1/tours/:id/notes        # Add tour note
+```
+
+### Analytics Endpoints
+```
+GET    /api/v1/analytics/realtor      # Realtor analytics
+GET    /api/v1/analytics/dashboard    # Dashboard metrics
+GET    /api/v1/analytics/tours        # Tour analytics
+```
+
+</details>
+
+<details>
+<summary><strong>📝 API Response Format</strong></summary>
+
 ```ruby
-class MetricsCollector
-  def self.record_api_call(endpoint, duration, status)
-    StatsD.timing("api.#{endpoint}.duration", duration)
-    StatsD.increment("api.#{endpoint}.count")
-    StatsD.increment("api.#{endpoint}.#{status}")
-  end
+# Standard API response format
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "type": "property",
+    "attributes": {
+      "address": "123 Main St",
+      "price": 500000,
+      "bedrooms": 3,
+      "bathrooms": 2
+    },
+    "relationships": {
+      "realtor": {
+        "data": {
+          "id": 1,
+          "type": "user"
+        }
+      }
+    }
+  },
+  "meta": {
+    "timestamp": "2024-01-15T10:30:00Z",
+    "version": "1.0"
+  }
+}
 
-  def self.record_video_call_setup(duration)
-    StatsD.timing("video_call.setup_time", duration)
-  end
+# Error response format
+{
+  "success": false,
+  "errors": [
+    {
+      "code": "VALIDATION_ERROR",
+      "message": "Address can't be blank",
+      "field": "address"
+    }
+  ],
+  "meta": {
+    "timestamp": "2024-01-15T10:30:00Z",
+    "version": "1.0"
+  }
+}
+```
 
-  def self.record_tour_completion(tour_id)
-    StatsD.increment("tours.completed")
-    StatsD.gauge("tours.active", Tour.where(status: 'in_progress').count)
+</details>
+
+## 🔄 Background Jobs
+
+<details>
+<summary><strong>📧 Email Jobs</strong></summary>
+
+```ruby
+# app/jobs/booking_reminder_job.rb
+class BookingReminderJob < ApplicationJob
+  queue_as :default
+
+  def perform(booking_id)
+    booking = Booking.find(booking_id)
+    
+    # Send reminder email to buyer
+    BookingMailer.reminder_email(booking).deliver_now
+    
+    # Send reminder email to realtor
+    BookingMailer.realtor_reminder_email(booking).deliver_now
+    
+    # Log the reminder
+    Rails.logger.info "Reminder sent for booking #{booking_id}"
+  end
+end
+
+# app/jobs/tour_start_job.rb
+class TourStartJob < ApplicationJob
+  queue_as :default
+
+  def perform(tour_id)
+    tour = Tour.find(tour_id)
+    
+    # Create Chime meeting
+    chime_service = ChimeService.new
+    meeting = chime_service.create_meeting(tour)
+    
+    # Update tour with meeting details
+    tour.update!(
+      status: 'in_progress',
+      started_at: Time.current,
+      chime_meeting_id: meeting.meeting_id
+    )
+    
+    # Send notifications
+    TourNotificationService.new(tour).send_start_notification
   end
 end
 ```
 
-### Error Handling
+</details>
+
+<details>
+<summary><strong>🎥 Video Processing Jobs</strong></summary>
+
 ```ruby
-class ApplicationController < ActionController::API
-  rescue_from StandardError, with: :handle_standard_error
-  rescue_from ActiveRecord::RecordNotFound, with: :handle_not_found
-  rescue_from ActiveRecord::RecordInvalid, with: :handle_validation_error
+# app/jobs/recording_processing_job.rb
+class RecordingProcessingJob < ApplicationJob
+  queue_as :video_processing
+
+  def perform(recording_id)
+    recording = Recording.find(recording_id)
+    
+    # Download recording from Chime
+    chime_service = ChimeService.new
+    video_file = chime_service.download_recording(recording.chime_recording_id)
+    
+    # Process video (compress, add watermark, etc.)
+    video_processor = VideoProcessingService.new
+    processed_video = video_processor.process(video_file)
+    
+    # Upload to S3
+    s3_service = S3Service.new
+    video_url = s3_service.upload_recording(processed_video, recording.id)
+    
+    # Update recording record
+    recording.update!(
+      status: 'processed',
+      video_url: video_url,
+      processed_at: Time.current
+    )
+    
+    # Trigger transcription
+    TranscriptionJob.perform_later(recording.id)
+  end
+end
+
+# app/jobs/transcription_job.rb
+class TranscriptionJob < ApplicationJob
+  queue_as :video_processing
+
+  def perform(recording_id)
+    recording = Recording.find(recording_id)
+    
+    # Transcribe audio
+    transcription_service = TranscriptionService.new
+    transcript_data = transcription_service.transcribe(recording.video_url)
+    
+    # Create transcript record
+    Transcript.create!(
+      tour_id: recording.tour_id,
+      full_text: transcript_data[:text],
+      segments: transcript_data[:segments],
+      confidence_score: transcript_data[:confidence]
+    )
+    
+    # Trigger highlight detection
+    HighlightJob.perform_later(recording.tour_id)
+  end
+end
+```
+
+</details>
+
+<details>
+<summary><strong>📊 Analytics Jobs</strong></summary>
+
+```ruby
+# app/jobs/dashboard_aggregator_job.rb
+class DashboardAggregatorJob < ApplicationJob
+  queue_as :analytics
+
+  def perform(realtor_id = nil)
+    realtors = realtor_id ? [User.find(realtor_id)] : User.where(role: 'realtor')
+    
+    realtors.each do |realtor|
+      # Calculate daily metrics
+      daily_metrics = calculate_daily_metrics(realtor)
+      
+      # Store in analytics aggregates
+      daily_metrics.each do |metric|
+        AnalyticsAggregate.create_or_find_by(
+          date: Date.current,
+          realtor_id: realtor.id,
+          metric_name: metric[:name]
+        ).update!(metric_value: metric[:value])
+      end
+    end
+  end
 
   private
 
-  def handle_standard_error(exception)
-    Rails.logger.error("Unhandled error: #{exception.message}")
-    Rails.logger.error(exception.backtrace.join("\n"))
-    
-    Sentry.capture_exception(exception)
-    
-    render json: { 
-      error: 'Internal server error',
-      message: 'Something went wrong'
-    }, status: :internal_server_error
-  end
-
-  def handle_not_found(exception)
-    render json: { 
-      error: 'Not found',
-      message: 'The requested resource was not found'
-    }, status: :not_found
-  end
-
-  def handle_validation_error(exception)
-    render json: { 
-      error: 'Validation failed',
-      message: exception.record.errors.full_messages
-    }, status: :unprocessable_entity
+  def calculate_daily_metrics(realtor)
+    [
+      {
+        name: 'tours_completed',
+        value: realtor.tours.where(status: 'completed', created_at: Date.current.all_day).count
+      },
+      {
+        name: 'bookings_created',
+        value: realtor.bookings.where(created_at: Date.current.all_day).count
+      },
+      {
+        name: 'properties_viewed',
+        value: realtor.properties.joins(:tours).where(tours: { created_at: Date.current.all_day }).distinct.count
+      }
+    ]
   end
 end
 ```
 
-## 🚀 Deployment & Infrastructure
+</details>
 
-### Docker Configuration
+## 🔧 Services
+
+<details>
+<summary><strong>🎥 Video Services</strong></summary>
+
+```ruby
+# app/services/chime_service.rb
+class ChimeService
+  def initialize
+    @chime_client = Aws::ChimeSDKMeetings::Client.new(
+      region: Rails.application.credentials.aws[:region],
+      credentials: Aws::Credentials.new(
+        Rails.application.credentials.aws[:access_key_id],
+        Rails.application.credentials.aws[:secret_access_key]
+      )
+    )
+  end
+
+  def create_meeting(tour)
+    response = @chime_client.create_meeting(
+      client_request_token: SecureRandom.uuid,
+      external_meeting_id: "tour_#{tour.id}",
+      media_region: 'us-east-1',
+      meeting_configuration: {
+        audio: {
+          echo_reduction: 'AVAILABLE'
+        }
+      }
+    )
+    
+    response.meeting
+  end
+
+  def create_attendee(meeting_id, user)
+    response = @chime_client.create_attendee(
+      external_user_id: user.id.to_s,
+      meeting_id: meeting_id
+    )
+    
+    response.attendee
+  end
+
+  def download_recording(recording_id)
+    # Implementation for downloading recording
+  end
+end
+
+# app/services/video_processing_service.rb
+class VideoProcessingService
+  def process(video_file)
+    # Use FFmpeg for video processing
+    output_path = Rails.root.join('tmp', "processed_#{SecureRandom.uuid}.mp4")
+    
+    system("ffmpeg -i #{video_file.path} -c:v libx264 -c:a aac -b:v 1M -b:a 128k #{output_path}")
+    
+    output_path
+  end
+end
+```
+
+</details>
+
+<details>
+<summary><strong>🤖 AI Services</strong></summary>
+
+```ruby
+# app/services/transcription_service.rb
+class TranscriptionService
+  def initialize
+    @client = OpenAI::Client.new(
+      access_token: Rails.application.credentials.openai[:api_key]
+    )
+  end
+
+  def transcribe(video_url)
+    # Download audio from video
+    audio_file = download_audio(video_url)
+    
+    # Transcribe using OpenAI Whisper
+    response = @client.audio.transcribe(
+      parameters: {
+        model: "whisper-1",
+        file: File.open(audio_file.path),
+        response_format: "verbose_json",
+        timestamp_granularities: ["segment"]
+      }
+    )
+    
+    {
+      text: response.text,
+      segments: response.segments,
+      confidence: response.language
+    }
+  end
+
+  private
+
+  def download_audio(video_url)
+    # Implementation for downloading audio from video
+  end
+end
+
+# app/services/highlight_detection_service.rb
+class HighlightDetectionService
+  def initialize
+    @client = OpenAI::Client.new(
+      access_token: Rails.application.credentials.openai[:api_key]
+    )
+  end
+
+  def detect_highlights(transcript)
+    prompt = build_highlight_prompt(transcript.full_text)
+    
+    response = @client.chat(
+      parameters: {
+        model: "gpt-4",
+        messages: [
+          { role: "system", content: "You are a real estate expert. Identify key moments and highlights from property tours." },
+          { role: "user", content: prompt }
+        ],
+        temperature: 0.3
+      }
+    )
+    
+    parse_highlights(response.choices.first.message.content, transcript.segments)
+  end
+
+  private
+
+  def build_highlight_prompt(text)
+    "Analyze this property tour transcript and identify key highlights:\n\n#{text}\n\nReturn highlights in JSON format with timestamp and description."
+  end
+
+  def parse_highlights(ai_response, segments)
+    # Parse AI response and map to segments
+  end
+end
+```
+
+</details>
+
+<details>
+<summary><strong>📧 Email Services</strong></summary>
+
+```ruby
+# app/services/email_service.rb
+class EmailService
+  def send_booking_confirmation(booking)
+    BookingMailer.confirmation_email(booking).deliver_now
+  end
+
+  def send_tour_reminder(booking)
+    BookingMailer.reminder_email(booking).deliver_now
+  end
+
+  def send_tour_summary(tour)
+    TourMailer.summary_email(tour).deliver_now
+  end
+end
+
+# app/mailers/booking_mailer.rb
+class BookingMailer < ApplicationMailer
+  def confirmation_email(booking)
+    @booking = booking
+    @property = booking.property
+    @realtor = booking.property.realtor
+    
+    mail(
+      to: booking.buyer.email,
+      subject: "Tour Confirmed: #{@property.address}"
+    )
+  end
+
+  def reminder_email(booking)
+    @booking = booking
+    @property = booking.property
+    
+    mail(
+      to: booking.buyer.email,
+      subject: "Reminder: Your tour starts in 15 minutes"
+    )
+  end
+end
+```
+
+</details>
+
+## 🚀 Performance & Caching
+
+<details>
+<summary><strong>💾 Redis Caching</strong></summary>
+
+```ruby
+# app/controllers/concerns/caching.rb
+module Caching
+  extend ActiveSupport::Concern
+
+  included do
+    before_action :set_cache_headers
+  end
+
+  private
+
+  def set_cache_headers
+    response.headers['Cache-Control'] = 'public, max-age=300' # 5 minutes
+  end
+
+  def cache_key(record, *additional_keys)
+    keys = [record.class.name, record.id, record.updated_at.to_i]
+    keys.concat(additional_keys) if additional_keys.any?
+    keys.join('/')
+  end
+
+  def cached_property(property_id)
+    Rails.cache.fetch("property:#{property_id}", expires_in: 1.hour) do
+      Property.includes(:realtor, :tours).find(property_id)
+    end
+  end
+
+  def cached_user_properties(user_id)
+    Rails.cache.fetch("user_properties:#{user_id}", expires_in: 30.minutes) do
+      Property.where(realtor_id: user_id).includes(:tours)
+    end
+  end
+end
+```
+
+</details>
+
+<details>
+<summary><strong>📊 Database Optimization</strong></summary>
+
+```ruby
+# app/models/property.rb
+class Property < ApplicationRecord
+  # Eager loading associations
+  scope :with_realtor, -> { includes(:realtor) }
+  scope :with_tours, -> { includes(:tours) }
+  scope :with_bookings, -> { includes(:bookings) }
+  
+  # Pagination
+  scope :paginated, ->(page: 1, per_page: 20) {
+    offset((page - 1) * per_page).limit(per_page)
+  }
+  
+  # Search
+  scope :search, ->(query) {
+    where("address ILIKE ? OR description ILIKE ?", "%#{query}%", "%#{query}%")
+  }
+  
+  # Performance optimizations
+  scope :active, -> { where(status: 'active') }
+  scope :by_realtor, ->(realtor_id) { where(realtor_id: realtor_id) }
+end
+
+# app/controllers/api/v1/properties_controller.rb
+class Api::V1::PropertiesController < ApplicationController
+  include Caching
+
+  def index
+    properties = Property.with_realtor
+                        .active
+                        .search(params[:query])
+                        .paginated(page: params[:page], per_page: params[:per_page])
+    
+    render json: {
+      data: properties,
+      meta: {
+        current_page: params[:page]&.to_i || 1,
+        total_pages: (properties.total_count.to_f / (params[:per_page]&.to_i || 20)).ceil,
+        total_count: properties.total_count
+      }
+    }
+  end
+end
+```
+
+</details>
+
+## 🔒 Security
+
+<details>
+<summary><strong>🛡️ Security Measures</strong></summary>
+
+```ruby
+# config/application.rb
+module RealtyForYou
+  class Application < Rails::Application
+    # Security headers
+    config.middleware.use Rack::Attack
+    config.middleware.insert_before ActionDispatch::Static, Rack::Deflater
+    
+    # CORS configuration
+    config.middleware.insert_before 0, Rack::Cors do
+      allow do
+        origins Rails.application.credentials.allowed_origins
+        resource '*',
+          headers: :any,
+          methods: [:get, :post, :put, :patch, :delete, :options, :head],
+          credentials: true
+      end
+    end
+  end
+end
+
+# config/initializers/rack_attack.rb
+class Rack::Attack
+  # Rate limiting
+  throttle('requests by ip', limit: 300, period: 5.minutes) do |request|
+    request.ip
+  end
+
+  # Login rate limiting
+  throttle('login attempts by ip', limit: 5, period: 20.seconds) do |request|
+    if request.path == '/api/v1/auth/login' && request.post?
+      request.ip
+    end
+  end
+
+  # API rate limiting
+  throttle('api requests by user', limit: 1000, period: 1.hour) do |request|
+    if request.path.start_with?('/api/')
+      request.env['jwt.payload']&.dig('user_id')
+    end
+  end
+end
+```
+
+</details>
+
+<details>
+<summary><strong>🔐 Data Protection</strong></summary>
+
+```ruby
+# app/models/concerns/encryptable.rb
+module Encryptable
+  extend ActiveSupport::Concern
+
+  included do
+    before_save :encrypt_sensitive_data
+    after_find :decrypt_sensitive_data
+  end
+
+  private
+
+  def encrypt_sensitive_data
+    self.encrypted_ssn = encrypt(ssn) if ssn_changed?
+    self.encrypted_phone = encrypt(phone) if phone_changed?
+  end
+
+  def decrypt_sensitive_data
+    self.ssn = decrypt(encrypted_ssn) if encrypted_ssn.present?
+    self.phone = decrypt(encrypted_phone) if encrypted_phone.present?
+  end
+
+  def encrypt(value)
+    return nil if value.blank?
+    
+    cipher = OpenSSL::Cipher.new('aes-256-gcm')
+    cipher.encrypt
+    cipher.key = Rails.application.credentials.secret_key_base[0..31]
+    cipher.iv = cipher.random_iv
+    
+    encrypted = cipher.update(value) + cipher.final
+    auth_tag = cipher.auth_tag
+    
+    Base64.strict_encode64(encrypted + auth_tag)
+  end
+
+  def decrypt(encrypted_value)
+    return nil if encrypted_value.blank?
+    
+    cipher = OpenSSL::Cipher.new('aes-256-gcm')
+    cipher.decrypt
+    cipher.key = Rails.application.credentials.secret_key_base[0..31]
+    
+    decoded = Base64.strict_decode64(encrypted_value)
+    auth_tag = decoded[-16..-1]
+    encrypted = decoded[0...-16]
+    
+    cipher.auth_tag = auth_tag
+    cipher.auth_data = ""
+    
+    cipher.update(encrypted) + cipher.final
+  end
+end
+```
+
+</details>
+
+## 🧪 Testing Strategy
+
+<details>
+<summary><strong>🧪 Test Structure</strong></summary>
+
+```
+spec/
+├── controllers/
+│   └── api/v1/
+│       ├── auth/
+│       ├── properties_controller_spec.rb
+│       ├── bookings_controller_spec.rb
+│       └── tours_controller_spec.rb
+├── models/
+│   ├── user_spec.rb
+│   ├── property_spec.rb
+│   ├── booking_spec.rb
+│   └── tour_spec.rb
+├── services/
+│   ├── chime_service_spec.rb
+│   ├── transcription_service_spec.rb
+│   └── email_service_spec.rb
+├── jobs/
+│   ├── booking_reminder_job_spec.rb
+│   └── recording_processing_job_spec.rb
+└── requests/
+    └── api/
+        └── v1/
+            ├── properties_spec.rb
+            ├── bookings_spec.rb
+            └── tours_spec.rb
+```
+
+</details>
+
+<details>
+<summary><strong>🔧 Test Configuration</strong></summary>
+
+```ruby
+# spec/rails_helper.rb
+RSpec.configure do |config|
+  config.include FactoryBot::Syntax::Methods
+  config.include Devise::Test::ControllerHelpers, type: :controller
+  config.include Devise::Test::IntegrationHelpers, type: :request
+  
+  # Database cleaner
+  config.before(:suite) do
+    DatabaseCleaner.clean_with(:truncation)
+  end
+  
+  config.before(:each) do
+    DatabaseCleaner.strategy = :transaction
+  end
+  
+  config.before(:each) do
+    DatabaseCleaner.start
+  end
+  
+  config.after(:each) do
+    DatabaseCleaner.clean
+  end
+end
+
+# spec/factories/users.rb
+FactoryBot.define do
+  factory :user do
+    sequence(:email) { |n| "user#{n}@example.com" }
+    full_name { "John Doe" }
+    password { "password123" }
+    role { "buyer" }
+    
+    trait :realtor do
+      role { "realtor" }
+    end
+    
+    trait :admin do
+      role { "admin" }
+    end
+  end
+end
+```
+
+</details>
+
+## 🚀 Deployment
+
+<details>
+<summary><strong>🐳 Docker Configuration</strong></summary>
+
 ```dockerfile
 # Dockerfile
-FROM ruby:3.2-alpine
+FROM ruby:3.2.2
 
-# Install dependencies
-RUN apk add --no-cache \
-    build-base \
-    postgresql-dev \
-    tzdata \
+# Install system dependencies
+RUN apt-get update -qq && apt-get install -y \
+    postgresql-client \
     nodejs \
-    yarn
+    ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /app
 
-# Copy Gemfile and install gems
+# Install gems
 COPY Gemfile Gemfile.lock ./
 RUN bundle install
 
@@ -897,265 +1166,116 @@ COPY . .
 # Precompile assets
 RUN bundle exec rake assets:precompile
 
-# Expose port
+# Add a script to be executed every time the container starts
+COPY entrypoint.sh /usr/bin/
+RUN chmod +x /usr/bin/entrypoint.sh
+ENTRYPOINT ["entrypoint.sh"]
+
 EXPOSE 3000
 
-# Start application
-CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]
+CMD ["rails", "server", "-b", "0.0.0.0"]
 ```
 
-### Environment Configuration
-```ruby
-# config/application.rb
-module RealtyForYou
-  class Application < Rails::Application
-    # API mode
-    config.api_only = true
+```yaml
+# docker-compose.yml
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@db:5432/realtyforyou
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - .:/app
+      - bundle_cache:/usr/local/bundle
+
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=realtyforyou
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis_data:/data
+
+  sidekiq:
+    build: .
+    command: bundle exec sidekiq
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@db:5432/realtyforyou
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - .:/app
+      - bundle_cache:/usr/local/bundle
+
+volumes:
+  postgres_data:
+  redis_data:
+  bundle_cache:
+```
+
+</details>
+
+<details>
+<summary><strong>☁️ AWS Deployment</strong></summary>
+
+```yaml
+# .github/workflows/deploy.yml
+name: Deploy to AWS
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
     
-    # CORS configuration
-    config.middleware.insert_before 0, Rack::Cors do
-      allow do
-        origins ENV['ALLOWED_ORIGINS']&.split(',') || ['http://localhost:3000']
-        resource '*',
-          headers: :any,
-          methods: [:get, :post, :put, :patch, :delete, :options, :head],
-          credentials: true
-      end
-    end
-    
-    # Background job configuration
-    config.active_job.queue_adapter = :sidekiq
-    
-    # Cache configuration
-    config.cache_store = :redis_cache_store, {
-      url: ENV['REDIS_URL'],
-      connect_timeout: 30,
-      read_timeout: 0.2,
-      write_timeout: 0.2
-    }
-  end
-end
-```
-
-### Database Configuration
-```ruby
-# config/database.yml
-default: &default
-  adapter: postgresql
-  encoding: unicode
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  url: <%= ENV['DATABASE_URL'] %>
-
-development:
-  <<: *default
-  database: realty_for_you_development
-
-test:
-  <<: *default
-  database: realty_for_you_test
-
-production:
-  <<: *default
-  url: <%= ENV['DATABASE_URL'] %>
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 25 } %>
-  sslmode: require
-```
-
-## 🧪 Testing Strategy
-
-### Unit Tests
-```ruby
-# spec/models/user_spec.rb
-RSpec.describe User, type: :model do
-  describe 'validations' do
-    it { should validate_presence_of(:email) }
-    it { should validate_uniqueness_of(:email) }
-    it { should validate_presence_of(:full_name) }
-  end
-
-  describe 'associations' do
-    it { should have_many(:properties) }
-    it { should have_many(:bookings) }
-  end
-
-  describe '#realtor?' do
-    it 'returns true for realtor role' do
-      user = build(:user, role: 'realtor')
-      expect(user.realtor?).to be true
-    end
-  end
-end
-```
-
-### Controller Tests
-```ruby
-# spec/controllers/api/v1/properties_controller_spec.rb
-RSpec.describe Api::V1::PropertiesController, type: :controller do
-  let(:realtor) { create(:user, role: 'realtor') }
-  let(:property) { create(:property, realtor: realtor) }
-
-  before { authenticate_user(realtor) }
-
-  describe 'GET #index' do
-    it 'returns properties for realtor' do
-      get :index
-      expect(response).to have_http_status(:ok)
-      expect(json_response['properties']).to be_present
-    end
-  end
-
-  describe 'POST #create' do
-    let(:valid_params) do
-      {
-        property: {
-          address: '123 Main St',
-          price: 500000,
-          bedrooms: 3,
-          bathrooms: 2
-        }
-      }
-    end
-
-    it 'creates a new property' do
-      expect {
-        post :create, params: valid_params
-      }.to change(Property, :count).by(1)
+    steps:
+      - uses: actions/checkout@v3
       
-      expect(response).to have_http_status(:created)
-    end
-  end
-end
-```
-
-### Service Tests
-```ruby
-# spec/services/tour_lifecycle_service_spec.rb
-RSpec.describe TourLifecycleService do
-  let(:tour) { create(:tour) }
-
-  describe '.start' do
-    it 'updates tour status and creates call' do
-      expect(ChimeService).to receive(:create_meeting).with(tour)
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
       
-      described_class.start(tour)
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
       
-      expect(tour.reload.status).to eq('in_progress')
-      expect(tour.call).to be_present
-    end
-  end
-
-  describe '.end' do
-    it 'updates tour status and triggers processing jobs' do
-      expect(RecordingProcessingJob).to receive(:perform_later)
+      - name: Build and push Docker image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: realtyforyou-backend
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
       
-      described_class.end(tour)
-      
-      expect(tour.reload.status).to eq('completed')
-    end
-  end
-end
+      - name: Deploy to ECS
+        run: |
+          aws ecs update-service \
+            --cluster realtyforyou-cluster \
+            --service realtyforyou-backend \
+            --force-new-deployment
 ```
 
-### Integration Tests
-```ruby
-# spec/requests/api/v1/tours_spec.rb
-RSpec.describe 'Tours API', type: :request do
-  let(:realtor) { create(:user, role: 'realtor') }
-  let(:buyer) { create(:user, role: 'buyer') }
-  let(:property) { create(:property, realtor: realtor) }
-  let(:tour) { create(:tour, property: property, realtor: realtor, buyer: buyer) }
+</details>
 
-  describe 'POST /api/v1/calls' do
-    it 'creates a new video call' do
-      post '/api/v1/calls', params: { call: { tour_id: tour.id } },
-           headers: auth_headers(realtor)
-      
-      expect(response).to have_http_status(:created)
-      expect(json_response['call']['chime_meeting_id']).to be_present
-    end
-  end
-end
-```
-
-## 📈 Performance Optimization
-
-### Database Optimization
-```ruby
-# Add indexes for common queries
-class AddIndexesToTables < ActiveRecord::Migration[7.0]
-  def change
-    add_index :properties, [:realtor_id, :status]
-    add_index :bookings, [:buyer_id, :scheduled_at]
-    add_index :tours, [:property_id, :scheduled_at]
-    add_index :tour_notes, [:tour_id, :timestamp_ms]
-    add_index :audit_logs, [:actor_id, :created_at]
-  end
-end
-
-# Use counter caches
-class Property < ApplicationRecord
-  belongs_to :realtor, counter_cache: true
-  has_many :bookings, counter_cache: true
-end
-```
-
-### Caching Strategy
-```ruby
-# Fragment caching for property listings
-class PropertiesController < ApplicationController
-  def index
-    @properties = Property.includes(:realtor)
-                         .where(status: 'active')
-                         .order(created_at: :desc)
-                         .page(params[:page])
-    
-    render json: @properties, cached: true
-  end
-end
-
-# Redis caching for dashboard data
-class DashboardService
-  def self.realtor_dashboard(user_id)
-    Rails.cache.fetch("dashboard:realtor:#{user_id}", expires_in: 15.minutes) do
-      # Calculate dashboard metrics
-      {
-        total_properties: Property.where(realtor_id: user_id).count,
-        active_listings: Property.where(realtor_id: user_id, status: 'active').count,
-        # ... more metrics
-      }
-    end
-  end
-end
-```
-
-### Background Job Optimization
-```ruby
-# Use different queues for different job types
-class RecordingProcessingJob < ApplicationJob
-  queue_as :media_processing
-  
-  def perform(recording_id)
-    # Process recording with higher priority
-  end
-end
-
-class AnalyticsIngestionJob < ApplicationJob
-  queue_as :analytics
-  
-  def perform(event_payload)
-    # Lower priority analytics processing
-  end
-end
-
-# Configure Sidekiq
-# config/sidekiq.yml
-:concurrency: 25
-:queues:
-  - [critical, 3]
-  - [default, 2]
-  - [media_processing, 2]
-  - [analytics, 1]
-  - [low_priority, 1]
-```
-
-This backend architecture provides a robust, scalable foundation for the real estate video tour platform with comprehensive API endpoints, background job processing, security measures, and monitoring capabilities. 
+This comprehensive backend architecture provides a robust foundation for the real estate video tour platform with proper security, performance optimization, and scalability considerations. 
