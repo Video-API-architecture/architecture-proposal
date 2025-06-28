@@ -227,11 +227,8 @@ The video streaming platform is expected to revolutionize the real estate indust
 ---
 
 ### Deferred Features (Post-Launch)
-- Multi-party video calls
 - Advanced property search and filters
-- Recording playback features
 - AI-powered property recommendations
-- Virtual reality property tours
 - Advanced analytics and reporting
 
 ### Landing Pages
@@ -368,7 +365,7 @@ The video streaming platform is expected to revolutionize the real estate indust
 | **CI/CD Pipeline** | Automated testing and deployment | GitHub Actions with parallel test execution |
 | **Performance Testing** | Load testing and stress testing | Artillery.js and k6 for API and video call testing |
 
-#### Analytics
+### Analytics
 
 A robust analytics strategy is essential for understanding user behavior, optimizing product features, and driving business outcomes. This platform leverages a multi-tool analytics stack to provide both qualitative and quantitative insights.
 
