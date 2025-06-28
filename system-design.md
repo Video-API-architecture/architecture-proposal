@@ -276,8 +276,6 @@ Check more information about the [Backend Architecture here](./BACKEND_ARCHITECT
 
 #### API Surface (REST)
 
-[Interface job examples](./rails-api/routes.rb)
-
 | Endpoint | Method | Description |
 |----------|--------|-------------|
 | `/api/v1/auth/register` | POST | User registration |
@@ -308,8 +306,6 @@ Check more information about the [Backend Architecture here](./BACKEND_ARCHITECT
 
 #### Databases
 
-[Interface job examples](./rails-api/models.rb)
-
 | Table | Description |
 |-------|-------------|
 | **Users Table** | User profiles and authentication (id, full_name, email, role, password_digest, timestamps) |
@@ -325,8 +321,6 @@ Check more information about the [Backend Architecture here](./BACKEND_ARCHITECT
 | **AuditLogs Table** | Immutable system & user actions for compliance (actor_id, action, target_id, meta, created_at) |
 
 #### Asynchronous Jobs
-
-[Interface job examples](./rails-api/jobs.rb)
 
 | Job Type | Description |
 |----------|-------------|
@@ -357,10 +351,10 @@ Check more information about the [Backend Architecture here](./BACKEND_ARCHITECT
 
 | Layer | Description | Examples |
 |-------|-------------|----------|
-| **Models** | Data validation and business rules | [Model examples](./rails-api/models.rb) |
+| **Models** | Data validation and business rules | |
 | **Views** | JSON response formatting | - |
-| **Controllers** | Request handling and routing | [Model examples](./rails-api/controllers.rb) |
-| **Services** | Complex business logic | [Model examples](./rails-api/services.rb) |
+| **Controllers** | Request handling and routing | |
+| **Services** | Complex business logic | |
 
 #### Concerns
 

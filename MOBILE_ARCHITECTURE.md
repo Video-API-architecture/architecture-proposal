@@ -4,7 +4,9 @@
 
 The mobile app is built with **React Native** and **Expo**, designed to provide a simple, focused experience for users to join video tours and view tour history. The app prioritizes ease of use, performance, and reliability for real-time video communication.
 
-### Core Technologies
+<details>
+<summary><strong>🔧 Core Technologies</strong></summary>
+
 - **React Native** - Cross-platform mobile development
 - **Expo** - Development platform and tools
 - **TypeScript** - Type-safe development
@@ -19,152 +21,57 @@ The mobile app is built with **React Native** and **Expo**, designed to provide 
 - **React Hook Form** - Form handling
 - **Zod** - Schema validation
 
-## 📁 Project Structure
-
-```
-src/
-├── components/          # Reusable UI components
-│   ├── ui/             # Shared UI components
-│   │   ├── Button.tsx
-│   │   ├── Input.tsx
-│   │   ├── Card.tsx
-│   │   ├── Loading.tsx
-│   │   ├── ErrorBoundary.tsx
-│   │   ├── Modal.tsx
-│   │   ├── Toast.tsx
-│   │   └── Header.tsx
-│   ├── auth/           # Authentication components
-│   │   ├── SignInForm.tsx
-│   │   ├── SignUpForm.tsx
-│   │   ├── ForgotPasswordForm.tsx
-│   │   └── AuthHeader.tsx
-│   ├── tours/          # Tour-related components
-│   │   ├── TourCard.tsx
-│   │   ├── TourList.tsx
-│   │   ├── TourSection.tsx
-│   │   ├── TourStatusBadge.tsx
-│   │   ├── TourDetailCard.tsx
-│   │   ├── TourHistoryItem.tsx
-│   │   └── EmptyState.tsx
-│   └── video/          # Video call components
-│       ├── VideoCall.tsx
-│       ├── VideoControls.tsx
-│       ├── CallTimer.tsx
-│       ├── ParticipantList.tsx
-│       ├── VideoView.tsx
-│       └── CallQualityIndicator.tsx
-├── screens/            # Screen components
-│   ├── auth/
-│   │   ├── SignInScreen.tsx
-│   │   ├── SignUpScreen.tsx
-│   │   ├── ForgotPasswordScreen.tsx
-│   │   └── WelcomeScreen.tsx
-│   ├── tours/
-│   │   ├── TourListScreen.tsx
-│   │   ├── TourDetailScreen.tsx
-│   │   ├── VideoCallScreen.tsx
-│   │   ├── TourHistoryScreen.tsx
-│   │   └── CallEndedScreen.tsx
-│   ├── profile/
-│   │   ├── ProfileScreen.tsx
-│   │   └── SettingsScreen.tsx
-│   └── common/
-│       ├── LoadingScreen.tsx
-│       ├── ErrorScreen.tsx
-│       └── NetworkErrorScreen.tsx
-├── navigation/         # Navigation configuration
-│   ├── AppNavigator.tsx
-│   ├── AuthNavigator.tsx
-│   ├── TourNavigator.tsx
-│   ├── ProfileNavigator.tsx
-│   ├── types.ts
-│   └── linking.ts
-├── services/           # API and external services
-│   ├── api.ts
-│   ├── auth.service.ts
-│   ├── tour.service.ts
-│   ├── video.service.ts
-│   ├── notification.service.ts
-│   └── storage.service.ts
-├── hooks/              # Custom React hooks
-│   ├── useAuth.ts
-│   ├── useTours.ts
-│   ├── useVideoCall.ts
-│   ├── useNotifications.ts
-│   ├── useNetworkStatus.ts
-│   ├── usePermissions.ts
-│   └── useAppState.ts
-├── store/              # State management
-│   ├── index.ts
-│   ├── auth/
-│   │   ├── authSlice.ts
-│   │   └── authSelectors.ts
-│   ├── tours/
-│   │   ├── tourSlice.ts
-│   │   └── tourSelectors.ts
-│   ├── video/
-│   │   ├── videoSlice.ts
-│   │   └── videoSelectors.ts
-│   └── app/
-│       ├── appSlice.ts
-│       └── appSelectors.ts
-├── utils/              # Utility functions
-│   ├── constants.ts
-│   ├── helpers.ts
-│   ├── validation.ts
-│   ├── storage.ts
-│   ├── dateUtils.ts
-│   ├── permissions.ts
-│   └── networkUtils.ts
-├── types/              # TypeScript type definitions
-│   ├── auth.types.ts
-│   ├── tour.types.ts
-│   ├── api.types.ts
-│   ├── navigation.types.ts
-│   ├── video.types.ts
-│   └── common.types.ts
-├── assets/             # Images, fonts, etc.
-│   ├── images/
-│   ├── fonts/
-│   └── icons/
-└── config/             # Configuration files
-    ├── theme.ts
-    ├── api.config.ts
-    └── app.config.ts
-```
+</details>
 
 ## 🎯 App Features
 
-### Core Functionality
-1. **Authentication**
-   - Sign up with email/password
-   - Sign in with existing credentials
-   - Forgot password flow
-   - Secure token storage with refresh mechanism
-   - Biometric authentication (Touch ID/Face ID)
+<details>
+<summary><strong>🔐 Authentication</strong></summary>
 
-2. **Tour Management**
-   - View upcoming tours with real-time updates
-   - View previous tours with detailed history
-   - Join active tours with one-tap access
-   - Tour history with dates, times, and duration
-   - Push notifications for tour reminders
+- Sign up with email/password
+- Sign in with existing credentials
+- Forgot password flow
+- Secure token storage with refresh mechanism
+- Biometric authentication (Touch ID/Face ID)
 
-3. **Video Calling**
-   - Join video calls via phone with AWS Chime SDK
-   - Basic video controls (mute, camera toggle, end call)
-   - Call timer and connection status
-   - Screen sharing capabilities
-   - Call recording (view-only for users)
+</details>
 
-4. **Offline Support**
-   - View cached tour data when offline
-   - Queue actions for when connection is restored
-   - Offline tour history access
+<details>
+<summary><strong>🏠 Tour Management</strong></summary>
+
+- View upcoming tours with real-time updates
+- View previous tours with detailed history
+- Join active tours with one-tap access
+- Tour history with dates, times, and duration
+- Push notifications for tour reminders
+
+</details>
+
+<details>
+<summary><strong>📹 Video Calling</strong></summary>
+
+- Join video calls via phone with AWS Chime SDK
+- Basic video controls (mute, camera toggle, end call)
+- Call timer and connection status
+- Screen sharing capabilities
+- Call recording (view-only for users)
+
+</details>
+
+<details>
+<summary><strong>📱 Offline Support</strong></summary>
+
+- View cached tour data when offline
+- Queue actions for when connection is restored
+- Offline tour history access
+
+</details>
 
 ## 🧭 Navigation Structure
 
-### Navigation Flow
+<details>
+<summary><strong>🗺️ Navigation Flow</strong></summary>
+
 ```typescript
 // AppNavigator.tsx
 const AppNavigator = () => {
@@ -257,7 +164,11 @@ const TourNavigator = () => {
 };
 ```
 
-### Navigation Types
+</details>
+
+<details>
+<summary><strong>📋 Navigation Types</strong></summary>
+
 ```typescript
 // types/navigation.types.ts
 export type AuthStackParamList = {
@@ -283,9 +194,13 @@ export type RootStackParamList = {
 };
 ```
 
+</details>
+
 ## 🔐 Authentication System
 
-### Authentication Hook
+<details>
+<summary><strong>🎣 Authentication Hook</strong></summary>
+
 ```typescript
 // hooks/useAuth.ts
 export const useAuth = () => {
@@ -403,7 +318,11 @@ export const useAuth = () => {
 };
 ```
 
-### Authentication Service
+</details>
+
+<details>
+<summary><strong>🔧 Authentication Service</strong></summary>
+
 ```typescript
 // services/auth.service.ts
 class AuthService {
@@ -466,9 +385,13 @@ class AuthService {
 export const authService = new AuthService();
 ```
 
+</details>
+
 ## 🎣 Custom Hooks
 
-### Tours Hook
+<details>
+<summary><strong>🏠 Tours Hook</strong></summary>
+
 ```typescript
 // hooks/useTours.ts
 export const useTours = () => {
@@ -512,7 +435,11 @@ export const useTourHistory = () => {
 };
 ```
 
-### Video Call Hook
+</details>
+
+<details>
+<summary><strong>📹 Video Call Hook</strong></summary>
+
 ```typescript
 // hooks/useVideoCall.ts
 export const useVideoCall = (tourId: string) => {
@@ -633,7 +560,11 @@ export const useVideoCall = (tourId: string) => {
 };
 ```
 
-### Network Status Hook
+</details>
+
+<details>
+<summary><strong>🌐 Network Status Hook</strong></summary>
+
 ```typescript
 // hooks/useNetworkStatus.ts
 export const useNetworkStatus = () => {
@@ -661,7 +592,11 @@ export const useNetworkStatus = () => {
 };
 ```
 
-### Notifications Hook
+</details>
+
+<details>
+<summary><strong>🔔 Notifications Hook</strong></summary>
+
 ```typescript
 // hooks/useNotifications.ts
 export const useNotifications = () => {
@@ -716,9 +651,13 @@ export const useNotifications = () => {
 };
 ```
 
+</details>
+
 ## 🎨 UI Components
 
-### Tour Card Component
+<details>
+<summary><strong>🏠 Tour Card Component</strong></summary>
+
 ```typescript
 // components/tours/TourCard.tsx
 interface TourCardProps {
@@ -917,7 +856,11 @@ const styles = StyleSheet.create({
 });
 ```
 
-### Video Call Component
+</details>
+
+<details>
+<summary><strong>📹 Video Call Component</strong></summary>
+
 ```typescript
 // components/video/VideoCall.tsx
 interface VideoCallProps {
@@ -1121,9 +1064,13 @@ const styles = StyleSheet.create({
 });
 ```
 
+</details>
+
 ## 📱 Platform-Specific Considerations
 
-### iOS Configuration
+<details>
+<summary><strong>🍎 iOS Configuration</strong></summary>
+
 ```json
 // app.json
 {
@@ -1188,7 +1135,11 @@ const styles = StyleSheet.create({
 }
 ```
 
-### Permissions Management
+</details>
+
+<details>
+<summary><strong>🔐 Permissions Management</strong></summary>
+
 ```typescript
 // utils/permissions.ts
 import { Camera } from 'expo-camera';
@@ -1255,9 +1206,13 @@ export const checkNotificationPermissions = async () => {
 };
 ```
 
+</details>
+
 ## 🚀 Performance Optimization
 
-### Image Optimization
+<details>
+<summary><strong>🖼️ Image Optimization</strong></summary>
+
 ```typescript
 // utils/imageOptimization.ts
 import * as ImageManipulator from 'expo-image-manipulator';
@@ -1291,7 +1246,11 @@ export const preloadImages = (imageUrls: string[]) => {
 };
 ```
 
-### Offline Support
+</details>
+
+<details>
+<summary><strong>📱 Offline Support</strong></summary>
+
 ```typescript
 // hooks/useOfflineSync.ts
 export const useOfflineSync = () => {
@@ -1325,7 +1284,11 @@ export const useOfflineSync = () => {
 };
 ```
 
-### Memory Management
+</details>
+
+<details>
+<summary><strong>🧠 Memory Management</strong></summary>
+
 ```typescript
 // hooks/useMemoryOptimization.ts
 export const useMemoryOptimization = () => {
@@ -1351,5 +1314,102 @@ export const useMemoryOptimization = () => {
   }, []);
 };
 ```
+
+</details>
+
+## 📊 Testing Strategy
+
+<details>
+<summary><strong>🧪 Testing Overview</strong></summary>
+
+| Test Type | Framework | Description |
+|-----------|-----------|-------------|
+| **Unit Tests** | Jest | Individual component testing |
+| **Integration Tests** | Jest + React Native Testing Library | API and service testing |
+| **End-to-End Tests** | Detox | Complete user journey testing |
+| **Performance Tests** | Custom | Memory and battery optimization |
+
+</details>
+
+<details>
+<summary><strong>🔧 Testing Configuration</strong></summary>
+
+```typescript
+// jest.config.js
+module.exports = {
+  preset: 'react-native',
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+  transformIgnorePatterns: [
+    'node_modules/(?!(react-native|@react-native|expo|@expo|@react-navigation)/)',
+  ],
+  collectCoverageFrom: [
+    'src/**/*.{ts,tsx}',
+    '!src/**/*.d.ts',
+    '!src/**/*.stories.{ts,tsx}',
+  ],
+  coverageThreshold: {
+    global: {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80,
+    },
+  },
+};
+```
+
+</details>
+
+## 🚀 Deployment & CI/CD
+
+<details>
+<summary><strong>📦 Build Configuration</strong></summary>
+
+```yaml
+# .github/workflows/mobile-ci.yml
+name: Mobile CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - run: npm ci
+      - run: npm run test
+      - run: npm run lint
+
+  build-android:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - run: npm ci
+      - run: npx expo build:android
+
+  build-ios:
+    needs: test
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - run: npm ci
+      - run: npx expo build:ios
+```
+
+</details>
 
 This expanded mobile architecture provides a comprehensive foundation for a React Native app focused on video tour participation, with robust authentication, real-time video calling, offline support, and performance optimizations.
