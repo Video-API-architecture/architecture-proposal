@@ -399,12 +399,9 @@ For detailed technical architecture, see [System Design Documentation](system-de
 
 The System Design contains the following architecture files:
 
-🖥️ [Backend Architecture](architecture/BACKEND_ARCHITECTURE.md)
-
-💻 [Frontend Architecture](architecture/FRONTEND_ARCHITECTURE.md)
-
-📱 [Mobile Architecture](architecture/MOBILE_ARCHITECTURE.md)
-
-☁️ [Infrastructure Architecture](architecture/INFRA_ARCHITECTURE.md)
+- 🖥️ [Backend Architecture](architecture/BACKEND_ARCHITECTURE.md)
+- 💻 [Frontend Architecture](architecture/FRONTEND_ARCHITECTURE.md)
+- 📱 [Mobile Architecture](architecture/MOBILE_ARCHITECTURE.md)
+- ☁️ [Infrastructure Architecture](architecture/INFRA_ARCHITECTURE.md)
 
 </details>
