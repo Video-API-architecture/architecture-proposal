@@ -22,15 +22,12 @@
     - [C4](#c4)
       - [System Context](#system-context)
       - [Container Diagram](#container-diagram)
-        - [API Surface (GraphQL + REST)](#api-surface-graphql--rest)
+        - [API Surface (REST)](#api-surface-rest)
       - [Component Diagram](#component-diagram)
-        - [Api engine](#api-engine)
-        - [Authentication engine](#authentication-engine)
-        - [Video Tours engine](#tour-engine)
-      - [Code](#code)
+        - [Code](#code)
     - [Rails API](#rails-api)
       - [Technologies](#technologies)
-      - [API Surface (GraphQL + REST)](#api-surface-graphql--rest)
+      - [API Surface (REST)](#api-surface-rest)
       - [Databases](#databases)
       - [Asynchronous Jobs](#asynchronous-jobs)
       - [Error Handling](#error-handling)
@@ -47,7 +44,6 @@
       - [API Integration Strategy](#api-integration-strategy)
       - [Testing Strategy](#testing-strategy)
       - [Styling & Theming](#styling--theming)
-      - [Performance Optimization](#performance-optimization)
       - [Security](#security)
     - [React Native](#react-native)
       - [Technologies](#technologies)
@@ -160,11 +156,6 @@
 | **Page Load Time** | < 3 seconds |
 | **Database Query Time** | < 100ms |
 
-#### Future Enhancements
-
-**Planned Features:**
-- **AI Integration**: Smart property recommendations
-
 ### Systems Design - Low Level
 
 #### Gathering System Requirements
@@ -233,18 +224,15 @@
 | **Cache** | Redis for session and cache data |
 | **File Storage** | S3 for images and recordings |
 
-###### API Surface (GraphQL + REST)
+###### API Surface (REST)
 
 | API Type | Description |
 |----------|-------------|
 | **REST Endpoints** | CRUD operations for resources |
-| **GraphQL** | Flexible queries for complex data requirements |
 | **WebSocket** | Real-time updates and notifications |
 | **File Upload** | Multipart form data for images and videos |
 
 ##### Component Diagram
-
-###### Api engine
 
 | Component | Description |
 |-----------|-------------|
@@ -253,19 +241,12 @@
 | **Models** | Data models and database interactions |
 | **Serializers** | JSON response formatting |
 
-###### Authentication engine
-
 | Component | Description |
 |-----------|-------------|
 | **JWT Service** | Token generation and validation |
 | **OAuth Integration** | Social login providers |
 | **Password Management** | Secure password handling |
 | **Session Management** | User session tracking |
-
-###### Video Tours engine
-
-| Component | Description |
-|-----------|-------------|
 | **Call Management** | Video call lifecycle management |
 | **Recording Service** | Call recording and storage |
 | **Quality Control** | Video quality monitoring and adjustment |
@@ -278,7 +259,6 @@
 | **Modular Structure** | Clear separation of concerns |
 | **Service Objects** | Business logic encapsulation |
 | **Concerns** | Shared functionality across models |
-| **Tests** | Comprehensive test coverage |
 | **Factories & Fixtures** | Reusable test data for users, properties, bookings |
 | **Tests** | Comprehensive unit, integration, and end-to-end coverage for auth, property CRUD, booking flow, dashboards, analytics events, and background jobs |
 
@@ -291,10 +271,9 @@
 | **Ruby on Rails 7** | Web framework with API mode |
 | **PostgreSQL** | Primary database |
 | **Redis** | Caching and session storage |
-| **GraphQL** | Flexible API queries |
 | **JWT** | Authentication tokens |
 
-##### API Surface (GraphQL + REST)
+##### API Surface (REST)
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
@@ -303,33 +282,26 @@
 | `/api/v1/auth/password-reset/request` | POST | Trigger reset e-mail/SMS |
 | `/api/v1/auth/password-reset/confirm` | POST | Complete password reset |
 | `/api/v1/users/:id` | GET | User profile |
-| `/api/v1/properties` | GET | List properties |
+| `/api/v1/users/:id` | PATCH | Update user profile |
+| `/api/v1/properties` | GET | List properties with filters |
 | `/api/v1/properties` | POST | Create property (realtor) |
+| `/api/v1/properties/:id` | GET | Get property details |
 | `/api/v1/properties/:id` | PATCH | Update property |
 | `/api/v1/properties/:id` | DELETE | Delete property |
+| `/api/v1/bookings` | GET | List user bookings |
 | `/api/v1/bookings` | POST | Schedule tour booking |
+| `/api/v1/bookings/:id` | GET | Get booking details |
 | `/api/v1/bookings/:id` | PATCH | Reschedule booking |
 | `/api/v1/bookings/:id` | DELETE | Cancel booking |
 | `/api/v1/dashboards/realtor` | GET | Realtor dashboard metrics & upcoming tours |
 | `/api/v1/dashboards/buyer` | GET | Buyer dashboard upcoming & history |
 | `/api/v1/analytics/realtor` | GET | Realtor analytics dashboard data |
-| `/api/v1/calls` | POST | Video call (tour) management |
-
-**GraphQL Schema:**
-| Category | Operations |
-|----------|------------|
-| **User types and queries** | - |
-| **Property types and filters** | - |
-| **Call types and mutations** | - |
-| **Real-time subscriptions** | - |
-| **Auth mutations** | `register`, `login`, `requestPasswordReset`, `confirmPasswordReset` |
-| **User queries** | `currentUser`, `user(id)` |
-| **Property queries & mutations** | `properties`, `property(id)`, `createProperty`, `updateProperty`, `deleteProperty` |
-| **Booking queries & mutations** | `bookings`, `booking(id)`, `createBooking`, `updateBooking`, `cancelBooking` |
-| **Call mutations** | `startCall`, `endCall` |
-| **Dashboard queries** | `realtorDashboard`, `buyerDashboard` |
-| **Analytics query** | `realtorAnalytics` |
-| **Real-time subscriptions** | `bookingStatusChanged`, `callUpdated` |
+| `/api/v1/calls` | POST | Create video call (tour) |
+| `/api/v1/calls/:id` | GET | Get call details |
+| `/api/v1/calls/:id/join` | POST | Join video call |
+| `/api/v1/calls/:id/end` | POST | End video call |
+| `/api/v1/upload/images` | POST | Upload property images |
+| `/api/v1/upload/recordings` | POST | Upload call recordings |
 
 ##### Databases
 
@@ -400,7 +372,6 @@
 | **AWS ECS** | Container orchestration |
 | **Blue-Green Deployment** | Zero-downtime deployments |
 
-**Additional DevOps Considerations:**
 | Consideration | Description |
 |---------------|-------------|
 | **Infrastructure as Code (IaC)** | Terraform modules provision VPCs, ECS clusters, RDS, and S3 buckets |
@@ -412,7 +383,6 @@
 
 ##### Observability  
 
-**Monitoring & Alerting Enhancements:**
 | Component | Description |
 |-----------|-------------|
 | **Key Metrics** | API p95 latency, video call setup time, Chime meeting duration, error rates, CPU/Memory of ECS tasks |
@@ -504,9 +474,9 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 | Strategy | Description |
 |----------|-------------|
 | **Axios** | HTTP client with interceptors |
-| **GraphQL Client** | Apollo Client for GraphQL |
 | **WebSocket** | Real-time updates |
 | **Request Caching** | Optimistic updates and caching |
+| **File Upload** | Multipart form data handling |
 
 ##### Testing Strategy
 
@@ -524,16 +494,6 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 | **Tailwind CSS** | Utility-first styling |
 | **CSS Modules** | Component-scoped styles |
 | **Design System** | Consistent component library |
-| **Dark Mode** | Theme switching capability |
-
-##### Performance Optimization
-
-| Technique | Description |
-|-----------|-------------|
-| **Code Splitting** | Lazy loading of components |
-| **Memoization** | React.memo and useMemo |
-| **Virtual Scrolling** | Large list optimization |
-| **Image Optimization** | Lazy loading and compression |
 
 ##### Security
 
@@ -581,7 +541,6 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 | **Crash Reporting** | Sentry integration |
 | **Network Error Handling** | Offline mode support |
 | **User Feedback** | Toast and alert notifications |
-| **Error Recovery** | Automatic retry mechanisms |
 
 ##### Offline Capabilities (Support & Sync)
 
@@ -620,20 +579,14 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 
 ##### Deep Linking & Navigation
 
-| Feature | Description |
-|---------|-------------|
-| **Deep Links** | Direct navigation to specific content |
-| **Universal Links** | iOS deep linking |
-| **App Links** | Android deep linking |
-| **Navigation State** | Persistent navigation state |
+| Feature | Description | Priority |
+|---------|-------------|----------|
+| **Deep Links** | Direct navigation to specific content | Phase 2 |
+| **Universal Links** | iOS deep linking | Phase 2 |
+| **App Links** | Android deep linking | Phase 2 |
+| **Navigation State** | Persistent navigation state | Phase 2 |
 
-##### Mobile Security
-
-| Security Measure | Description |
-|-----------------|-------------|
-| **Certificate Pinning** | SSL certificate validation |
-| **Secure Storage** | Encrypted local storage |
-| **App Integrity** | Code signing and validation |
+**Note:** Deep linking is a user experience enhancement for property sharing and tour invitations. Not required for MVP but recommended for Phase 2 to improve user engagement and lead generation.
 
 #### Tests and Delivery Automation
 
