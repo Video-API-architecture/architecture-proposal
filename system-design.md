@@ -2,7 +2,6 @@
 
 - [Systems Design - High Level](#systems-design---high-level)
     - [Gathering System Requirements](#gathering-system-requirements)
-    - [Coming Up With A Plan](#coming-up-with-a-plan)
     - [Persistent Storage Solution and App Load](#persistent-storage-solution-and-app-load)
     - [Load Balancing](#load-balancing)
     - [Pub-Sub System for Real-Time Behavior](#pub-sub-system-for-real-time-behavior)
@@ -93,14 +92,6 @@
 | Observability              | CloudWatch Agent + Fluent Bit on ECS| Logs, metrics, health checks                                           |
 | Transcription & Notes (P2) | AWS Transcribe + LLM summarizer     | Enables AI-enhanced summaries and note generation later                |
 
-#### Coming Up With A Plan
-
-**Architecture Decisions:**
-- Microservices vs Monolithic: Hybrid approach with modular Rails API
-- Database: PostgreSQL for relational data, Redis for caching
-- Video Service: AWS Chime SDK for managed video infrastructure
-- Frontend: React for web, React Native for mobile
-
 #### Persistent Storage Solution and App Load
 
 **Database Design:**
@@ -120,48 +111,54 @@
 
 #### Load Balancing
 
-**Strategy:**
-- **Application Load Balancer (ALB)**: Route traffic to healthy instances
-- **Auto Scaling Group**: Automatically adjust capacity based on demand
-- **Health Checks**: Monitor instance health and remove unhealthy ones
-- **Session Affinity**: Maintain user sessions across requests
+| Component | Description |
+|-----------|-------------|
+| **Application Load Balancer (ALB)** | Route traffic to healthy instances |
+| **Auto Scaling Group** | Automatically adjust capacity based on demand |
+| **Health Checks** | Monitor instance health and remove unhealthy ones |
+| **Session Affinity** | Maintain user sessions across requests |
 
 #### Pub-Sub System for Real-Time Behavior
 
-**Implementation:**
-- **Redis Pub/Sub**: Real-time notifications and updates
-- **WebSocket Connections**: Persistent connections for live updates
-- **Event-Driven Architecture**: Decoupled services communication
-- **Message Queues**: Asynchronous processing of heavy tasks
+| Component | Description |
+|-----------|-------------|
+| **Redis Pub/Sub** | Real-time notifications and updates |
+| **WebSocket Connections** | Persistent connections for live updates |
+| **Event-Driven Architecture** | Decoupled services communication |
+| **Message Queues** | Asynchronous processing of heavy tasks |
 
 #### Observability & Monitoring
 
-**Tools and Metrics:**
-- **CloudWatch**: AWS native monitoring and logging
-- **DataDog**: Application performance monitoring
-- **Sentry**: Error tracking and performance monitoring
-- **Custom Dashboards**: Business metrics and KPIs
+| Tool | Purpose |
+|------|---------|
+| **CloudWatch** | AWS native monitoring and logging |
+| **DataDog** | Application performance monitoring |
+| **Sentry** | Error tracking and performance monitoring |
+| **Custom Dashboards** | Business metrics and KPIs |
 
 #### Security & Compliance
 
-**Security Measures:**
-- **Authentication**: JWT tokens with refresh mechanism
-- **Authorization**: Role-based access control (RBAC)
-- **Data Encryption**: TLS for data in transit, AES for data at rest
-- **API Security**: Rate limiting, input validation, CORS
+| Security Measure | Description |
+|-----------------|-------------|
+| **Authentication** | JWT tokens with refresh mechanism |
+| **Authorization** | Role-based access control (RBAC) |
+| **Data Encryption** | TLS for data in transit, AES for data at rest |
+| **API Security** | Rate limiting, input validation, CORS |
 
-**Compliance:**
-- **GDPR**: Data privacy and user consent
-- **SOC 2**: Security controls and audit trails
-- **Real Estate Regulations**: Industry-specific compliance
+| Compliance Standard | Description |
+|-------------------|-------------|
+| **GDPR** | Data privacy and user consent |
+| **SOC 2** | Security controls and audit trails |
+| **Real Estate Regulations** | Industry-specific compliance |
 
 #### Performance Benchmarks
 
-**Target Metrics:**
-- **API Response Time**: < 200ms (95th percentile)
-- **Video Call Latency**: < 150ms
-- **Page Load Time**: < 3 seconds
-- **Database Query Time**: < 100ms
+| Metric | Target |
+|--------|--------|
+| **API Response Time** | < 200ms (95th percentile) |
+| **Video Call Latency** | < 150ms |
+| **Page Load Time** | < 3 seconds |
+| **Database Query Time** | < 100ms |
 
 #### Future Enhancements
 
@@ -203,226 +200,254 @@
 
 ##### How it works
 
-![System Data Model Diagram](./imgs/system-design-diagram.png)
-
 **Architecture Flow:**
-1. **Client Request**: React/React Native app makes API call
-2. **API Gateway**: Rails API receives and validates request
-3. **Business Logic**: Rails controllers and services process request
-4. **Video Service**: AWS Chime SDK handles video communication
-5. **Database**: PostgreSQL stores persistent data
-6. **Cache**: Redis provides fast access to frequently used data
-7. **Response**: JSON response sent back to client
+| Step | Component | Description |
+|------|-----------|-------------|
+| 1 | **Client Request** | React/React Native app makes API call |
+| 2 | **API Gateway** | Rails API receives and validates request |
+| 3 | **Business Logic** | Rails controllers and services process request |
+| 4 | **Video Service** | AWS Chime SDK handles video communication |
+| 5 | **Database** | PostgreSQL stores persistent data |
+| 6 | **Cache** | Redis provides fast access to frequently used data |
+| 7 | **Response** | JSON response sent back to client |
 
 #### C4
 
 ##### System Context
 
-**System Boundaries:**
-- **External Users**: Realtors and clients
-- **External Systems**: Email services
-- **Internal Systems**: Video platform, property database, user management
+| Category | Components |
+|----------|------------|
+| **External Users** | Realtors and clients |
+| **External Systems** | Email services |
+| **Internal Systems** | Video platform, property database, user management |
 
 ##### Container Diagram
 
-**Container Architecture:**
-- **Web Application**: React SPA served by CDN
-- **Mobile Application**: React Native app distributed via app stores
-- **API Gateway**: Rails API handling all requests
-- **Video Service**: AWS Chime SDK for video communication
-- **Database**: PostgreSQL for persistent storage
-- **Cache**: Redis for session and cache data
-- **File Storage**: S3 for images and recordings
+| Container | Description |
+|-----------|-------------|
+| **Web Application** | React SPA served by CDN |
+| **Mobile Application** | React Native app distributed via app stores |
+| **API Gateway** | Rails API handling all requests |
+| **Video Service** | AWS Chime SDK for video communication |
+| **Database** | PostgreSQL for persistent storage |
+| **Cache** | Redis for session and cache data |
+| **File Storage** | S3 for images and recordings |
 
 ###### API Surface (GraphQL + REST)
 
-**API Design:**
-- **REST Endpoints**: CRUD operations for resources
-- **GraphQL**: Flexible queries for complex data requirements
-- **WebSocket**: Real-time updates and notifications
-- **File Upload**: Multipart form data for images and videos
+| API Type | Description |
+|----------|-------------|
+| **REST Endpoints** | CRUD operations for resources |
+| **GraphQL** | Flexible queries for complex data requirements |
+| **WebSocket** | Real-time updates and notifications |
+| **File Upload** | Multipart form data for images and videos |
 
 ##### Component Diagram
 
 ###### Api engine
 
-**Components:**
-- **Controllers**: Handle HTTP requests and responses
-- **Services**: Business logic and external integrations
-- **Models**: Data models and database interactions
-- **Serializers**: JSON response formatting
+| Component | Description |
+|-----------|-------------|
+| **Controllers** | Handle HTTP requests and responses |
+| **Services** | Business logic and external integrations |
+| **Models** | Data models and database interactions |
+| **Serializers** | JSON response formatting |
 
 ###### Authentication engine
 
-**Components:**
-- **JWT Service**: Token generation and validation
-- **OAuth Integration**: Social login providers
-- **Password Management**: Secure password handling
-- **Session Management**: User session tracking
+| Component | Description |
+|-----------|-------------|
+| **JWT Service** | Token generation and validation |
+| **OAuth Integration** | Social login providers |
+| **Password Management** | Secure password handling |
+| **Session Management** | User session tracking |
 
 ###### Video Tours engine
 
-**Components:**
-- **Call Management**: Video call lifecycle management
-- **Recording Service**: Call recording and storage
-- **Quality Control**: Video quality monitoring and adjustment
-- **Analytics**: Call metrics and user behavior tracking
+| Component | Description |
+|-----------|-------------|
+| **Call Management** | Video call lifecycle management |
+| **Recording Service** | Call recording and storage |
+| **Quality Control** | Video quality monitoring and adjustment |
+| **Analytics** | Call metrics and user behavior tracking |
 
 ##### Code
 
-**Code Organization:**
-- **Modular Structure**: Clear separation of concerns
-- **Service Objects**: Business logic encapsulation
-- **Concerns**: Shared functionality across models
-- **Tests**: Comprehensive test coverage
-- **Factories & Fixtures**: Reusable test data for users, properties, bookings
-- **Tests**: Comprehensive unit, integration, and end-to-end coverage for auth, property CRUD, booking flow, dashboards, analytics events, and background jobs
+| Aspect | Description |
+|--------|-------------|
+| **Modular Structure** | Clear separation of concerns |
+| **Service Objects** | Business logic encapsulation |
+| **Concerns** | Shared functionality across models |
+| **Tests** | Comprehensive test coverage |
+| **Factories & Fixtures** | Reusable test data for users, properties, bookings |
+| **Tests** | Comprehensive unit, integration, and end-to-end coverage for auth, property CRUD, booking flow, dashboards, analytics events, and background jobs |
 
 #### Rails API
 
 ##### Technologies
 
-**Core Technologies:**
-- **Ruby on Rails 7**: Web framework with API mode
-- **PostgreSQL**: Primary database
-- **Redis**: Caching and session storage
-- **GraphQL**: Flexible API queries
-- **JWT**: Authentication tokens
+| Technology | Description |
+|------------|-------------|
+| **Ruby on Rails 7** | Web framework with API mode |
+| **PostgreSQL** | Primary database |
+| **Redis** | Caching and session storage |
+| **GraphQL** | Flexible API queries |
+| **JWT** | Authentication tokens |
 
 ##### API Surface (GraphQL + REST)
 
-**REST Endpoints:**
-- `POST /api/v1/auth/register` – User registration
-- `POST /api/v1/auth/login` – User authentication
-- `POST /api/v1/auth/password-reset/request` – Trigger reset e-mail/SMS
-- `POST /api/v1/auth/password-reset/confirm` – Complete password reset
-- `GET  /api/v1/users/:id` – User profile
-- `GET  /api/v1/properties` – List properties
-- `POST /api/v1/properties` – Create property (realtor)
-- `PATCH /api/v1/properties/:id` – Update property
-- `DELETE /api/v1/properties/:id` – Delete property
-- `POST /api/v1/bookings` – Schedule tour booking
-- `PATCH /api/v1/bookings/:id` – Reschedule booking
-- `DELETE /api/v1/bookings/:id` – Cancel booking
-- `GET  /api/v1/dashboards/realtor` – Realtor dashboard metrics & upcoming tours
-- `GET  /api/v1/dashboards/buyer` – Buyer dashboard upcoming & history
-- `GET  /api/v1/analytics/realtor` – Realtor analytics dashboard data
-- `POST /api/v1/calls` – Video call (tour) management
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/v1/auth/register` | POST | User registration |
+| `/api/v1/auth/login` | POST | User authentication |
+| `/api/v1/auth/password-reset/request` | POST | Trigger reset e-mail/SMS |
+| `/api/v1/auth/password-reset/confirm` | POST | Complete password reset |
+| `/api/v1/users/:id` | GET | User profile |
+| `/api/v1/properties` | GET | List properties |
+| `/api/v1/properties` | POST | Create property (realtor) |
+| `/api/v1/properties/:id` | PATCH | Update property |
+| `/api/v1/properties/:id` | DELETE | Delete property |
+| `/api/v1/bookings` | POST | Schedule tour booking |
+| `/api/v1/bookings/:id` | PATCH | Reschedule booking |
+| `/api/v1/bookings/:id` | DELETE | Cancel booking |
+| `/api/v1/dashboards/realtor` | GET | Realtor dashboard metrics & upcoming tours |
+| `/api/v1/dashboards/buyer` | GET | Buyer dashboard upcoming & history |
+| `/api/v1/analytics/realtor` | GET | Realtor analytics dashboard data |
+| `/api/v1/calls` | POST | Video call (tour) management |
 
 **GraphQL Schema:**
-- User types and queries
-- Property types and filters
-- Call types and mutations
-- Real-time subscriptions
-- Auth mutations: `register`, `login`, `requestPasswordReset`, `confirmPasswordReset`
-- User queries: `currentUser`, `user(id)`
-- Property queries & mutations: `properties`, `property(id)`, `createProperty`, `updateProperty`, `deleteProperty`
-- Booking queries & mutations: `bookings`, `booking(id)`, `createBooking`, `updateBooking`, `cancelBooking`
-- Call mutations: `startCall`, `endCall`
-- Dashboard queries: `realtorDashboard`, `buyerDashboard`
-- Analytics query: `realtorAnalytics`
-- Real-time subscriptions: `bookingStatusChanged`, `callUpdated`
+| Category | Operations |
+|----------|------------|
+| **User types and queries** | - |
+| **Property types and filters** | - |
+| **Call types and mutations** | - |
+| **Real-time subscriptions** | - |
+| **Auth mutations** | `register`, `login`, `requestPasswordReset`, `confirmPasswordReset` |
+| **User queries** | `currentUser`, `user(id)` |
+| **Property queries & mutations** | `properties`, `property(id)`, `createProperty`, `updateProperty`, `deleteProperty` |
+| **Booking queries & mutations** | `bookings`, `booking(id)`, `createBooking`, `updateBooking`, `cancelBooking` |
+| **Call mutations** | `startCall`, `endCall` |
+| **Dashboard queries** | `realtorDashboard`, `buyerDashboard` |
+| **Analytics query** | `realtorAnalytics` |
+| **Real-time subscriptions** | `bookingStatusChanged`, `callUpdated` |
 
 ##### Databases
 
-**Database Design:**
-- **Users Table**: User profiles and authentication
-- **PasswordResetTokens Table**: One-time reset tokens (user_id, token, expires_at, used_at)
-- **Properties Table**: Property listings and details
-- **Bookings Table**: Tour bookings (buyer_id, property_id, scheduled_at, status)
-- **Calls Table**: Call history and recordings (maps to bookings)
-- **AnalyticsAggregates Table** _(optional)_: Cached stats for realtor dashboards
-- **AuditLogs Table** _(optional)_: Immutable system & user actions for compliance (actor_id, action, target_id, meta, created_at)
+| Table | Description |
+|-------|-------------|
+| **Users Table** | User profiles and authentication |
+| **PasswordResetTokens Table** | One-time reset tokens (user_id, token, expires_at, used_at) |
+| **Properties Table** | Property listings and details |
+| **Bookings Table** | Tour bookings (buyer_id, property_id, scheduled_at, status) |
+| **Calls Table** | Call history and recordings (maps to bookings) |
+| **AnalyticsAggregates Table** _(optional)_ | Cached stats for realtor dashboards |
+| **AuditLogs Table** _(optional)_ | Immutable system & user actions for compliance (actor_id, action, target_id, meta, created_at) |
 
 ##### Asynchronous Jobs
 
-**Background Processing:**
-- **Email Notifications**: Appointment reminders **and password-reset emails**
-- **Booking Reminder Job**: Send reminders & push notifications X minutes before a tour
-- **Video Processing**: Recording compression and storage
-- **Dashboard Aggregation**: Nightly roll-up of metrics into AnalyticsAggregates
-- **Analytics Ingestion**: Stream events → warehouse (e.g., Snowflake/Kinesis)
-- **Property Image Processing**: Resize/compress images on upload
-- **Data Sync**: External service synchronization
+| Job Type | Description |
+|----------|-------------|
+| **Email Notifications** | Appointment reminders **and password-reset emails** |
+| **Booking Reminder Job** | Send reminders & push notifications X minutes before a tour |
+| **Video Processing** | Recording compression and storage |
+| **Dashboard Aggregation** | Nightly roll-up of metrics into AnalyticsAggregates |
+| **Analytics Ingestion** | Stream events → warehouse (e.g., Snowflake/Kinesis) |
+| **Property Image Processing** | Resize/compress images on upload |
+| **Data Sync** | External service synchronization |
 
 ##### Error Handling
 
-**Error Management:**
-- **Global Exception Handler**: Centralized error processing
-- **Custom Error Classes**: Domain-specific errors
-- **Error Logging**: Structured error logging
-- **Client Error Responses**: User-friendly error messages
+| Component | Description |
+|-----------|-------------|
+| **Global Exception Handler** | Centralized error processing |
+| **Custom Error Classes** | Domain-specific errors |
+| **Error Logging** | Structured error logging |
+| **Client Error Responses** | User-friendly error messages |
 
 ##### MVC and Services
 
-**Architecture Pattern:**
-- **Models**: Data validation and business rules
-- **Views**: JSON response formatting
-- **Controllers**: Request handling and routing
-- **Services**: Complex business logic
+| Layer | Description |
+|-------|-------------|
+| **Models** | Data validation and business rules |
+| **Views** | JSON response formatting |
+| **Controllers** | Request handling and routing |
+| **Services** | Complex business logic |
 
 ##### Concerns
 
-**Shared Functionality:**
-- **Authentication**: User authentication and authorization
-- **Caching**: Response caching strategies
-- **Logging**: Request and response logging
-- **Validation**: Input validation and sanitization
+| Concern | Description |
+|---------|-------------|
+| **Authentication** | User authentication and authorization |
+| **Caching** | Response caching strategies |
+| **Logging** | Request and response logging |
+| **Validation** | Input validation and sanitization |
 
 ##### Authorization & Security
 
-**Security Measures:**
-- **JWT Authentication**: Secure token-based authentication
-- **Role-Based Access**: User permission management
-- **API Rate Limiting**: Request throttling
-- **Input Validation**: SQL injection and XSS prevention
+| Security Measure | Description |
+|-----------------|-------------|
+| **JWT Authentication** | Secure token-based authentication |
+| **Role-Based Access** | User permission management |
+| **API Rate Limiting** | Request throttling |
+| **Input Validation** | SQL injection and XSS prevention |
 
 ##### DevOps & CI/CD
 
-**Deployment Pipeline:**
-- **GitHub Actions**: Automated testing and deployment
-- **Docker**: Containerized application deployment
-- **AWS ECS**: Container orchestration
-- **Blue-Green Deployment**: Zero-downtime deployments
+| Component | Description |
+|-----------|-------------|
+| **GitHub Actions** | Automated testing and deployment |
+| **Docker** | Containerized application deployment |
+| **AWS ECS** | Container orchestration |
+| **Blue-Green Deployment** | Zero-downtime deployments |
 
 **Additional DevOps Considerations:**
-- **Infrastructure as Code (IaC)**: Terraform modules provision VPCs, ECS clusters, RDS, and S3 buckets.
-- **Branching Strategy:** Trunk-based development with short-lived feature branches; protected `main` branch with required status checks.
-- **Environment Strategy:** Isolated **dev**, **staging**, and **production** accounts; feature flags for risky features.
-- **Secrets Management:** AWS Secrets Manager and SSM Parameter Store; rotation policies for DB and JWT secrets.
-- **Rollback & Release:** Blue-green by default; canary releases for high-risk changes; one-click rollback via ECS task definition history.
-- **CI Quality Gates:** Linting, tests, security scans (Snyk) must pass before merge.
+| Consideration | Description |
+|---------------|-------------|
+| **Infrastructure as Code (IaC)** | Terraform modules provision VPCs, ECS clusters, RDS, and S3 buckets |
+| **Branching Strategy** | Trunk-based development with short-lived feature branches; protected `main` branch with required status checks |
+| **Environment Strategy** | Isolated **dev**, **staging**, and **production** accounts; feature flags for risky features |
+| **Secrets Management** | AWS Secrets Manager and SSM Parameter Store; rotation policies for DB and JWT secrets |
+| **Rollback & Release** | Blue-green by default; canary releases for high-risk changes; one-click rollback via ECS task definition history |
+| **CI Quality Gates** | Linting, tests, security scans (Snyk) must pass before merge |
 
 ##### Observability  
 
 **Monitoring & Alerting Enhancements:**
-- **Key Metrics:** API p95 latency, video call setup time, Chime meeting duration, error rates, CPU/Memory of ECS tasks.
-- **Dashboards:** Real-time Grafana dashboards for business KPIs (tours per day) and system KPIs.
-- **Alerting:** PagerDuty integration; SLO-based alerts (e.g., >1% error rate for 5 min) route to on-call engineer.
-- **Synthetic Checks:** CloudWatch Synthetics canaries hit critical endpoints every minute.
-- **Log Aggregation:** Fluent Bit ships JSON logs to CloudWatch Logs and DataDog for correlation.
+| Component | Description |
+|-----------|-------------|
+| **Key Metrics** | API p95 latency, video call setup time, Chime meeting duration, error rates, CPU/Memory of ECS tasks |
+| **Dashboards** | Real-time Grafana dashboards for business KPIs (tours per day) and system KPIs |
+| **Alerting** | PagerDuty integration; SLO-based alerts (e.g., >1% error rate for 5 min) route to on-call engineer |
+| **Synthetic Checks** | CloudWatch Synthetics canaries hit critical endpoints every minute |
+| **Log Aggregation** | Fluent Bit ships JSON logs to CloudWatch Logs and DataDog for correlation |
 
 #### Scalability & Availability
 
-- **Target Scale:** 10 k concurrent users / 500 simultaneous video tours in MVP phase.
-- **Multi-AZ Deployment:** ECS services span at least 2 AZs; RDS in Multi-AZ mode with automatic fail-over.
-- **Auto-Scaling:** ALB request count and custom Chime metrics drive ECS task scaling.
-- **Read Replicas & Caching:** Add RDS read replicas and Redis caching tier when read QPS > 2 k.
-- **Disaster Recovery:** Daily RDS snapshots (retain 7 days) + S3 cross-region replication; RTO < 60 min, RPO < 15 min.
+| Aspect | Description |
+|--------|-------------|
+| **Target Scale** | 10 k concurrent users / 500 simultaneous video tours in MVP phase |
+| **Multi-AZ Deployment** | ECS services span at least 2 AZs; RDS in Multi-AZ mode with automatic fail-over |
+| **Auto-Scaling** | ALB request count and custom Chime metrics drive ECS task scaling |
+| **Read Replicas & Caching** | Add RDS read replicas and Redis caching tier when read QPS > 2 k |
+| **Disaster Recovery** | Daily RDS snapshots (retain 7 days) + S3 cross-region replication; RTO < 60 min, RPO < 15 min |
 
 #### Security & Compliance
 
-- **Data Classification:** User PII, recordings, and transcripts stored in encrypted S3 buckets (SSE-KMS).
-- **Vulnerability Management:** Weekly Snyk scans; monthly dependency upgrades.
-- **Pen-Testing:** External penetration test prior to launch and annually thereafter.
-- **Incident Response:** Runbooks in OpsGenie; post-mortems within 48 h.
-- **Logging & Audit:** CloudTrail enabled for all accounts; immutable logs stored in Glacier.
+| Security Measure | Description |
+|-----------------|-------------|
+| **Data Classification** | User PII, recordings, and transcripts stored in encrypted S3 buckets (SSE-KMS) |
+| **Vulnerability Management** | Weekly Snyk scans; monthly dependency upgrades |
+| **Pen-Testing** | External penetration test prior to launch and annually thereafter |
+| **Incident Response** | Runbooks in OpsGenie; post-mortems within 48 h |
+| **Logging & Audit** | CloudTrail enabled for all accounts; immutable logs stored in Glacier |
 
 **API Documentation & Tooling:**
-- **OpenAPI (Swagger):** Auto-generated YAML spec from Rails controllers; hosted at `/docs`.
-- **GraphQL Docs:** Voyager or GraphiQL explorer deployed with schema introspection.
-- **Postman Collection:** Exported nightly via CI; shared with frontend & partners.
-- **SDKs:** OpenAPI generator produces TypeScript / Ruby SDKs for consumers.
+| Tool | Description |
+|------|-------------|
+| **OpenAPI (Swagger)** | Auto-generated YAML spec from Rails controllers; hosted at `/docs` |
+| **GraphQL Docs** | Voyager or GraphiQL explorer deployed with schema introspection |
+| **Postman Collection** | Exported nightly via CI; shared with frontend & partners |
+| **SDKs** | OpenAPI generator produces TypeScript / Ruby SDKs for consumers |
 
 #### User Roles & Permissions
 
@@ -439,163 +464,198 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 
 ##### Technologies
 
-**Frontend Stack:**
-- **React 18**: UI library with hooks
-- **TypeScript**: Type-safe JavaScript
-- **Vite**: Fast build tool and dev server
-- **Tailwind CSS**: Utility-first CSS framework
-- **React Query**: Server state management
+| Technology | Description |
+|------------|-------------|
+| **React 18** | UI library with hooks |
+| **TypeScript** | Type-safe JavaScript |
+| **Vite** | Fast build tool and dev server |
+| **Tailwind CSS** | Utility-first CSS framework |
+| **React Query** | Server state management |
 
 ##### Design Patterns
 
-**Architecture Patterns:**
-- **Component Composition**: Reusable component design
-- **Custom Hooks**: Shared logic extraction
-- **Context API**: Global state management
-- **Render Props**: Flexible component patterns
+| Pattern | Description |
+|---------|-------------|
+| **Component Composition** | Reusable component design |
+| **Custom Hooks** | Shared logic extraction |
+| **Context API** | Global state management |
+| **Render Props** | Flexible component patterns |
 
 ##### State Management
 
-**State Strategy:**
-- **React Query**: Server state and caching
-- **Context API**: Global application state
-- **Local State**: Component-specific state
-- **URL State**: Navigation and routing state
+| Strategy | Description |
+|----------|-------------|
+| **React Query** | Server state and caching |
+| **Context API** | Global application state |
+| **Local State** | Component-specific state |
+| **URL State** | Navigation and routing state |
 
 ##### Error Handling
 
-**Error Management:**
-- **Error Boundaries**: Component error isolation
-- **Toast Notifications**: User-friendly error messages
-- **Retry Mechanisms**: Automatic retry for failed requests
-- **Fallback UI**: Graceful degradation
+| Component | Description |
+|-----------|-------------|
+| **Error Boundaries** | Component error isolation |
+| **Toast Notifications** | User-friendly error messages |
+| **Retry Mechanisms** | Automatic retry for failed requests |
+| **Fallback UI** | Graceful degradation |
 
 ##### API Integration Strategy
 
-- **Axios**: HTTP client with interceptors
-- **GraphQL Client**: Apollo Client for GraphQL
-- **WebSocket**: Real-time updates
-- **Request Caching**: Optimistic updates and caching
+| Strategy | Description |
+|----------|-------------|
+| **Axios** | HTTP client with interceptors |
+| **GraphQL Client** | Apollo Client for GraphQL |
+| **WebSocket** | Real-time updates |
+| **Request Caching** | Optimistic updates and caching |
 
 ##### Testing Strategy
 
-- **Jest**: Unit testing framework
-- **React Testing Library**: Component testing
-- **Cypress**: End-to-end testing
-- **MSW**: API mocking for tests
+| Test Type | Framework |
+|-----------|-----------|
+| **Jest** | Unit testing framework |
+| **React Testing Library** | Component testing |
+| **Cypress** | End-to-end testing |
+| **MSW** | API mocking for tests |
 
 ##### Styling & Theming
 
-- **Tailwind CSS**: Utility-first styling
-- **CSS Modules**: Component-scoped styles
-- **Design System**: Consistent component library
-- **Dark Mode**: Theme switching capability
+| Approach | Description |
+|----------|-------------|
+| **Tailwind CSS** | Utility-first styling |
+| **CSS Modules** | Component-scoped styles |
+| **Design System** | Consistent component library |
+| **Dark Mode** | Theme switching capability |
 
 ##### Performance Optimization
 
-- **Code Splitting**: Lazy loading of components
-- **Memoization**: React.memo and useMemo
-- **Virtual Scrolling**: Large list optimization
-- **Image Optimization**: Lazy loading and compression
+| Technique | Description |
+|-----------|-------------|
+| **Code Splitting** | Lazy loading of components |
+| **Memoization** | React.memo and useMemo |
+| **Virtual Scrolling** | Large list optimization |
+| **Image Optimization** | Lazy loading and compression |
 
 ##### Security
 
-- **XSS Prevention**: Input sanitization
-- **CSRF Protection**: Cross-site request forgery prevention
-- **Content Security Policy**: Resource loading restrictions
-- **HTTPS**: Secure communication
+| Security Measure | Description |
+|-----------------|-------------|
+| **XSS Prevention** | Input sanitization |
+| **CSRF Protection** | Cross-site request forgery prevention |
+| **Content Security Policy** | Resource loading restrictions |
+| **HTTPS** | Secure communication |
 
 #### React Native
 
 ##### Technologies
 
-##### Mobile Stack
-
-- **React Native**: Cross-platform mobile development
-- **Expo**: Development platform and tools
-- **TypeScript**: Type-safe development
-- **React Navigation**: Navigation library
-- **AWS Amplify**: Mobile backend services
+| Technology | Description |
+|------------|-------------|
+| **React Native** | Cross-platform mobile development |
+| **Expo** | Development platform and tools |
+| **TypeScript** | Type-safe development |
+| **React Navigation** | Navigation library |
+| **AWS Amplify** | Mobile backend services |
 
 ##### Mobile Design Patterns
 
-- **Platform-Specific Components**: Native look and feel
-- **Responsive Design**: Adaptive layouts
-- **Offline-First**: Local data persistence
-- **Push Notifications**: Real-time updates
+| Pattern | Description |
+|---------|-------------|
+| **Platform-Specific Components** | Native look and feel |
+| **Responsive Design** | Adaptive layouts |
+| **Offline-First** | Local data persistence |
+| **Push Notifications** | Real-time updates |
 
 ##### Mobile State Management
 
-- **Redux Toolkit**: Predictable state management
-- **AsyncStorage**: Local data persistence
-- **Realm**: Local database for offline data
-- **State Synchronization**: Online/offline sync
+| Strategy | Description |
+|----------|-------------|
+| **Redux Toolkit** | Predictable state management |
+| **AsyncStorage** | Local data persistence |
+| **Realm** | Local database for offline data |
+| **State Synchronization** | Online/offline sync |
 
 ##### Mobile Error Handling
 
-- **Crash Reporting**: Sentry integration
-- **Network Error Handling**: Offline mode support
-- **User Feedback**: Toast and alert notifications
-- **Error Recovery**: Automatic retry mechanisms
+| Component | Description |
+|-----------|-------------|
+| **Crash Reporting** | Sentry integration |
+| **Network Error Handling** | Offline mode support |
+| **User Feedback** | Toast and alert notifications |
+| **Error Recovery** | Automatic retry mechanisms |
 
 ##### Offline Capabilities (Support & Sync)
 
-- **Local Database**: Realm for offline data storage
-- **Queue System**: Offline action queuing
-- **Sync Engine**: Data synchronization when online
-- **Conflict Resolution**: Merge strategies for conflicts
+| Capability | Description |
+|------------|-------------|
+| **Local Database** | Realm for offline data storage |
+| **Queue System** | Offline action queuing |
+| **Sync Engine** | Data synchronization when online |
+| **Conflict Resolution** | Merge strategies for conflicts |
 
 ##### Video Streaming & SDK Integration
 
-- **AWS Chime SDK**: Native video calling
-- **Adaptive Quality**: Dynamic video quality adjustment
-- **Background Mode**: Call continuation in background
+| Feature | Description |
+|---------|-------------|
+| **AWS Chime SDK** | Native video calling |
+| **Adaptive Quality** | Dynamic video quality adjustment |
+| **Background Mode** | Call continuation in background |
 
 ##### Mobile Testing Strategy
 
-- **Jest**: Unit testing
-- **Detox**: End-to-end testing
-- **Device Testing**: Real device testing
-- **Performance Testing**: Memory and battery optimization
+| Test Type | Framework |
+|-----------|-----------|
+| **Jest** | Unit testing |
+| **Detox** | End-to-end testing |
+| **Device Testing** | Real device testing |
+| **Performance Testing** | Memory and battery optimization |
 
 ##### Permissions & Device APIs Integration
 
-- **Camera Access**: Video call permissions
-- **Microphone Access**: Audio permissions
-- **Location Services**: Property proximity features
-- **Push Notifications**: Real-time alerts
+| Permission | Purpose |
+|------------|---------|
+| **Camera Access** | Video call permissions |
+| **Microphone Access** | Audio permissions |
+| **Location Services** | Property proximity features |
+| **Push Notifications** | Real-time alerts |
 
 ##### Deep Linking & Navigation
 
-- **Deep Links**: Direct navigation to specific content
-- **Universal Links**: iOS deep linking
-- **App Links**: Android deep linking
-- **Navigation State**: Persistent navigation state
+| Feature | Description |
+|---------|-------------|
+| **Deep Links** | Direct navigation to specific content |
+| **Universal Links** | iOS deep linking |
+| **App Links** | Android deep linking |
+| **Navigation State** | Persistent navigation state |
 
 ##### Mobile Security
 
-- **Certificate Pinning**: SSL certificate validation
-- **Secure Storage**: Encrypted local storage
-- **App Integrity**: Code signing and validation
+| Security Measure | Description |
+|-----------------|-------------|
+| **Certificate Pinning** | SSL certificate validation |
+| **Secure Storage** | Encrypted local storage |
+| **App Integrity** | Code signing and validation |
 
 #### Tests and Delivery Automation
 
-**Testing Strategy:**
-- **Unit Tests**: Individual component testing
-- **Integration Tests**: API and service testing
-- **End-to-End Tests**: Complete user journey testing
-- **Performance Tests**: Load and stress testing
+| Test Type | Description |
+|-----------|-------------|
+| **Unit Tests** | Individual component testing |
+| **Integration Tests** | API and service testing |
+| **End-to-End Tests** | Complete user journey testing |
+| **Performance Tests** | Load and stress testing |
 
-**Automation Pipeline:**
-- **CI/CD**: Automated testing and deployment
-- **Code Quality**: Automated linting and formatting
-- **Security Scanning**: Automated vulnerability detection
-- **Performance Monitoring**: Automated performance testing
+| Pipeline Component | Description |
+|-------------------|-------------|
+| **CI/CD** | Automated testing and deployment |
+| **Code Quality** | Automated linting and formatting |
+| **Security Scanning** | Automated vulnerability detection |
+| **Performance Monitoring** | Automated performance testing |
 
 #### Docker
 
-**Containerization:**
-- **Multi-stage Builds**: Optimized image creation
-- **Environment Configuration**: Environment-specific settings
-- **Service Orchestration**: Docker Compose for local development
-- **Production Deployment**: Containerized production deployment
+| Aspect | Description |
+|--------|-------------|
+| **Multi-stage Builds** | Optimized image creation |
+| **Environment Configuration** | Environment-specific settings |
+| **Service Orchestration** | Docker Compose for local development |
+| **Production Deployment** | Containerized production deployment |
