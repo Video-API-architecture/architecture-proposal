@@ -28,9 +28,9 @@ The mobile app is built with **React Native** and **Expo**, designed to provide 
 <details>
 <summary><strong>🔐 Authentication</strong></summary>
 
-- Sign up with email/password
-- Sign in with existing credentials
-- Forgot password flow
+   - Sign up with email/password
+   - Sign in with existing credentials
+   - Forgot password flow
 - Secure token storage with refresh mechanism
 - Biometric authentication (Touch ID/Face ID)
 

@@ -1,5 +1,90 @@
 # RealtyForYou Architecture Proposal
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add click handlers for all summary elements
+    const summaries = document.querySelectorAll('summary');
+    summaries.forEach(summary => {
+        summary.addEventListener('click', function(e) {
+            e.preventDefault();
+            const details = this.parentElement;
+            const isOpen = details.hasAttribute('open');
+            
+            if (isOpen) {
+                details.removeAttribute('open');
+            } else {
+                details.setAttribute('open', '');
+            }
+        });
+    });
+    
+    // Add expand all / collapse all functionality
+    const expandAllBtn = document.createElement('button');
+    expandAllBtn.textContent = 'Expand All';
+    expandAllBtn.style.cssText = 'margin: 10px 5px; padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;';
+    expandAllBtn.onclick = function() {
+        document.querySelectorAll('details').forEach(details => details.setAttribute('open', ''));
+    };
+    
+    const collapseAllBtn = document.createElement('button');
+    collapseAllBtn.textContent = 'Collapse All';
+    collapseAllBtn.style.cssText = 'margin: 10px 5px; padding: 8px 16px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer;';
+    collapseAllBtn.onclick = function() {
+        document.querySelectorAll('details').forEach(details => details.removeAttribute('open'));
+    };
+    
+    // Insert buttons after the title
+    const title = document.querySelector('h1');
+    title.parentNode.insertBefore(expandAllBtn, title.nextSibling);
+    title.parentNode.insertBefore(collapseAllBtn, expandAllBtn.nextSibling);
+});
+</script>
+
+<style>
+details {
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+summary {
+    background: #f8f9fa;
+    padding: 15px 20px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 1px solid #ddd;
+    transition: background-color 0.2s;
+}
+
+summary:hover {
+    background: #e9ecef;
+}
+
+details[open] summary {
+    background: #007bff;
+    color: white;
+}
+
+details > div {
+    padding: 20px;
+}
+
+details table {
+    margin: 10px 0;
+}
+
+details h3, details h4 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+details h3:first-child, details h4:first-child {
+    margin-top: 0;
+}
+</style>
+
 This document presents a comprehensive **Systems Design solution** for a video streaming application that facilitates live video calls between realtors and clients. The platform enables virtual property tours, allowing realtors to showcase properties remotely while providing clients with immersive viewing experiences.
 
 ## 📋 Table of Contents
@@ -31,7 +116,9 @@ This document presents a comprehensive **Systems Design solution** for a video s
     - [Google Analytics](#google-analytics)
   - [Systems Design](system-design.md)
 
-## 🎯 Executive Summary
+<details>
+<summary>## 🎯 Executive Summary</summary>
+<div>
 
 This document presents a comprehensive architecture proposal for a **video streaming application** designed to facilitate live video calls between realtors and clients. The solution leverages modern web technologies and cloud services to deliver a robust, scalable, and user-friendly platform.
 
@@ -45,7 +132,12 @@ This document presents a comprehensive architecture proposal for a **video strea
 | **☁️ Cloud-Native Architecture**      | Scalable infrastructure with containerization | AWS ECS/Fargate |
 | **📊 Comprehensive Analytics**        | Multi-platform tracking and user behavior analysis | Mixpanel + GA4 + Hotjar |
 
-## 📈 Product View
+</div>
+</details>
+
+<details>
+<summary>## 📈 Product View</summary>
+<div>
 
 ### 🚀 Expected Business Impact
 
@@ -316,116 +408,113 @@ The video streaming platform is expected to revolutionize the real estate indust
 | Booking Success Rate | > 98 %    | HTTP 2xx on booking endpoints |
 | Error Rate           | < 1 % 5xx | 5-min rolling                 |
 
-## 🔧 Technical View
+</div>
+</details>
 
-### 🏗️ Technical Quality Pillars
+<details>
+<summary>## 🔧 Technical View</summary>
+<div>
+
+### Product & Delivery Gaps
+
+| Gap | Description | Impact | Mitigation |
+|-----|-------------|--------|------------|
+| **📱 Mobile App Complexity** | React Native development requires specialized knowledge | Development timeline risk | Hire experienced React Native developer or use Expo |
+| **🎥 Video Streaming Expertise** | AWS Chime SDK integration requires video streaming knowledge | Technical implementation risk | Leverage AWS documentation and community resources |
+| **🔒 Security Compliance** | Real estate data requires specific security measures | Compliance risk | Engage security consultant for audit |
+| **📊 Analytics Integration** | Multi-platform analytics requires careful implementation | Data quality risk | Use established analytics platforms with good documentation |
+
+### Technical Quality Pillars
 
 #### 🔍 Observability
 
-| Component | Description | Implementation |
-|-----------|-------------|----------------|
-| **Logging** | Structured logging with correlation IDs | Centralized log aggregation with request tracing |
-| **Monitoring** | Real-time system health and performance metrics | CloudWatch dashboards and custom metrics |
-| **Tracing** | Distributed tracing for request flows | AWS X-Ray integration for request correlation |
-| **Alerting** | Proactive notification of issues and anomalies | PagerDuty integration with SLO-based alerts |
+| Component | Description | Tools |
+|-----------|-------------|-------|
+| **Application Monitoring** | Real-time performance monitoring | DataDog, New Relic |
+| **Error Tracking** | Comprehensive error logging and alerting | Sentry, Rollbar |
+| **User Analytics** | User behavior and engagement tracking | Mixpanel, Google Analytics |
+| **Infrastructure Monitoring** | System health and resource monitoring | CloudWatch, Grafana |
 
 #### 📈 Scalability
 
-| Strategy | Description | Implementation |
-|----------|-------------|----------------|
-| **Horizontal Scaling** | Auto-scaling based on demand | ECS Auto Scaling Groups with CPU/Memory metrics |
-| **Load Balancing** | Distribution of traffic across multiple instances | Application Load Balancer (ALB) with health checks |
-| **Database Sharding** | Partitioning data for better performance | Read replicas and connection pooling |
-| **CDN Integration** | Global content delivery for static assets | CloudFront distribution for images and static files |
+| Aspect | Description | Strategy |
+|--------|-------------|----------|
+| **Horizontal Scaling** | Add more instances to handle increased load | Auto-scaling groups |
+| **Database Scaling** | Optimize database performance for growth | Read replicas, connection pooling |
+| **CDN Implementation** | Distribute content globally for faster access | CloudFront, Cloudflare |
+| **Caching Strategy** | Reduce database load with intelligent caching | Redis, Memcached |
 
 #### ⚡ Performance
 
-| Metric | Target | Implementation |
-|--------|--------|----------------|
-| **Response Time** | < 200ms for API calls | Optimized database queries and Redis caching |
-| **Video Quality** | Adaptive bitrate streaming | AWS Chime SDK with dynamic quality adjustment |
-| **Caching** | Redis for frequently accessed data | Multi-level caching strategy with TTL |
-| **Optimization** | Image compression and lazy loading | WebP format and progressive image loading |
+| Metric | Target | Optimization Strategy |
+|--------|--------|---------------------|
+| **Page Load Time** | < 3 seconds | Code splitting, lazy loading |
+| **API Response Time** | < 200ms | Database optimization, caching |
+| **Video Call Latency** | < 150ms | WebRTC optimization, regional servers |
+| **Mobile App Performance** | Smooth 60fps | React Native optimization |
 
 #### 🔧 Maintainability
 
-| Aspect | Description | Implementation |
+| Aspect | Description | Best Practices |
 |--------|-------------|----------------|
-| **Code Quality** | Automated linting and code reviews | RuboCop, ESLint, and mandatory PR reviews |
-| **Documentation** | Comprehensive API and code documentation | OpenAPI specs, inline code docs, and README files |
-| **Testing** | Unit, integration, and end-to-end tests | RSpec, Jest, and Cypress test suites |
-| **Modular Architecture** | Clear separation of concerns | Service objects, concerns, and layered architecture |
+| **Code Quality** | Clean, readable, and well-documented code | ESLint, Prettier, TypeScript |
+| **Testing Strategy** | Comprehensive test coverage | Unit, integration, and E2E tests |
+| **Documentation** | Clear technical documentation | API docs, architecture diagrams |
+| **Code Review Process** | Systematic code review workflow | Pull request reviews, automated checks |
 
 #### 🧪 Testability
 
-| Requirement | Target | Implementation |
-|-------------|--------|----------------|
-| **Test Coverage** | > 80% code coverage | Automated coverage reporting with SimpleCov |
-| **Mock Services** | Isolated testing environments | FactoryBot, MSW, and Docker test containers |
-| **CI/CD Pipeline** | Automated testing and deployment | GitHub Actions with parallel test execution |
-| **Performance Testing** | Load testing and stress testing | Artillery.js and k6 for API and video call testing |
+| Test Type | Coverage | Tools |
+|-----------|----------|-------|
+| **Unit Tests** | > 80% | Jest, RSpec |
+| **Integration Tests** | Critical paths | Cypress, Capybara |
+| **End-to-End Tests** | User journeys | Playwright, Selenium |
+| **Performance Tests** | Load testing | Artillery, JMeter |
 
 ### Analytics
 
-A robust analytics strategy is essential for understanding user behavior, optimizing product features, and driving business outcomes. This platform leverages a multi-tool analytics stack to provide both qualitative and quantitative insights.
+#### Remote Tour Tracking Plan
 
----
+| Event | Description | Business Value |
+|-------|-------------|----------------|
+| **Tour Requested** | User requests a property tour | Lead generation tracking |
+| **Tour Scheduled** | Tour is successfully scheduled | Booking funnel analysis |
+| **Tour Started** | Video call begins | Engagement metrics |
+| **Tour Completed** | Video call ends successfully | Conversion tracking |
+| **Tour Cancelled** | Tour is cancelled by user | Churn analysis |
 
-### Analytics Stack Overview
+#### Hotjar
 
-| Tool           | Strengths                                 | Best Use Cases                                   |
-|----------------|-------------------------------------------|--------------------------------------------------|
-| **Mixpanel**   | Event-level user tracking & cohorts       | Product insights, funnel drop-offs, retention    |
-| **Hotjar**     | Session replays & heatmaps                | UX issues, behavioral pain points, UI analysis   |
-| **GA4**        | Marketing analytics & attribution         | Campaigns, traffic, geo/device segmentation      |
+| Feature | Purpose | Implementation |
+|---------|---------|----------------|
+| **Heatmaps** | Visualize user interaction patterns | Session recording and heatmap generation |
+| **Session Recordings** | Understand user behavior in detail | Privacy-compliant recording |
+| **Feedback Widgets** | Collect user feedback in real-time | In-app feedback collection |
+| **Conversion Funnels** | Track user journey through the platform | Funnel analysis and optimization |
 
----
+#### Mixpanel
 
-### How We Use Analytics
+| Event | Properties | Business Insight |
+|-------|------------|-----------------|
+| **User Registration** | Source, device, location | User acquisition analysis |
+| **Property View** | Property type, price range, location | Content performance |
+| **Tour Booking** | Property ID, scheduled time, user type | Booking behavior analysis |
+| **Video Call Start** | Call duration, participants, quality | Service quality metrics |
+| **Tour Completion** | Duration, satisfaction score, follow-up actions | Success metrics |
 
-- **Product Analytics (Mixpanel):**
-  - Track key user events (tour requested, joined, completed, registration_started, password_reset_requested/completed, booking_scheduled, booking_rescheduled/cancelled, property_created/updated/deleted, analytics_dashboard_viewed, etc.)
-  - Analyze conversion funnels (e.g., "Tour Requested" → "Tour Joined" → "Tour Completed")
-  - Segment users by role (buyer, realtor) and behavior
-  - Cohort analysis to measure retention and engagement over time
+#### Google Analytics
 
-- **User Experience Insights (Hotjar):**
-  - Record user sessions to identify pain points and drop-off moments
-  - Generate heatmaps to visualize user focus areas on landing pages and video tours
-  - Collect direct feedback via in-app surveys
-  - Use session recordings to guide UI/UX improvements
+| Metric | Description | Business Value |
+|--------|-------------|----------------|
+| **Traffic Sources** | Where users come from | Marketing effectiveness |
+| **User Demographics** | Age, gender, location | Target audience insights |
+| **Device Usage** | Desktop vs mobile usage | Platform optimization |
+| **Page Performance** | Load times and user engagement | Technical optimization |
+| **Conversion Tracking** | Goal completion rates | Business performance |
 
-- **Acquisition & Marketing Analytics (Google Analytics 4):**
-  - Track user acquisition channels (SEO, email, paid, etc.)
-  - Monitor conversion rates from landing page to booked tour
-  - Set and track goals (e.g., "Tour Scheduled", "Video Joined")
-  - Analyze geo/device breakdown to optimize for rural/mobile users
+### Systems Design
 
----
+For detailed technical architecture, see [Systems Design Documentation](system-design.md).
 
-### Remote Tour Tracking Plan
-
-| Event Name                 | Properties                                                      | Triggered By      | Tracked On                |
-|----------------------------|-----------------------------------------------------------------|-------------------|---------------------------|
-| tour_requested             | tour_id, property_id, user_id, scheduled_time                   | Buyer             | Frontend (React)          |
-| tour_joined                | tour_id, user_id, role, timestamp                               | Buyer + Realtor   | React / React Native      |
-| tour_left                  | tour_id, user_id, duration_in_session, role                     | Buyer + Realtor   | React Native              |
-| recording_started          | tour_id, user_id, timestamp, recording_method                   | Realtor           | Backend (Chime webhook)   |
-| recording_saved            | tour_id, video_url, duration, file_size                         | System            | Backend (Rails job)       |
-| highlight_created          | highlight_id, tour_id, user_id, timestamp, note                 | Buyer             | Frontend                  |
-| note_added                 | tour_id, user_id, timestamp, text_length, media_type            | Buyer             | Frontend                  |
-| recording_played           | tour_id, user_id, start_time, device_type, geo                  | Buyer             | React (Web)               |
-| call_quality_warning       | tour_id, user_id, signal_strength, packet_loss, latency         | System (SDK)      | React Native SDK          |
-| tour_completed             | tour_id, user_id, duration, participants_count                  | System            | Backend                   |
-| password_reset_requested   | user_id, method (email/sms), timestamp                          | Buyer/Realtor     | Frontend (React/Native)   |
-| password_reset_completed   | user_id, timestamp                                              | Buyer/Realtor     | Backend (Rails)           |
-| homepage_cta_clicked       | user_id (anon if logged out), location (hero/footer), timestamp | Visitor           | Frontend (React)          |
-| registration_started       | user_id (anon), referral_source, timestamp                      | Visitor           | Frontend                  |
-| property_created           | property_id, realtor_id, timestamp                              | Realtor           | Frontend                  |
-| property_updated           | property_id, realtor_id, fields_changed, timestamp              | Realtor           | Frontend                  |
-| property_deleted           | property_id, realtor_id, timestamp                              | Realtor           | Frontend                  |
-| booking_scheduled          | booking_id, tour_id, user_id, scheduled_time                    | Buyer             | Frontend                  |
-| booking_rescheduled        | booking_id, tour_id, user_id, new_time                          | Buyer             | Frontend                  |
-| booking_cancelled          | booking_id, tour_id, user_id, cancel_reason                     | Buyer             | Frontend                  |
-| dashboard_viewed           | user_id, role, dashboard_type (realtor|buyer), timestamp        | Buyer/Realtor     | Frontend                  |
-| analytics_dashboard_viewed | realtor_id, timestamp, filters_applied                          | Realtor           | Frontend                  |
+</div>
+</details>

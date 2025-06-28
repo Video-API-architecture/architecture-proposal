@@ -1,5 +1,90 @@
 # RealtyForYou System Design
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add click handlers for all summary elements
+    const summaries = document.querySelectorAll('summary');
+    summaries.forEach(summary => {
+        summary.addEventListener('click', function(e) {
+            e.preventDefault();
+            const details = this.parentElement;
+            const isOpen = details.hasAttribute('open');
+            
+            if (isOpen) {
+                details.removeAttribute('open');
+            } else {
+                details.setAttribute('open', '');
+            }
+        });
+    });
+    
+    // Add expand all / collapse all functionality
+    const expandAllBtn = document.createElement('button');
+    expandAllBtn.textContent = 'Expand All';
+    expandAllBtn.style.cssText = 'margin: 10px 5px; padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;';
+    expandAllBtn.onclick = function() {
+        document.querySelectorAll('details').forEach(details => details.setAttribute('open', ''));
+    };
+    
+    const collapseAllBtn = document.createElement('button');
+    collapseAllBtn.textContent = 'Collapse All';
+    collapseAllBtn.style.cssText = 'margin: 10px 5px; padding: 8px 16px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer;';
+    collapseAllBtn.onclick = function() {
+        document.querySelectorAll('details').forEach(details => details.removeAttribute('open'));
+    };
+    
+    // Insert buttons after the title
+    const title = document.querySelector('h1');
+    title.parentNode.insertBefore(expandAllBtn, title.nextSibling);
+    title.parentNode.insertBefore(collapseAllBtn, expandAllBtn.nextSibling);
+});
+</script>
+
+<style>
+details {
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+summary {
+    background: #f8f9fa;
+    padding: 15px 20px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 1px solid #ddd;
+    transition: background-color 0.2s;
+}
+
+summary:hover {
+    background: #e9ecef;
+}
+
+details[open] summary {
+    background: #007bff;
+    color: white;
+}
+
+details > div {
+    padding: 20px;
+}
+
+details table {
+    margin: 10px 0;
+}
+
+details h3, details h4 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+details h3:first-child, details h4:first-child {
+    margin-top: 0;
+}
+</style>
+
 - [Systems Design - High Level](#systems-design---high-level)
     - [Gathering System Requirements](#gathering-system-requirements)
     - [Persistent Storage Solution and App Load](#persistent-storage-solution-and-app-load)
@@ -58,7 +143,9 @@
     - [Tests and Delivery Automation](#tests-and-delivery-automation)
     - [Docker](#docker)
 
-### Systems Design - High Level
+<details>
+<summary>### Systems Design - High Level</summary>
+<div>
 
 #### Gathering System Requirements
 
@@ -155,7 +242,12 @@
 | **Page Load Time** | < 3 seconds |
 | **Database Query Time** | < 100ms |
 
-### Systems Design - Low Level
+</div>
+</details>
+
+<details>
+<summary>### Systems Design - Low Level</summary>
+<div>
 
 #### Gathering System Requirements
 
@@ -261,7 +353,12 @@
 | **Factories & Fixtures** | Reusable test data for users, properties, bookings |
 | **Tests** | Comprehensive unit, integration, and end-to-end coverage for auth, property CRUD, booking flow, dashboards, analytics events, and background jobs |
 
-### Rails API
+</div>
+</details>
+
+<details>
+<summary>### Rails API</summary>
+<div>
 
 Check more information about the [Backend Architecture here](./BACKEND_ARCHITECTURE.md).
 
@@ -440,7 +537,12 @@ Check more information about the [Backend Architecture here](./BACKEND_ARCHITECT
 
 Role-based access control (RBAC) is enforced via **Pundit** policies in Rails and JWT claims on the client side.
 
-### React
+</div>
+</details>
+
+<details>
+<summary>### React</summary>
+<div>
 
 Check more information about the [React Architecture here](./FRONTEND_ARCHITECTURE.md).
 
@@ -516,7 +618,12 @@ Check more information about the [React Architecture here](./FRONTEND_ARCHITECTU
 | **Content Security Policy** | Resource loading restrictions |
 | **HTTPS** | Secure communication |
 
-### React Native
+</div>
+</details>
+
+<details>
+<summary>### React Native</summary>
+<div>
 
 Check more information about the [React Native architecture here](./MOBILE_ARCHITECTURE.md)
 
@@ -601,7 +708,12 @@ Check more information about the [React Native architecture here](./MOBILE_ARCHI
 
 **Note:** Deep linking is a user experience enhancement for property sharing and tour invitations. Not required for MVP but recommended for Phase 2 to improve user engagement and lead generation.
 
-### Tests and Delivery Automation
+</div>
+</details>
+
+<details>
+<summary>### Tests and Delivery Automation</summary>
+<div>
 
 | Test Type | Description |
 |-----------|-------------|
@@ -617,7 +729,12 @@ Check more information about the [React Native architecture here](./MOBILE_ARCHI
 | **Security Scanning** | Automated vulnerability detection |
 | **Performance Monitoring** | Automated performance testing |
 
-### Docker
+</div>
+</details>
+
+<details>
+<summary>### Docker</summary>
+<div>
 
 | Aspect | Description |
 |--------|-------------|
@@ -625,3 +742,6 @@ Check more information about the [React Native architecture here](./MOBILE_ARCHI
 | **Environment Configuration** | Environment-specific settings |
 | **Service Orchestration** | Docker Compose for local development |
 | **Production Deployment** | Containerized production deployment |
+
+</div>
+</details>
