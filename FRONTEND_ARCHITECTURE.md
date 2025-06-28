@@ -1,5 +1,16 @@
 # Frontend Architecture Overview
 
+## Table of Contents
+- [Project Structure](#project-structure)
+- [Directory Structure](#directory-structure)
+- [Pages Architecture](#pages-architecture)
+- [Component Architecture](#component-architecture)
+- [Hooks Architecture](#hooks-architecture)
+- [State Management Strategy](#state-management-strategy)
+- [API Integration Strategy](#api-integration-strategy)
+- [Build & Deployment](#build--deployment)
+- [Video/Chime SDK Integration](#videochime-sdk-integration)
+
 ## Project Structure
 
 The frontend is built with **React 18**, **TypeScript**, and **Vite**, using a modern component-based architecture with the following key technologies:
@@ -81,7 +92,7 @@ src/
 </details>
 
 <details>
-<summary><strong>🏠 Tour Pages</strong></summary>
+<summary>🏠 Tour Pages</summary>
 
 - **`RemoteTourLibrary.tsx`** - Tour library/archive
 - **`TourDetail.tsx`** - Individual tour details
@@ -170,7 +181,7 @@ For global application state:
 </details>
 
 <details>
-<summary><strong>🏠 Local State</strong></summary>
+<summary>🏠 Local State</summary>
 
 For component-specific state:
 - **Form state** - Using React Hook Form
@@ -555,13 +566,13 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <Router>
         <div className="min-h-screen bg-background">
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<Index />} />
-            <Route path="/signin" element={<SignIn />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/property/:id" element={<Property />} />
+<Routes>
+  {/* Public Routes */}
+  <Route path="/" element={<Index />} />
+  <Route path="/signin" element={<SignIn />} />
+  <Route path="/signup" element={<SignUp />} />
+  <Route path="/forgot-password" element={<ForgotPassword />} />
+  <Route path="/property/:id" element={<Property />} />
             <Route path="/book-tour" element={<BookTour />} />
             <Route path="/property/:id/book" element={<PropertyBooking />} />
 
@@ -570,23 +581,23 @@ function App() {
               <Route path="/tour-library" element={<RemoteTourLibrary />} />
               <Route path="/tour/:id" element={<TourDetail />} />
             </Route>
-
-            {/* Admin Routes */}
+  
+  {/* Admin Routes */}
             <Route element={<AdminRoute />}>
               <Route path="/admin" element={<AdminDashboard />} />
-              <Route path="/admin/properties" element={<AdminProperties />} />
-              <Route path="/admin/properties/new" element={<PropertyNew />} />
-              <Route path="/admin/properties/:id" element={<PropertyView />} />
-              <Route path="/admin/properties/:id/edit" element={<PropertyEdit />} />
-              <Route path="/admin/tours" element={<AdminTourAppointments />} />
-              <Route path="/admin/users" element={<AdminUsers />} />
-              <Route path="/admin/users/new" element={<AdminUserEdit />} />
-              <Route path="/admin/users/:id/edit" element={<AdminUserEdit />} />
+  <Route path="/admin/properties" element={<AdminProperties />} />
+  <Route path="/admin/properties/new" element={<PropertyNew />} />
+  <Route path="/admin/properties/:id" element={<PropertyView />} />
+  <Route path="/admin/properties/:id/edit" element={<PropertyEdit />} />
+  <Route path="/admin/tours" element={<AdminTourAppointments />} />
+  <Route path="/admin/users" element={<AdminUsers />} />
+  <Route path="/admin/users/new" element={<AdminUserEdit />} />
+  <Route path="/admin/users/:id/edit" element={<AdminUserEdit />} />
             </Route>
 
             {/* 404 Route */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+  <Route path="*" element={<NotFound />} />
+</Routes>
         </div>
         <Toaster />
       </Router>
@@ -1115,7 +1126,7 @@ describe('PropertyForm', () => {
 
     const submitButton = screen.getByRole('button', { name: /save property/i });
     fireEvent.click(submitButton);
-
+    
     await waitFor(() => {
       expect(screen.getByText(/address is required/i)).toBeInTheDocument();
       expect(screen.getByText(/price is required/i)).toBeInTheDocument();
@@ -1252,6 +1263,39 @@ jobs:
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           vercel-args: '--prod'
 ```
+
+</details>
+
+<details>
+<summary>Video/Chime SDK Integration</summary>
+
+### Overview
+
+The RealtyForYou frontend uses the [Amazon Chime SDK](https://docs.aws.amazon.com/chime-sdk/latest/dg/what-is-chime-sdk.html) to power real-time video tours, including audio, video, and screen sharing for web and mobile clients.
+
+---
+
+### Frontend (React/React Native) Responsibilities
+
+- **SDK Usage:**  
+  - Use [Chime SDK for JavaScript](https://github.com/aws/amazon-chime-sdk-js) (web) or [React Native wrapper](https://github.com/aws/amazon-chime-sdk-component-library-react-native) (mobile).
+- **Joining a Meeting:**  
+  - Receive `Meeting` and `Attendee` objects from backend.
+  - Use SDK to join and manage the session.
+
+**Example (JS):**
+```js
+const meetingSessionConfiguration = new MeetingSessionConfiguration(meeting, attendee);
+const meetingSession = new DefaultMeetingSession(meetingSessionConfiguration, logger, deviceController);
+await meetingSession.audioVideo.start();
+```
+
+---
+
+### References
+
+- [Chime SDK API Reference](https://docs.aws.amazon.com/chime-sdk/latest/APIReference/welcome.html)
+- [Chime SDK Developer Guide](https://docs.aws.amazon.com/chime-sdk/latest/dg/what-is-chime-sdk.html)
 
 </details>
 

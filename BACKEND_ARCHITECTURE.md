@@ -1,5 +1,19 @@
 # Backend Architecture Overview
 
+## Table of Contents
+- [System Architecture](#system-architecture)
+- [Project Structure](#project-structure)
+- [Database Schema](#database-schema)
+- [Authentication & Authorization](#authentication--authorization)
+- [API Design](#api-design)
+- [Background Jobs](#background-jobs)
+- [Services](#services)
+- [Performance & Caching](#performance--caching)
+- [Security](#security)
+- [Testing Strategy](#testing-strategy)
+- [Deployment](#deployment)
+- [Video/Chime SDK Integration](#videochime-sdk-integration)
+
 ## 🏗️ System Architecture
 
 The backend is built with **Ruby on Rails 7** in API mode, designed to support real estate video tours with real-time communication, property management, and comprehensive analytics.
@@ -1275,6 +1289,60 @@ jobs:
             --service realtyforyou-backend \
             --force-new-deployment
 ```
+
+</details>
+
+<details>
+<summary>Video/Chime SDK Integration</summary>
+
+### Overview
+
+The RealtyForYou backend uses the [Amazon Chime SDK](https://docs.aws.amazon.com/chime-sdk/latest/dg/what-is-chime-sdk.html) to power real-time video tours, including audio, video, and screen sharing for web and mobile clients.
+
+---
+
+### Backend (Rails API) Responsibilities
+
+- **Meeting Lifecycle:**  
+  - Create Chime meetings and attendees via AWS SDK or REST API.
+  - End meetings and trigger post-processing (recording, transcription).
+- **Security:**  
+  - All Chime API calls are made server-side.
+  - Use IAM roles with least-privilege access.
+- **Endpoints:**  
+  - `POST /api/v1/calls` → Create meeting.
+  - `POST /api/v1/calls/:id/join` → Create attendee.
+  - `POST /api/v1/calls/:id/end` → End meeting.
+
+**Example Ruby:**
+```ruby
+chime = Aws::ChimeSDKMeetings::Client.new(region: 'us-east-1')
+meeting = chime.create_meeting(client_request_token: SecureRandom.uuid, media_region: 'us-east-1')
+attendee = chime.create_attendee(meeting_id: meeting.meeting.meeting_id, external_user_id: user.id.to_s)
+```
+
+---
+
+### Recording & Transcription
+
+- **Media Pipelines:**  
+  - Use Chime Media Pipelines API to record meetings and generate transcripts.
+  - Store recordings in S3, transcribe with AWS Transcribe.
+
+---
+
+### Security & Compliance
+
+- All Chime API calls are made from the backend.
+- Use encrypted S3 buckets for recordings.
+- Enforce IAM least-privilege.
+
+---
+
+### References
+
+- [Chime SDK API Reference](https://docs.aws.amazon.com/chime-sdk/latest/APIReference/welcome.html)
+- [Chime SDK Developer Guide](https://docs.aws.amazon.com/chime-sdk/latest/dg/what-is-chime-sdk.html)
 
 </details>
 

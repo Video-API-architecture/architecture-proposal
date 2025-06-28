@@ -12,6 +12,7 @@
 - [Disaster Recovery & Backups](#disaster-recovery--backups)
 - [Diagram](#diagram)
 - [Best Practices Summary](#best-practices-summary)
+- [AWS Chime SDK Infrastructure Notes](#aws-chime-sdk-infrastructure-notes)
 
 ---
 
@@ -25,19 +26,20 @@ The RealtyForYou platform leverages AWS cloud infrastructure for scalability, re
 <details>
 <summary>Core AWS Services</summary>
 
-| Service         | Purpose                                                      |
-|-----------------|-------------------------------------------------------------|
-| **EC2**         | Compute for custom workloads, legacy jobs, or admin tasks   |
-| **ECS/Fargate** | Container orchestration for Rails API and background jobs   |
-| **RDS (Postgres)** | Managed relational database for transactional data      |
-| **ElastiCache (Redis)** | Caching, session storage, pub/sub for real-time   |
-| **S3**          | Storage for images, video recordings, and static assets     |
-| **CloudFront**  | CDN for global, low-latency delivery of static content      |
-| **VPC**         | Isolated, secure network for all resources                  |
-| **IAM**         | Fine-grained access control and secrets management          |
-| **CloudWatch**  | Monitoring, logging, and alerting                          |
-| **ALB**         | Application Load Balancer for routing and health checks     |
-| **Secrets Manager/SSM** | Secure storage for DB, API, and JWT secrets        |
+| Service           | Purpose                                                      |
+|-------------------|-------------------------------------------------------------|
+| **EC2**           | Compute for custom workloads, legacy jobs, or admin tasks   |
+| **ECS/Fargate**   | Container orchestration for Rails API and background jobs   |
+| **RDS (Postgres)**| Managed relational database for transactional data          |
+| **ElastiCache (Redis)** | Caching, session storage, pub/sub for real-time       |
+| **S3**            | Storage for images, video recordings, and static assets     |
+| **CloudFront**    | CDN for global, low-latency delivery of static content      |
+| **VPC**           | Isolated, secure network for all resources                  |
+| **IAM**           | Fine-grained access control and secrets management          |
+| **CloudWatch**    | Monitoring, logging, and alerting                          |
+| **ALB**           | Application Load Balancer for routing and health checks     |
+| **Secrets Manager/SSM** | Secure storage for DB, API, and JWT secrets          |
+| **AWS Chime SDK** | Real-time video, audio, and screen sharing for virtual tours|
 
 </details>
 
@@ -46,9 +48,9 @@ The RealtyForYou platform leverages AWS cloud infrastructure for scalability, re
 
 - **VPC** with public/private subnets for isolation
 - **Security Groups** restrict traffic to only necessary ports/services
-- **IAM Roles/Policies** for least-privilege access
+- **IAM Roles/Policies** for least-privilege access, including permissions for Chime SDK actions (e.g., `chime:CreateMeeting`, `chime:CreateAttendee`, `chime:CreateMediaCapturePipeline`)
 - **TLS/HTTPS** enforced for all endpoints
-- **S3 Buckets** encrypted with SSE-KMS
+- **S3 Buckets** encrypted with SSE-KMS, including those used for Chime media pipeline outputs (recordings, transcriptions)
 - **RDS** in private subnets, Multi-AZ enabled
 - **API Rate Limiting** and WAF for DDoS protection
 - **Audit Logging** via CloudTrail
@@ -65,6 +67,7 @@ The RealtyForYou platform leverages AWS cloud infrastructure for scalability, re
 - **S3** with cross-region replication for durability
 - **ALB** distributes traffic and performs health checks
 - **Stateless containers** for easy scaling and blue/green deployments
+- **AWS Chime SDK** is serverless and scales automatically; backend must handle meeting management at scale
 
 </details>
 
@@ -77,6 +80,7 @@ The RealtyForYou platform leverages AWS cloud infrastructure for scalability, re
 - **PagerDuty** for alerting and incident response
 - **Fluent Bit** for log aggregation
 - **Grafana** dashboards for real-time and historical metrics
+- **AWS Chime SDK** usage and media pipeline status can be monitored via CloudWatch
 
 </details>
 
@@ -122,5 +126,21 @@ The RealtyForYou platform leverages AWS cloud infrastructure for scalability, re
 - Monitor with **CloudWatch**, **DataDog**, and **Sentry**
 - Automate deployments and rollbacks with **CI/CD** and **IaC**
 - Regularly test **disaster recovery** and **backup** procedures
+
+</details>
+
+<details>
+<summary>AWS Chime SDK Infrastructure Notes</summary>
+
+- **Service:** AWS Chime SDK is used for real-time video, audio, and screen sharing.
+- **Integration:** Backend (ECS/Fargate) communicates with Chime SDK via AWS SDK/REST API.
+- **IAM:** ECS/EC2 roles require permissions for Chime SDK actions (e.g., `chime:CreateMeeting`, `chime:CreateAttendee`, `chime:CreateMediaCapturePipeline`).
+- **Media Pipelines:** Recordings and transcriptions are stored in encrypted S3 buckets.
+- **Scaling:** Chime SDK is serverless and scales automatically; backend must handle meeting management at scale.
+- **Monitoring:** Use CloudWatch for logging and monitoring Chime SDK API usage and media pipeline status.
+- **Quotas:** Be aware of Chime SDK quotas for meetings and attendees ([see docs](https://docs.aws.amazon.com/chime-sdk/latest/dg/quotas.html)).
+- **References:**
+  - [Chime SDK API Reference](https://docs.aws.amazon.com/chime-sdk/latest/APIReference/welcome.html)
+  - [Chime SDK Developer Guide](https://docs.aws.amazon.com/chime-sdk/latest/dg/what-is-chime-sdk.html)
 
 </details> 
