@@ -20,10 +20,10 @@ RealtyForYou is a cloud-native platform for virtual real estate tours, enabling 
 
 | Component         | Description                                                      | Details/Docs                                      |
 |-------------------|------------------------------------------------------------------|---------------------------------------------------|
-| **Frontend (Web)**| React SPA for user interaction, property browsing, and tours     | [FRONTEND_ARCHITECTURE.md](./FRONTEND_ARCHITECTURE.md) |
-| **Mobile App**    | React Native app for mobile tour participation                   | [MOBILE_ARCHITECTURE.md](./MOBILE_ARCHITECTURE.md)     |
-| **Backend API**   | Ruby on Rails API for business logic, data, and integrations     | [BACKEND_ARCHITECTURE.md](./BACKEND_ARCHITECTURE.md)   |
-| **Infrastructure**| AWS-based, containerized, secure, and scalable cloud infra       | [INFRA_ARCHITECTURE.md](./INFRA_ARCHITECTURE.md)       |
+| **Frontend (Web)**| React SPA for user interaction, property browsing, and tours     | [FRONTEND_ARCHITECTURE.md](architecture/FRONTEND_ARCHITECTURE.md) |
+| **Mobile App**    | React Native app for mobile tour participation                   | [MOBILE_ARCHITECTURE.md](architecture/MOBILE_ARCHITECTURE.md)     |
+| **Backend API**   | Ruby on Rails API for business logic, data, and integrations     | [BACKEND_ARCHITECTURE.md](architecture/BACKEND_ARCHITECTURE.md)   |
+| **Infrastructure**| AWS-based, containerized, secure, and scalable cloud infra       | [INFRA_ARCHITECTURE.md](architecture/INFRA_ARCHITECTURE.md)       |
 
 </details>
 
@@ -58,10 +58,10 @@ RealtyForYou is a cloud-native platform for virtual real estate tours, enabling 
 <details>
 <summary>📚 Where to Find More</summary>
 
-- **Frontend Architecture:** [FRONTEND_ARCHITECTURE.md](./FRONTEND_ARCHITECTURE.md)
-- **Backend Architecture:** [BACKEND_ARCHITECTURE.md](./BACKEND_ARCHITECTURE.md)
-- **Infrastructure Architecture:** [INFRA_ARCHITECTURE.md](./INFRA_ARCHITECTURE.md)
-- **Mobile Architecture:** [MOBILE_ARCHITECTURE.md](./MOBILE_ARCHITECTURE.md)
+- **Frontend Architecture:** [FRONTEND_ARCHITECTURE.md](architecture/FRONTEND_ARCHITECTURE.md)
+- **Backend Architecture:** [BACKEND_ARCHITECTURE.md](architecture/BACKEND_ARCHITECTURE.md)
+- **Infrastructure Architecture:** [INFRA_ARCHITECTURE.md](architecture/INFRA_ARCHITECTURE.md)
+- **Mobile Architecture:** [MOBILE_ARCHITECTURE.md](architecture/MOBILE_ARCHITECTURE.md)
 
 For detailed API endpoints, data models, technology choices, and integration patterns, please refer to the above documents.
 
