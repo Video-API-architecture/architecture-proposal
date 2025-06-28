@@ -1,90 +1,5 @@
 # RealtyForYou Architecture Proposal
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Add click handlers for all summary elements
-    const summaries = document.querySelectorAll('summary');
-    summaries.forEach(summary => {
-        summary.addEventListener('click', function(e) {
-            e.preventDefault();
-            const details = this.parentElement;
-            const isOpen = details.hasAttribute('open');
-            
-            if (isOpen) {
-                details.removeAttribute('open');
-            } else {
-                details.setAttribute('open', '');
-            }
-        });
-    });
-    
-    // Add expand all / collapse all functionality
-    const expandAllBtn = document.createElement('button');
-    expandAllBtn.textContent = 'Expand All';
-    expandAllBtn.style.cssText = 'margin: 10px 5px; padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;';
-    expandAllBtn.onclick = function() {
-        document.querySelectorAll('details').forEach(details => details.setAttribute('open', ''));
-    };
-    
-    const collapseAllBtn = document.createElement('button');
-    collapseAllBtn.textContent = 'Collapse All';
-    collapseAllBtn.style.cssText = 'margin: 10px 5px; padding: 8px 16px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer;';
-    collapseAllBtn.onclick = function() {
-        document.querySelectorAll('details').forEach(details => details.removeAttribute('open'));
-    };
-    
-    // Insert buttons after the title
-    const title = document.querySelector('h1');
-    title.parentNode.insertBefore(expandAllBtn, title.nextSibling);
-    title.parentNode.insertBefore(collapseAllBtn, expandAllBtn.nextSibling);
-});
-</script>
-
-<style>
-details {
-    margin: 10px 0;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-summary {
-    background: #f8f9fa;
-    padding: 15px 20px;
-    cursor: pointer;
-    font-weight: 600;
-    color: #333;
-    border-bottom: 1px solid #ddd;
-    transition: background-color 0.2s;
-}
-
-summary:hover {
-    background: #e9ecef;
-}
-
-details[open] summary {
-    background: #007bff;
-    color: white;
-}
-
-details > div {
-    padding: 20px;
-}
-
-details table {
-    margin: 10px 0;
-}
-
-details h3, details h4 {
-    margin-top: 20px;
-    margin-bottom: 10px;
-}
-
-details h3:first-child, details h4:first-child {
-    margin-top: 0;
-}
-</style>
-
 This document presents a comprehensive **Systems Design solution** for a video streaming application that facilitates live video calls between realtors and clients. The platform enables virtual property tours, allowing realtors to showcase properties remotely while providing clients with immersive viewing experiences.
 
 ## 📋 Table of Contents
@@ -118,7 +33,6 @@ This document presents a comprehensive **Systems Design solution** for a video s
 
 <details>
 <summary> 🎯 Executive Summary</summary>
-<div>
 
 This document presents a comprehensive architecture proposal for a **video streaming application** designed to facilitate live video calls between realtors and clients. The solution leverages modern web technologies and cloud services to deliver a robust, scalable, and user-friendly platform.
 
@@ -132,12 +46,10 @@ This document presents a comprehensive architecture proposal for a **video strea
 | **☁️ Cloud-Native Architecture**      | Scalable infrastructure with containerization | AWS ECS/Fargate |
 | **📊 Comprehensive Analytics**        | Multi-platform tracking and user behavior analysis | Mixpanel + GA4 + Hotjar |
 
-</div>
 </details>
 
 <details>
 <summary> 📈 Product View</summary>
-<div>
 
 ### 🚀 Expected Business Impact
 
@@ -408,12 +320,10 @@ The video streaming platform is expected to revolutionize the real estate indust
 | Booking Success Rate | > 98 %    | HTTP 2xx on booking endpoints |
 | Error Rate           | < 1 % 5xx | 5-min rolling                 |
 
-</div>
 </details>
 
 <details>
 <summary> 🔧 Technical View</summary>
-<div>
 
 ### Product & Delivery Gaps
 
@@ -516,5 +426,4 @@ The video streaming platform is expected to revolutionize the real estate indust
 
 For detailed technical architecture, see [Systems Design Documentation](system-design.md).
 
-</div>
 </details>
