@@ -274,6 +274,8 @@
 
 #### API Surface (REST)
 
+[Interface job examples](./rails-api/routes.rb)
+
 | Endpoint | Method | Description |
 |----------|--------|-------------|
 | `/api/v1/auth/register` | POST | User registration |
@@ -304,6 +306,8 @@
 
 #### Databases
 
+[Interface job examples](./rails-api/models.rb)
+
 | Table | Description |
 |-------|-------------|
 | **Users Table** | User profiles and authentication (id, full_name, email, role, password_digest, timestamps) |
@@ -316,10 +320,11 @@
 | **Transcripts Table** | AI-generated call transcripts (tour_id, full_text, segments JSON, timestamps) |
 | **Highlights Table** | Tour highlights and moments (tour_id, timestamp_ms, note, image_url, timestamps) |
 | **Recordings Table** | Call recordings and playback (tour_id, mux_asset_id, playback_url, duration_seconds, recorded_at, timestamps) |
-| **AnalyticsAggregates Table** _(optional)_ | Cached stats for realtor dashboards |
-| **AuditLogs Table** _(optional)_ | Immutable system & user actions for compliance (actor_id, action, target_id, meta, created_at) |
+| **AuditLogs Table** | Immutable system & user actions for compliance (actor_id, action, target_id, meta, created_at) |
 
 #### Asynchronous Jobs
+
+[Interface job examples](./rails-api/jobs.rb)
 
 | Job Type | Description |
 |----------|-------------|
@@ -348,12 +353,12 @@
 
 #### MVC and Services
 
-| Layer | Description |
-|-------|-------------|
-| **Models** | Data validation and business rules |
-| **Views** | JSON response formatting |
-| **Controllers** | Request handling and routing |
-| **Services** | Complex business logic |
+| Layer | Description | Examples |
+|-------|-------------|----------|
+| **Models** | Data validation and business rules | [Model examples](./rails-api/models.rb) |
+| **Views** | JSON response formatting | - |
+| **Controllers** | Request handling and routing | [Model examples](./rails-api/controllers.rb) |
+| **Services** | Complex business logic | [Model examples](./rails-api/services.rb) |
 
 #### Concerns
 
