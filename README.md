@@ -14,7 +14,6 @@ This document presents a comprehensive **Systems Design solution** for a video s
   - [Team Execution Model](#team-execution-model)
     - [Tech/Product/Design Sync Rhythm](#techproductdesign-sync-rhythm)
     - [Shipping Milestones (8 Weeks, High-Impact First)](#shipping-milestones-8-weeks-high-impact-first)
-  - [Team & Process](#team--process)
   - [Landing Pages](#landing-pages)
   - [Delivery Plan](#delivery-plan)
 - [🔧 Technical View](#-technical-view)
@@ -93,7 +92,6 @@ This document presents a comprehensive **Systems Design solution** for a video s
       - [Google Analytics](#google-analytics)
     - [Tests and Delivery Automation](#tests-and-delivery-automation)
     - [Docker](#docker)
-- [Glossary](#glossary)
 
 ## 🎯 Executive Summary
 
@@ -161,18 +159,6 @@ The video streaming platform is expected to revolutionize the real estate indust
 | **📱 Mobile Data Limitations** | Users have limited mobile data plans | Data compression and optimization techniques |
 
 ### 👥 Team & Process
-
-#### 📊 RACI Matrix (Who owns what?)
-
-| Deliverable / Area            | Dev Lead | Product Manager | Designer | QA / SDET |
-|-------------------------------|----------|-----------------|----------|-----------|
-| Architecture & Infrastructure |   R      |    A            |   C      |    C      |
-| Feature Spec & Roadmap        |   C      |    A            |   C      |    C      |
-| UI/UX Wireframes & Assets     |   C      |    C            |   A      |    C      |
-| Test Plan & Automation        |   C      |    C            |   C      |    A      |
-| Release & Incident Response   |   A      |    C            |   C      |    R      |
-
-> **Legend:** **R** = Responsible, **A** = Accountable, **C** = Consulted
 
 #### ❓ Questions We'd Ask The Business
 
@@ -571,8 +557,7 @@ The video streaming platform is expected to revolutionize the real estate indust
 **Implementation Strategy:**
 - **Phase 1**: Core video calling functionality
 - **Phase 2**: Property management features
-- **Phase 3**: Advanced features and optimizations
-- **Phase 4**: Scale and performance improvements
+- **Phase, 3**: Advanced features and optimizations
 
 #### Ruby on Rails + React + React Native + AWS Chime SDK
 
@@ -956,7 +941,6 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 ##### Mobile Security
 
 - **Certificate Pinning**: SSL certificate validation
-- **Biometric Authentication**: Touch ID and Face ID
 - **Secure Storage**: Encrypted local storage
 - **App Integrity**: Code signing and validation
 
@@ -1046,45 +1030,3 @@ A robust analytics strategy is essential for understanding user behavior, optimi
 - **Environment Configuration**: Environment-specific settings
 - **Service Orchestration**: Docker Compose for local development
 - **Production Deployment**: Containerized production deployment
-
-## Glossary
-
-### Technical Terms
-
-**API (Application Programming Interface)**: A set of rules and protocols for building and integrating application software.
-
-**AWS Chime SDK**: Amazon's software development kit for adding real-time audio, video, and messaging capabilities to applications.
-
-**CDN (Content Delivery Network)**: A distributed network of servers that deliver web content to users based on their geographic location.
-
-**CI/CD (Continuous Integration/Continuous Deployment)**: A method to frequently deliver apps to customers by introducing automation into the stages of app development.
-
-**GraphQL**: A query language for APIs that provides a complete description of the data in your API.
-
-**JWT (JSON Web Token)**: An open standard for securely transmitting information between parties as a JSON object.
-
-**Microservices**: An architectural style that structures an application as a collection of loosely coupled services.
-
-**Pub/Sub (Publish/Subscribe)**: A messaging pattern where senders of messages, called publishers, do not program the messages to be sent directly to specific receivers, called subscribers.
-
-**REST (Representational State Transfer)**: An architectural style for distributed hypermedia systems.
-
-**WebSocket**: A computer communications protocol, providing full-duplex communication channels over a single TCP connection.
-
-### Business Terms
-
-**Real Estate Agent**: A licensed professional who represents buyers or sellers in real estate transactions.
-
-**Property Listing**: A detailed description of a property available for sale or rent.
-
-**Virtual Tour**: A digital representation of a property that allows potential buyers to view it remotely.
-
-**Appointment Scheduling**: The process of booking time slots for video calls between realtors and clients.
-
-**Lead Management**: The process of tracking and managing potential clients through the sales funnel.
-
-**Conversion Rate**: The percentage of visitors who take a desired action, such as scheduling a video call.
-
-**User Engagement**: The degree of attention, curiosity, interest, and passion that users show when using the application.
-
-**Market Reach**: The total number of potential customers that can be reached through the platform.
