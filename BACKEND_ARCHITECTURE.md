@@ -1,19 +1,5 @@
 # Backend Architecture Overview
 
-## Table of Contents
-- [System Architecture](#system-architecture)
-- [Project Structure](#project-structure)
-- [Database Schema](#database-schema)
-- [Authentication & Authorization](#authentication--authorization)
-- [API Design](#api-design)
-- [Background Jobs](#background-jobs)
-- [Services](#services)
-- [Performance & Caching](#performance--caching)
-- [Security](#security)
-- [Testing Strategy](#testing-strategy)
-- [Deployment](#deployment)
-- [Video/Chime SDK Integration](#videochime-sdk-integration)
-
 ## 🏗️ System Architecture
 
 The backend is built with **Ruby on Rails 7** in API mode, designed to support real estate video tours with real-time communication, property management, and comprehensive analytics.

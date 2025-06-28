@@ -1,16 +1,5 @@
 # Frontend Architecture Overview
 
-## Table of Contents
-- [Project Structure](#project-structure)
-- [Directory Structure](#directory-structure)
-- [Pages Architecture](#pages-architecture)
-- [Component Architecture](#component-architecture)
-- [Hooks Architecture](#hooks-architecture)
-- [State Management Strategy](#state-management-strategy)
-- [API Integration Strategy](#api-integration-strategy)
-- [Build & Deployment](#build--deployment)
-- [Video/Chime SDK Integration](#videochime-sdk-integration)
-
 ## Project Structure
 
 The frontend is built with **React 18**, **TypeScript**, and **Vite**, using a modern component-based architecture with the following key technologies:
