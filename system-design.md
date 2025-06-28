@@ -55,14 +55,3 @@ RealtyForYou is a cloud-native platform for virtual real estate tours, enabling 
 
 </details>
 
-<details>
-<summary>📚 Where to Find More</summary>
-
-- **Frontend Architecture:** [FRONTEND_ARCHITECTURE.md](architecture/FRONTEND_ARCHITECTURE.md)
-- **Backend Architecture:** [BACKEND_ARCHITECTURE.md](architecture/BACKEND_ARCHITECTURE.md)
-- **Infrastructure Architecture:** [INFRA_ARCHITECTURE.md](architecture/INFRA_ARCHITECTURE.md)
-- **Mobile Architecture:** [MOBILE_ARCHITECTURE.md](architecture/MOBILE_ARCHITECTURE.md)
-
-For detailed API endpoints, data models, technology choices, and integration patterns, please refer to the above documents.
-
-</details>
