@@ -263,6 +263,8 @@
 
 ### Rails API
 
+Check more information about the [Backend Architecture here](./BACKEND_ARCHITECTURE.md).
+
 #### Technologies
 
 | Technology | Description |
@@ -446,6 +448,8 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 
 ### React
 
+Check more information about the [React Architecture here](./FRONTEND_ARCHITECTURE.md).
+
 #### Technologies
 
 | Technology | Description |
@@ -519,6 +523,8 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 | **HTTPS** | Secure communication |
 
 ### React Native
+
+Check more information about the [React Native architecture here](./MOBILE_ARCHITECTURE.md)
 
 #### Technologies
 
