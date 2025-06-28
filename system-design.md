@@ -2,16 +2,10 @@
 
 This document provides a high-level overview of the RealtyForYou platform architecture, focusing on system context, main components, data flow, and integration points. For detailed technology, implementation, and code, see the dedicated architecture documents for each subsystem.
 
-## Table of Contents
-- [System Context & Overview](#system-context--overview)
-- [Main Components](#main-components)
-- [Data Flow & Integration](#data-flow--integration)
-- [Cross-Cutting Concerns](#cross-cutting-concerns)
-- [Where to Find More](#where-to-find-more)
-
 ---
 
-## System Context & Overview
+<details>
+<summary>🗺️ System Context & Overview</summary>
 
 RealtyForYou is a cloud-native platform for virtual real estate tours, enabling realtors and buyers to connect via live video, manage properties, and schedule appointments. The system is designed for high availability, scalability, and security, leveraging AWS-managed services and a modular architecture.
 
@@ -19,9 +13,10 @@ RealtyForYou is a cloud-native platform for virtual real estate tours, enabling 
 - **Core Use Cases:** Property listing/search, appointment scheduling, real-time video tours, analytics
 - **Deployment:** Multi-AZ, containerized, CI/CD-driven
 
----
+</details>
 
-## Main Components
+<details>
+<summary>🏗️ Main Components</summary>
 
 | Component         | Description                                                      | Details/Docs                                      |
 |-------------------|------------------------------------------------------------------|---------------------------------------------------|
@@ -30,9 +25,10 @@ RealtyForYou is a cloud-native platform for virtual real estate tours, enabling 
 | **Backend API**   | Ruby on Rails API for business logic, data, and integrations     | [BACKEND_ARCHITECTURE.md](./BACKEND_ARCHITECTURE.md)   |
 | **Infrastructure**| AWS-based, containerized, secure, and scalable cloud infra       | [INFRA_ARCHITECTURE.md](./INFRA_ARCHITECTURE.md)       |
 
----
+</details>
 
-## Data Flow & Integration
+<details>
+<summary>🔗 Data Flow & Integration</summary>
 
 1. **User requests** (web/mobile) are routed via AWS ALB to the Rails API.
 2. **API** handles authentication, business logic, and data access (Postgres, Redis).
@@ -42,9 +38,10 @@ RealtyForYou is a cloud-native platform for virtual real estate tours, enabling 
 
 ![System Data Model Diagram](./imgs/data-model.png)
 
----
+</details>
 
-## Cross-Cutting Concerns
+<details>
+<summary>🛡️ Cross-Cutting Concerns</summary>
 
 - **Security & Compliance:**
   - JWT authentication, RBAC, encrypted data at rest/in transit, audit logging
@@ -56,9 +53,10 @@ RealtyForYou is a cloud-native platform for virtual real estate tours, enabling 
 - **DevOps & CI/CD:**
   - Automated testing, blue-green deployments, IaC with Terraform
 
----
+</details>
 
-## Where to Find More
+<details>
+<summary>📚 Where to Find More</summary>
 
 - **Frontend Architecture:** [FRONTEND_ARCHITECTURE.md](./FRONTEND_ARCHITECTURE.md)
 - **Backend Architecture:** [BACKEND_ARCHITECTURE.md](./BACKEND_ARCHITECTURE.md)
@@ -66,3 +64,5 @@ RealtyForYou is a cloud-native platform for virtual real estate tours, enabling 
 - **Mobile Architecture:** [MOBILE_ARCHITECTURE.md](./MOBILE_ARCHITECTURE.md)
 
 For detailed API endpoints, data models, technology choices, and integration patterns, please refer to the above documents.
+
+</details>

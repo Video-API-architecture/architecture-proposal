@@ -2,29 +2,17 @@
 
 > This document summarizes the main infrastructure components and best practices for the RealtyForYou platform, as described in the system-design.md and README.md files.
 
-## Table of Contents
-- [Overview](#overview)
-- [Core AWS Services](#core-aws-services)
-- [Network & Security](#network--security)
-- [Scalability & High Availability](#scalability--high-availability)
-- [Monitoring & Observability](#monitoring--observability)
-- [Deployment & CI/CD](#deployment--cicd)
-- [Disaster Recovery & Backups](#disaster-recovery--backups)
-- [Diagram](#diagram)
-- [Best Practices Summary](#best-practices-summary)
-- [AWS Chime SDK Infrastructure Notes](#aws-chime-sdk-infrastructure-notes)
-
 ---
 
 <details>
-<summary>Overview</summary>
+<summary>🗺️ Overview</summary>
 
 The RealtyForYou platform leverages AWS cloud infrastructure for scalability, reliability, and security. The architecture is designed to support high availability, low latency, and secure handling of sensitive real estate data and video streams.
 
 </details>
 
 <details>
-<summary>Core AWS Services</summary>
+<summary>🏗️ Core AWS Services</summary>
 
 | Service           | Purpose                                                      |
 |-------------------|-------------------------------------------------------------|
@@ -44,7 +32,7 @@ The RealtyForYou platform leverages AWS cloud infrastructure for scalability, re
 </details>
 
 <details>
-<summary>Network & Security</summary>
+<summary>🔒 Network & Security</summary>
 
 - **VPC** with public/private subnets for isolation
 - **Security Groups** restrict traffic to only necessary ports/services
@@ -58,7 +46,7 @@ The RealtyForYou platform leverages AWS cloud infrastructure for scalability, re
 </details>
 
 <details>
-<summary>Scalability & High Availability</summary>
+<summary>📈 Scalability & High Availability</summary>
 
 - **ECS/Fargate** auto-scales based on ALB request count and custom metrics
 - **RDS** Multi-AZ deployment with automated failover
@@ -72,7 +60,7 @@ The RealtyForYou platform leverages AWS cloud infrastructure for scalability, re
 </details>
 
 <details>
-<summary>Monitoring & Observability</summary>
+<summary>📊 Monitoring & Observability</summary>
 
 - **CloudWatch** for metrics, logs, and alarms
 - **DataDog** for APM and business KPIs
@@ -85,7 +73,7 @@ The RealtyForYou platform leverages AWS cloud infrastructure for scalability, re
 </details>
 
 <details>
-<summary>Deployment & CI/CD</summary>
+<summary>🚀 Deployment & CI/CD</summary>
 
 - **GitHub Actions** for automated testing and deployment
 - **Docker** for containerization
@@ -97,7 +85,7 @@ The RealtyForYou platform leverages AWS cloud infrastructure for scalability, re
 </details>
 
 <details>
-<summary>Disaster Recovery & Backups</summary>
+<summary>💾 Disaster Recovery & Backups</summary>
 
 - **Daily RDS snapshots** (7-day retention)
 - **S3 cross-region replication**
@@ -108,7 +96,7 @@ The RealtyForYou platform leverages AWS cloud infrastructure for scalability, re
 </details>
 
 <details>
-<summary>Diagram</summary>
+<summary>🖼️ Diagram</summary>
 
 ![Infrastructure Diagram](./imgs/system-design-diagram.png)
 
@@ -117,7 +105,7 @@ The RealtyForYou platform leverages AWS cloud infrastructure for scalability, re
 </details>
 
 <details>
-<summary>Best Practices Summary</summary>
+<summary>✅ Best Practices Summary</summary>
 
 - Use **private subnets** for all sensitive resources
 - Enforce **encryption at rest and in transit**
@@ -130,7 +118,7 @@ The RealtyForYou platform leverages AWS cloud infrastructure for scalability, re
 </details>
 
 <details>
-<summary>AWS Chime SDK Infrastructure Notes</summary>
+<summary>🎥 AWS Chime SDK Infrastructure Notes</summary>
 
 - **Service:** AWS Chime SDK is used for real-time video, audio, and screen sharing.
 - **Integration:** Backend (ECS/Fargate) communicates with Chime SDK via AWS SDK/REST API.
