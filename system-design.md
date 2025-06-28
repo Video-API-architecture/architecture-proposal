@@ -144,7 +144,7 @@ details h3:first-child, details h4:first-child {
     - [Docker](#docker)
 
 <details>
-<summary>### Systems Design - High Level</summary>
+<summary> Systems Design - High Level</summary>
 <div>
 
 #### Gathering System Requirements
@@ -246,7 +246,7 @@ details h3:first-child, details h4:first-child {
 </details>
 
 <details>
-<summary>### Systems Design - Low Level</summary>
+<summary> Systems Design - Low Level</summary>
 <div>
 
 #### Gathering System Requirements
@@ -357,7 +357,7 @@ details h3:first-child, details h4:first-child {
 </details>
 
 <details>
-<summary>### Rails API</summary>
+<summary> Rails API</summary>
 <div>
 
 Check more information about the [Backend Architecture here](./BACKEND_ARCHITECTURE.md).
@@ -541,7 +541,7 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 </details>
 
 <details>
-<summary>### React</summary>
+<summary> React</summary>
 <div>
 
 Check more information about the [React Architecture here](./FRONTEND_ARCHITECTURE.md).
@@ -622,7 +622,7 @@ Check more information about the [React Architecture here](./FRONTEND_ARCHITECTU
 </details>
 
 <details>
-<summary>### React Native</summary>
+<summary> React Native</summary>
 <div>
 
 Check more information about the [React Native architecture here](./MOBILE_ARCHITECTURE.md)
@@ -712,7 +712,7 @@ Check more information about the [React Native architecture here](./MOBILE_ARCHI
 </details>
 
 <details>
-<summary>### Tests and Delivery Automation</summary>
+<summary> Tests and Delivery Automation</summary>
 <div>
 
 | Test Type | Description |
@@ -733,7 +733,7 @@ Check more information about the [React Native architecture here](./MOBILE_ARCHI
 </details>
 
 <details>
-<summary>### Docker</summary>
+<summary> Docker</summary>
 <div>
 
 | Aspect | Description |

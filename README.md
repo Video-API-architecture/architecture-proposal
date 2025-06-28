@@ -117,7 +117,7 @@ This document presents a comprehensive **Systems Design solution** for a video s
   - [Systems Design](system-design.md)
 
 <details>
-<summary>## 🎯 Executive Summary</summary>
+<summary> 🎯 Executive Summary</summary>
 <div>
 
 This document presents a comprehensive architecture proposal for a **video streaming application** designed to facilitate live video calls between realtors and clients. The solution leverages modern web technologies and cloud services to deliver a robust, scalable, and user-friendly platform.
@@ -136,7 +136,7 @@ This document presents a comprehensive architecture proposal for a **video strea
 </details>
 
 <details>
-<summary>## 📈 Product View</summary>
+<summary> 📈 Product View</summary>
 <div>
 
 ### 🚀 Expected Business Impact
@@ -412,7 +412,7 @@ The video streaming platform is expected to revolutionize the real estate indust
 </details>
 
 <details>
-<summary>## 🔧 Technical View</summary>
+<summary> 🔧 Technical View</summary>
 <div>
 
 ### Product & Delivery Gaps
