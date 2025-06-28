@@ -8,7 +8,6 @@
     - [Observability & Monitoring](#observability--monitoring)
     - [Security & Compliance](#security--compliance)
     - [Performance Benchmarks](#performance-benchmarks)
-    - [Future Enhancements](#future-enhancements)
 
 > **Note:** The Low Level section contains detailed technical components and provides a deep dive into the internal architecture of the video streaming system.
 
@@ -415,7 +414,6 @@
 | Tool | Description |
 |------|-------------|
 | **OpenAPI (Swagger)** | Auto-generated YAML spec from Rails controllers; hosted at `/docs` |
-| **GraphQL Docs** | Voyager or GraphiQL explorer deployed with schema introspection |
 | **Postman Collection** | Exported nightly via CI; shared with frontend & partners |
 | **SDKs** | OpenAPI generator produces TypeScript / Ruby SDKs for consumers |
 
@@ -514,7 +512,6 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 | **Expo** | Development platform and tools |
 | **TypeScript** | Type-safe development |
 | **React Navigation** | Navigation library |
-| **AWS Amplify** | Mobile backend services |
 
 ##### Mobile Design Patterns
 
