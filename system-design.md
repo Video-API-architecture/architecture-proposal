@@ -306,11 +306,16 @@
 
 | Table | Description |
 |-------|-------------|
-| **Users Table** | User profiles and authentication |
+| **Users Table** | User profiles and authentication (id, full_name, email, role, password_digest, timestamps) |
 | **PasswordResetTokens Table** | One-time reset tokens (user_id, token, expires_at, used_at) |
-| **Properties Table** | Property listings and details |
-| **Bookings Table** | Tour bookings (buyer_id, property_id, scheduled_at, status) |
-| **Calls Table** | Call history and recordings (maps to bookings) |
+| **Properties Table** | Property listings and details (realtor_id, address, mls_id, description, timestamps) |
+| **Bookings Table** | Tour booking requests (buyer_id, property_id, scheduled_at, status, timestamps) |
+| **Tours Table** | Actual tour sessions (property_id, realtor_id, buyer_id, status, scheduled_at, started_at) |
+| **Calls Table** | Video call sessions (tour_id, chime_meeting_id, status, started_at, ended_at) |
+| **TourNotes Table** | User-generated notes during tours (tour_id, user_id, content, tag, timestamp_ms, timestamps) |
+| **Transcripts Table** | AI-generated call transcripts (tour_id, full_text, segments JSON, timestamps) |
+| **Highlights Table** | Tour highlights and moments (tour_id, timestamp_ms, note, image_url, timestamps) |
+| **Recordings Table** | Call recordings and playback (tour_id, mux_asset_id, playback_url, duration_seconds, recorded_at, timestamps) |
 | **AnalyticsAggregates Table** _(optional)_ | Cached stats for realtor dashboards |
 | **AuditLogs Table** _(optional)_ | Immutable system & user actions for compliance (actor_id, action, target_id, meta, created_at) |
 
@@ -320,11 +325,17 @@
 |----------|-------------|
 | **Email Notifications** | Appointment reminders **and password-reset emails** |
 | **Booking Reminder Job** | Send reminders & push notifications X minutes before a tour |
+| **Tour Lifecycle Management** | Auto-start tours, send notifications when tours begin/end |
 | **Video Processing** | Recording compression and storage |
+| **Transcription Processing** | Process audio recordings → AWS Transcribe → store in Transcripts table |
+| **Highlight Generation** | AI-powered tour highlight detection and image capture |
+| **Tour Summary Generation** | Create AI summaries from transcripts and notes |
+| **Recording Cleanup** | Archive old recordings based on retention policies |
 | **Dashboard Aggregation** | Nightly roll-up of metrics into AnalyticsAggregates |
 | **Analytics Ingestion** | Stream events → warehouse (e.g., Snowflake/Kinesis) |
 | **Property Image Processing** | Resize/compress images on upload |
 | **Data Sync** | External service synchronization |
+| **Audit Log Processing** | Batch process audit events for compliance reporting |
 
 #### Error Handling
 
