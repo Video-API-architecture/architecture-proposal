@@ -247,8 +247,8 @@ The video streaming platform is expected to revolutionize the real estate indust
 **Realtor Dashboard:** 
 - Property listings [Link](https://realtyforyou.lovable.app/admin/dashboard)
 - View property [Link](https://realtyforyou.lovable.app/admin/properties/1)
-- Upcoming video appointments
-- See a list of users
+- Upcoming tour appointments: [Link](https://realtyforyou.lovable.app/admin/tours)
+- See a list of users: [Link](https://realtyforyou.lovable.app/admin/users)
 
 **User Dashboard**
 - Recent tour appointments history [Link](https://realtyforyou.lovable.app/tours)
