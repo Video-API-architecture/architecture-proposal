@@ -2,35 +2,6 @@
 
 This document presents a comprehensive **Systems Design solution** for a video streaming application that facilitates live video calls between realtors and clients. The platform enables virtual property tours, allowing realtors to showcase properties remotely while providing clients with immersive viewing experiences.
 
-## 📋 Table of Contents
-
-- [Executive Summary](#executive-summary)
-- [Product View](#product-view)
-  - [Expected Business Impact](#expected-business-impact)
-  - [Assumptions and Questions Raised](#assumptions-and-questions-raised)
-  - [Constraint Analysis & Mitigation](#constraint-analysis--mitigation)
-    - [Ambitious Timelines](#ambitious-timelines)
-    - [Rural Connectivity Challenges](#rural-connectivity-challenges)
-  - [Team Execution Model](#team-execution-model)
-    - [Tech/Product/Design Sync Rhythm](#techproductdesign-sync-rhythm)
-    - [Shipping Milestones (8 Weeks, High-Impact First)](#shipping-milestones-8-weeks-high-impact-first)
-  - [Landing Pages](#landing-pages)
-  - [Delivery Plan](#delivery-plan)
-- [🔧 Technical View](#-technical-view)
-  - [Product & Delivery Gaps](#product--delivery-gaps)
-  - [Technical Quality Pillars](#technical-quality-pillars)
-    - [🔍 Observability](#-observability)
-    - [📈 Scalability](#-scalability)
-    - [⚡ Performance](#-performance)
-    - [🔧 Maintainability](#-maintainability)
-    - [🧪 Testability](#-testability)
-  - [Analytics](#analytics)
-    - [Remote Tour Tracking Plan](#remote-tour-tracking-plan)
-    - [Hotjar](#hotjar)
-    - [Mixpanel](#mixpanel)
-    - [Google Analytics](#google-analytics)
-  - [Systems Design](system-design.md)
-
 <details>
 <summary> 🎯 Executive Summary</summary>
 
