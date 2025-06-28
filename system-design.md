@@ -261,9 +261,9 @@
 | **Factories & Fixtures** | Reusable test data for users, properties, bookings |
 | **Tests** | Comprehensive unit, integration, and end-to-end coverage for auth, property CRUD, booking flow, dashboards, analytics events, and background jobs |
 
-#### Rails API
+### Rails API
 
-##### Technologies
+#### Technologies
 
 | Technology | Description |
 |------------|-------------|
@@ -272,7 +272,7 @@
 | **Redis** | Caching and session storage |
 | **JWT** | Authentication tokens |
 
-##### API Surface (REST)
+#### API Surface (REST)
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
@@ -302,7 +302,7 @@
 | `/api/v1/upload/images` | POST | Upload property images |
 | `/api/v1/upload/recordings` | POST | Upload call recordings |
 
-##### Databases
+#### Databases
 
 | Table | Description |
 |-------|-------------|
@@ -314,7 +314,7 @@
 | **AnalyticsAggregates Table** _(optional)_ | Cached stats for realtor dashboards |
 | **AuditLogs Table** _(optional)_ | Immutable system & user actions for compliance (actor_id, action, target_id, meta, created_at) |
 
-##### Asynchronous Jobs
+#### Asynchronous Jobs
 
 | Job Type | Description |
 |----------|-------------|
@@ -326,7 +326,7 @@
 | **Property Image Processing** | Resize/compress images on upload |
 | **Data Sync** | External service synchronization |
 
-##### Error Handling
+#### Error Handling
 
 | Component | Description |
 |-----------|-------------|
@@ -335,7 +335,7 @@
 | **Error Logging** | Structured error logging |
 | **Client Error Responses** | User-friendly error messages |
 
-##### MVC and Services
+#### MVC and Services
 
 | Layer | Description |
 |-------|-------------|
@@ -344,7 +344,7 @@
 | **Controllers** | Request handling and routing |
 | **Services** | Complex business logic |
 
-##### Concerns
+#### Concerns
 
 | Concern | Description |
 |---------|-------------|
@@ -353,7 +353,7 @@
 | **Logging** | Request and response logging |
 | **Validation** | Input validation and sanitization |
 
-##### Authorization & Security
+#### Authorization & Security
 
 | Security Measure | Description |
 |-----------------|-------------|
@@ -362,7 +362,7 @@
 | **API Rate Limiting** | Request throttling |
 | **Input Validation** | SQL injection and XSS prevention |
 
-##### DevOps & CI/CD
+#### DevOps & CI/CD
 
 | Component | Description |
 |-----------|-------------|
@@ -380,7 +380,7 @@
 | **Rollback & Release** | Blue-green by default; canary releases for high-risk changes; one-click rollback via ECS task definition history |
 | **CI Quality Gates** | Linting, tests, security scans (Snyk) must pass before merge |
 
-##### Observability  
+#### Observability  
 
 | Component | Description |
 |-----------|-------------|
@@ -428,9 +428,9 @@
 
 Role-based access control (RBAC) is enforced via **Pundit** policies in Rails and JWT claims on the client side.
 
-#### React
+### React
 
-##### Technologies
+#### Technologies
 
 | Technology | Description |
 |------------|-------------|
@@ -440,7 +440,7 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 | **Tailwind CSS** | Utility-first CSS framework |
 | **React Query** | Server state management |
 
-##### Design Patterns
+#### Design Patterns
 
 | Pattern | Description |
 |---------|-------------|
@@ -449,7 +449,7 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 | **Context API** | Global state management |
 | **Render Props** | Flexible component patterns |
 
-##### State Management
+#### State Management
 
 | Strategy | Description |
 |----------|-------------|
@@ -458,7 +458,7 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 | **Local State** | Component-specific state |
 | **URL State** | Navigation and routing state |
 
-##### Error Handling
+#### Error Handling
 
 | Component | Description |
 |-----------|-------------|
@@ -467,7 +467,7 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 | **Retry Mechanisms** | Automatic retry for failed requests |
 | **Fallback UI** | Graceful degradation |
 
-##### API Integration Strategy
+#### API Integration Strategy
 
 | Strategy | Description |
 |----------|-------------|
@@ -476,7 +476,7 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 | **Request Caching** | Optimistic updates and caching |
 | **File Upload** | Multipart form data handling |
 
-##### Testing Strategy
+#### Testing Strategy
 
 | Test Type | Framework |
 |-----------|-----------|
@@ -485,7 +485,7 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 | **Cypress** | End-to-end testing |
 | **MSW** | API mocking for tests |
 
-##### Styling & Theming
+#### Styling & Theming
 
 | Approach | Description |
 |----------|-------------|
@@ -493,7 +493,7 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 | **CSS Modules** | Component-scoped styles |
 | **Design System** | Consistent component library |
 
-##### Security
+#### Security
 
 | Security Measure | Description |
 |-----------------|-------------|
@@ -502,9 +502,9 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 | **Content Security Policy** | Resource loading restrictions |
 | **HTTPS** | Secure communication |
 
-#### React Native
+### React Native
 
-##### Technologies
+#### Technologies
 
 | Technology | Description |
 |------------|-------------|
@@ -513,7 +513,7 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 | **TypeScript** | Type-safe development |
 | **React Navigation** | Navigation library |
 
-##### Mobile Design Patterns
+#### Mobile Design Patterns
 
 | Pattern | Description |
 |---------|-------------|
@@ -522,7 +522,7 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 | **Offline-First** | Local data persistence |
 | **Push Notifications** | Real-time updates |
 
-##### Mobile State Management
+#### Mobile State Management
 
 | Strategy | Description |
 |----------|-------------|
@@ -531,7 +531,7 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 | **Realm** | Local database for offline data |
 | **State Synchronization** | Online/offline sync |
 
-##### Mobile Error Handling
+#### Mobile Error Handling
 
 | Component | Description |
 |-----------|-------------|
@@ -539,7 +539,7 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 | **Network Error Handling** | Offline mode support |
 | **User Feedback** | Toast and alert notifications |
 
-##### Offline Capabilities (Support & Sync)
+#### Offline Capabilities (Support & Sync)
 
 | Capability | Description |
 |------------|-------------|
@@ -548,7 +548,7 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 | **Sync Engine** | Data synchronization when online |
 | **Conflict Resolution** | Merge strategies for conflicts |
 
-##### Video Streaming & SDK Integration
+#### Video Streaming & SDK Integration
 
 | Feature | Description |
 |---------|-------------|
@@ -556,7 +556,7 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 | **Adaptive Quality** | Dynamic video quality adjustment |
 | **Background Mode** | Call continuation in background |
 
-##### Mobile Testing Strategy
+#### Mobile Testing Strategy
 
 | Test Type | Framework |
 |-----------|-----------|
@@ -565,7 +565,7 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 | **Device Testing** | Real device testing |
 | **Performance Testing** | Memory and battery optimization |
 
-##### Permissions & Device APIs Integration
+#### Permissions & Device APIs Integration
 
 | Permission | Purpose |
 |------------|---------|
@@ -574,7 +574,7 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 | **Location Services** | Property proximity features |
 | **Push Notifications** | Real-time alerts |
 
-##### Deep Linking & Navigation
+#### Deep Linking & Navigation
 
 | Feature | Description | Priority |
 |---------|-------------|----------|
@@ -585,7 +585,7 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 
 **Note:** Deep linking is a user experience enhancement for property sharing and tour invitations. Not required for MVP but recommended for Phase 2 to improve user engagement and lead generation.
 
-#### Tests and Delivery Automation
+### Tests and Delivery Automation
 
 | Test Type | Description |
 |-----------|-------------|
@@ -601,7 +601,7 @@ Role-based access control (RBAC) is enforced via **Pundit** policies in Rails an
 | **Security Scanning** | Automated vulnerability detection |
 | **Performance Monitoring** | Automated performance testing |
 
-#### Docker
+### Docker
 
 | Aspect | Description |
 |--------|-------------|
