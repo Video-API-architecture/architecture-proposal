@@ -24,6 +24,7 @@
         - [API Surface (REST)](#api-surface-rest)
       - [Component Diagram](#component-diagram)
         - [Code](#code)
+    - [Infrastructure](#infrastructure)
     - [Rails API](#rails-api)
       - [Technologies](#technologies)
       - [API Surface (REST)](#api-surface-rest)
@@ -35,7 +36,6 @@
       - [Authorization & Security](#authorization--security)
       - [DevOps & CI/CD](#devops--ci-cd)
       - [Observability](#observability)
-    - [Infrastructure](#infrastructure)
     - [React](#react)
       - [Technologies](#technologies)
       - [Design Patterns](#design-patterns)
@@ -269,6 +269,13 @@
 </details>
 
 <details>
+<summary>Infrastructure</summary>
+
+[Check out infrastructure architecture file here](./INFRA_ARCHITECTURE.md)
+
+</details>
+
+<details>
 <summary>Rails API</summary>
 
 Check more information about the [Backend Architecture here](./BACKEND_ARCHITECTURE.md).
@@ -447,13 +454,6 @@ Check more information about the [Backend Architecture here](./BACKEND_ARCHITECT
 | System    | Background jobs & services                | Recording processing, analytics aggregation                 |
 
 Role-based access control (RBAC) is enforced via **Pundit** policies in Rails and JWT claims on the client side.
-
-</details>
-
-<details>
-<summary>Infrastructure</summary>
-
-[Check out infrastructure architecture file here](./INFRA_ARCHITECTURE.md)
 
 </details>
 
