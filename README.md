@@ -268,10 +268,10 @@ The video streaming platform is expected to revolutionize the real estate indust
 
 | Gap                    | Why it matters                                                     | Quick fix                                                                                              |
 |------------------------|--------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------|
-| Cost model             | Chime minutes, ECS hours, media storage ⇒ bill shock if untracked  | Build a 3-row cost table (Dev/MVP/Scale) with ±20% estimates; include recording storage & MediaConvert |
-| Success metrics (SLOs) | Perf targets exist but not customer-facing guarantees              | Publish an SLO table: API p95 < 200 ms, Call-setup < 3 s, Video uptime 99.9 % etc.                     |
-| Regulatory coverage    | Real-estate transactions involve PII & sometimes KYC               | Reference RESA (BC), FINTRAC, and US state privacy rules; define data-retention & deletion windows     |
-| Incident playbooks     | Alerting exists but no documented runbooks                         | Link PagerDuty runbook template; codify post-mortem ≤ 48 h SLA                                         |
+| Cost model             | Chime minutes, ECS hours, media storage ⇒ bill shock if untracked  | Cost table (Dev/MVP/Scale) |
+| Success metrics (SLOs) | Perf targets exist but not customer-facing guarantees              | SLO table (API p95, Call-setup, Video uptime) |
+| Regulatory coverage    | Real-estate transactions involve PII & sometimes KYC               | PII/data flow map, retention policy, user self-service, compliance review, audit logs |
+| Incident playbooks     | Alerting exists but no documented runbooks                         | Security/outage/data playbooks, roles, automation, post-mortems, internal storage |
 
 #### Cost Model (Rough-Order-of-Magnitude)
 
@@ -280,6 +280,24 @@ The video streaming platform is expected to revolutionize the real estate indust
 | Dev         | 200 Chime minutes, 2 × ECS t3.small, 50 GB S3                              | ~$150    |
 | MVP         | 10 k Chime minutes, 8 × ECS t3.medium, 500 GB S3, MediaConvert hours       | ~$2 500  |
 | Scale (10×) | 100 k Chime minutes, 30 × ECS t3.large, 5 TB S3, higher MediaConvert usage | ~$20 000 |
+
+#### Regulatory Coverage
+
+Regulatory compliance is critical for handling PII, KYC, and real estate data. The team should:
+- Map all PII flows and storage locations
+- Document and enforce data retention/deletion policies
+- Provide user self-service for data access/deletion
+- Regularly review compliance with GDPR, CCPA, RESA, etc.
+- Maintain immutable audit logs for legal requirements
+
+#### Incident Playbooks
+
+Effective incident response minimizes impact and ensures compliance. The team should:
+- Define playbooks for security, outage, and data incidents
+- Assign clear roles and escalation paths
+- Automate alerting and initial triage
+- Run post-mortems and update playbooks after incidents
+- Store playbooks in an accessible internal location
 
 #### Service Level Objectives (SLOs)
 
@@ -290,6 +308,8 @@ The video streaming platform is expected to revolutionize the real estate indust
 | Video Uptime         | 99.9 %    | Weekly                        |
 | Booking Success Rate | > 98 %    | HTTP 2xx on booking endpoints |
 | Error Rate           | < 1 % 5xx | 5-min rolling                 |
+
+
 
 </details>
 
