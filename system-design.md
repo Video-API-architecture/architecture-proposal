@@ -31,6 +31,8 @@ Three separate tables support different layers of the tour experience. TOURS rep
 <details>
 <summary><strong>C4</strong></summary>
 
+[C4 (Context, Container, Component, and Code)](https://c4model.com/) is a visual modeling framework for software architecture developed by Simon Brown. It provides a clear, hierarchical way to describe and communicate software system designs, starting with a high-level system context (C1), zooming into containers like web apps and databases (C2), then detailing components within those containers (C3), and finally, optionally, drilling down to code-level structures like classes and interfaces (C4).
+
 <details>
 <summary><strong>Context</strong></summary>
 
@@ -43,7 +45,7 @@ Three separate tables support different layers of the tour experience. TOURS rep
 <details>
 <summary><strong>Containers</strong></summary>
 
-> Containers are the applications/servers that your company has (Frontend, backend, mobile, etc).
+> Containers are the applications/servers/systems that a company has (Frontend, backend, mobile, etc).
 
 ### Mobile App
 
