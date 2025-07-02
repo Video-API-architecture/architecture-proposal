@@ -1,0 +1,79 @@
+sequenceDiagram
+    participant WebApp
+    participant Auth as AuthMiddleware
+    participant RPC as "Realtor::PropertiesController"
+    participant BPC as "Buyers::PropertiesController"
+    participant Property as "PropertyModel"
+    participant ImageUploader as "PropertyImageUploader"
+    participant ImageJob as "ImageProcessingJob"
+    participant Tour as "TourModel"
+    participant Logger as "PropertyAuditLogger"
+
+    %% Auth
+    WebApp->>Auth: Request with JWT token
+    Auth->>Auth: Decode + verify token
+    Auth-->>RPC: Set current_user or reject (401)
+    Auth-->>BPC: Set current_user or reject (401)
+
+    %% Realtor: List properties
+    WebApp->>RPC: GET /api/v1/realtors/properties
+    RPC->>Property: .owned_by(current_user)
+    Property-->>RPC: property list
+    RPC-->>WebApp: JSON
+
+    %% Realtor: Create property
+    WebApp->>RPC: POST /api/v1/realtors/properties
+    RPC->>Property: .new(params)
+    Property->>Property: .save!
+    RPC->>Logger: log("property_created", user_id: current_user.id, property_id: property.id)
+    Logger-->>RPC: ok
+    RPC-->>WebApp: Created property JSON
+
+    %% Realtor: Get property
+    WebApp->>RPC: GET /api/v1/realtors/properties/:id
+    RPC->>Property: .find_owned(id, current_user)
+    Property-->>RPC: data
+    RPC-->>WebApp: JSON
+
+    %% Realtor: Update property
+    WebApp->>RPC: PUT /api/v1/realtors/properties/:id
+    RPC->>Property: .find_owned(id, current_user)
+    Property->>Property: .update(params)
+    RPC->>Logger: log("property_updated", user_id: current_user.id, property_id: property.id)
+    Logger-->>RPC: ok
+    RPC-->>WebApp: Updated JSON
+
+    %% Realtor: Delete property
+    WebApp->>RPC: DELETE /api/v1/realtors/properties/:id
+    RPC->>Property: .find_owned(id, current_user)
+    Property->>Property: .destroy
+    RPC->>Logger: log("property_deleted", user_id: current_user.id, property_id: id)
+    Logger-->>RPC: ok
+    RPC-->>WebApp: 204 No Content
+
+    %% Realtor: Upload images
+    WebApp->>RPC: POST /api/v1/realtors/properties/:id/images
+    RPC->>Property: .find_owned(id, current_user)
+    RPC->>ImageUploader: attach_images(property, files)
+    ImageUploader-->>RPC: success
+    RPC->>ImageJob: perform_later(property.id, files)
+    RPC->>Logger: log("property_images_uploaded", user_id: current_user.id, property_id: property.id, image_count: files.size)
+    Logger-->>RPC: ok
+    RPC-->>WebApp: Upload metadata
+
+    %% Realtor: Delete image
+    WebApp->>RPC: DELETE /api/v1/realtors/properties/:id/images/:image_id
+    RPC->>Property: .find_owned(id, current_user)
+    RPC->>ImageUploader: remove_image(image_id)
+    ImageUploader-->>RPC: success
+    RPC->>Logger: log("property_image_deleted", user_id: current_user.id, property_id: property.id, image_id: image_id)
+    Logger-->>RPC: ok
+    RPC-->>WebApp: 204 No Content
+
+    %% Realtor: View property tours
+    WebApp->>RPC: GET /api/v1/realtors/properties/:id/tours
+    RPC->>Property: .find_owned(id, current_user)
+    Property->>Tour: .where(property_id: id)
+    Tour-->>Property: list
+    Property-->>RPC: list
+    RPC-->>WebApp: JSON

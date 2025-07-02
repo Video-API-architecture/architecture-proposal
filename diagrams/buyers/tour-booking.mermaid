@@ -1,0 +1,50 @@
+sequenceDiagram
+    participant WebApp
+    participant Auth as AuthMiddleware
+    participant BBAPI as "Buyers::BookingsController"
+    participant BM as "BookingModel"
+    participant NotificationJob
+    participant Logger as "BookingAuditLogger"
+
+    %% All requests pass through auth first
+    WebApp->>Auth: Request with JWT token
+    Auth->>Auth: Decode + verify token
+    Auth-->>BBAPI: Set current_user or reject (401)
+
+    %% Buyer: List bookings
+    WebApp->>BBAPI: GET /api/v1/buyers/bookings
+    BBAPI->>BM: .for_user(current_user)
+    BM-->>BBAPI: bookings
+    BBAPI-->>WebApp: bookings JSON
+
+    %% Buyer: Create booking
+    WebApp->>BBAPI: POST /api/v1/buyers/bookings
+    BBAPI->>BM: .create(params.merge(user: current_user))
+    BM-->>BBAPI: booking
+    BBAPI->>Logger: log("booking_created", user_id: current_user.id, booking_id: booking.id)
+    Logger-->>BBAPI: ok
+    BBAPI->>NotificationJob: perform_later(type: "new_booking_request", booking_id: booking.id)
+    BBAPI-->>WebApp: 201 Created
+
+    %% Buyer: Get booking details
+    WebApp->>BBAPI: GET /api/v1/buyers/bookings/:id
+    BBAPI->>BM: .find_by_user(id, current_user)
+    BM-->>BBAPI: booking
+    BBAPI-->>WebApp: booking JSON
+
+    %% Buyer: Update booking
+    WebApp->>BBAPI: PUT /api/v1/buyers/bookings/:id
+    BBAPI->>BM: .find_by_user(id, current_user)
+    BBAPI->>BM: .update(params)
+    BM-->>BBAPI: updated booking
+    BBAPI->>Logger: log("booking_updated", user_id: current_user.id, booking_id: booking.id)
+    Logger-->>BBAPI: ok
+    BBAPI-->>WebApp: booking JSON
+
+    %% Buyer: Cancel booking
+    WebApp->>BBAPI: DELETE /api/v1/buyers/bookings/:id
+    BBAPI->>BM: .find_by_user(id, current_user)
+    BBAPI->>BM: .cancel!
+    BBAPI->>Logger: log("booking_cancelled", user_id: current_user.id, booking_id: booking.id)
+    Logger-->>BBAPI: ok
+    BBAPI-->>WebApp: 204 No Content

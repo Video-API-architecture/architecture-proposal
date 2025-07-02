@@ -1,0 +1,70 @@
+sequenceDiagram
+    participant WebApp
+    participant Auth as AuthMiddleware
+    participant BC as "Realtor::BookingsController"
+    participant CC as "Realtor::CallsController"
+    participant Booking as "BookingModel"
+    participant Tour as "TourModel"
+    participant Call as "CallModel"
+    participant Chime as "ChimeSDK"
+    participant Recorder as "RecordingService"
+    participant NotificationJob
+    participant AuditLogger
+
+    %% Auth check
+    WebApp->>Auth: Request with JWT token
+    Auth->>Auth: Decode + verify token
+    Auth-->>BC: Set current_user or reject (401)
+
+    %% Booking confirmation (creates call)
+    WebApp->>BC: PUT /api/v1/realtors/bookings/:id/confirm
+    BC->>Booking: .find_by_property_realtor(id, current_user)
+    BC->>Booking: .update!(status: 'confirmed')
+    BC->>Tour: .create!(booking: booking, property: booking.property, realtor: current_user, buyer: booking.buyer)
+    BC->>Call: .create!(tour: tour, status: 'created', chime_meeting_id: SecureRandom.uuid)
+    BC->>AuditLogger: log("booking_confirmed", user_id: current_user.id, booking: booking.id, call: call.id)
+    BC->>NotificationJob: perform_later("booking_confirmation", { booking_id: booking.id })
+    BC->>NotificationJob: perform_later("booking_reminder", { booking_id: booking.id }, delay: 15.minutes)
+    BC-->>WebApp: Return booking, tour, and call data
+
+    %% Get call details (after confirmation)
+    WebApp->>CC: GET /api/v1/realtors/calls/:id
+    CC->>Call: .find_by_tour_realtor(id, current_user)
+    Call-->>CC: metadata
+    CC-->>WebApp: Return call JSON
+
+    %% Join call
+    WebApp->>CC: POST /api/v1/realtors/calls/:id/join
+    CC->>Call: .find_by_tour_realtor(id, current_user)
+    CC->>Chime: CreateAttendee(meeting_id)
+    Chime-->>CC: attendee credentials
+    CC->>AuditLogger: log("call_joined", user_id: current_user.id, call: call.id)
+    CC-->>WebApp: Return meeting + attendee info
+
+    %% Leave call
+    WebApp->>CC: POST /api/v1/realtors/calls/:id/leave
+    CC->>Call: .mark_user_left(current_user)
+    CC->>AuditLogger: log("call_left", user_id: current_user.id, call: call.id)
+    CC-->>WebApp: Return status (e.g., { success: true })
+
+    %% End call
+    WebApp->>CC: POST /api/v1/realtors/calls/:id/end
+    CC->>Call: .end!
+    CC->>Chime: DeleteMeeting(meeting_id)
+    CC->>AuditLogger: log("call_ended", user_id: current_user.id, call: call.id)
+    CC-->>WebApp: Return status (e.g., { success: true })
+
+    %% Get call recording
+    WebApp->>CC: GET /api/v1/realtors/calls/:id/recording
+    CC->>Call: .find_by_tour_realtor(id, current_user)
+    Call-->>CC: recording_url
+    CC-->>WebApp: Return signed video URL
+
+    %% Start/Stop call recording
+    WebApp->>CC: POST /api/v1/realtors/calls/:id/record
+    CC->>Recorder: toggle_recording(call_id)
+    Recorder-->>CC: recording_status
+    CC-->>WebApp: Status confirmation
+
+    %% Optional email notification after recording
+    Recorder->>NotificationJob: perform_later(type: "call_recording_ready", call_id: call.id)

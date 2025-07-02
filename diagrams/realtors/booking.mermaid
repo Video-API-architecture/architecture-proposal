@@ -1,0 +1,59 @@
+sequenceDiagram
+    participant WebApp
+    participant Auth as AuthMiddleware
+    participant RBC as "Realtor::BookingsController"
+    participant BM as "BookingModel"
+    participant NotificationJob
+    participant Logger as "BookingAuditLogger"
+    participant RPC as "Realtor::PropertiesController"
+
+    %% Auth
+    WebApp->>Auth: Request with JWT token
+    Auth->>Auth: Decode + verify token
+    Auth-->>RBC: Set current_user or reject (401)
+    Auth-->>RPC: Set current_user or reject (401)
+
+    %% List bookings (read-only, not logged)
+    WebApp->>RBC: GET /api/v1/realtors/bookings
+    RBC->>BM: .for_user(current_user)
+    BM-->>RBC: bookings
+    RBC-->>WebApp: bookings JSON
+
+    %% Get booking (read-only, not logged)
+    WebApp->>RBC: GET /api/v1/realtors/bookings/:id
+    RBC->>BM: .find_by_user(id, current_user)
+    BM-->>RBC: booking
+    RBC-->>WebApp: booking JSON
+
+    %% Update booking
+    WebApp->>RBC: PUT /api/v1/realtors/bookings/:id
+    RBC->>BM: .find_by_user(id, current_user)
+    BM-->>RBC: booking
+    RBC->>BM: .update(params)
+    BM-->>RBC: updated booking
+    RBC->>Logger: log("booking_updated", user_id: current_user.id, booking_id: booking.id)
+    Logger-->>RBC: ok
+    RBC-->>WebApp: 200 OK + updated booking JSON
+
+    %% Cancel booking
+    WebApp->>RBC: DELETE /api/v1/realtors/bookings/:id
+    RBC->>BM: .find_by_user(id, current_user)
+    BM-->>RBC: booking
+    RBC->>BM: .cancel!
+    BM-->>RBC: booking (status: cancelled)
+    RBC->>Logger: log("booking_cancelled", user_id: current_user.id, booking_id: booking.id)
+    Logger-->>RBC: ok
+    RBC-->>WebApp: 204 No Content
+
+    %% Create booking
+    WebApp->>RBC: POST /api/v1/realtors/bookings
+    RBC->>BM: .create(params.merge(user: current_user))
+    BM-->>RBC: booking
+    RBC->>Logger: log("booking_created", user_id: current_user.id, booking_id: booking.id)
+    Logger-->>RBC: ok
+    RBC->>NotificationJob: perform_later(type: "booking_confirmation", booking_id: booking.id)
+    NotificationJob-->>RBC: queued
+    RBC->>NotificationJob: perform_later(type: "booking_reminder", booking_id: booking.id, delay: X)
+    NotificationJob-->>RBC: queued
+    RBC-->>WebApp: 201 Created + booking JSON
+    

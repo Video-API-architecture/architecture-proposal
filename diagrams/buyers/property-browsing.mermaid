@@ -1,0 +1,22 @@
+sequenceDiagram
+    participant WebApp
+    participant Auth as AuthMiddleware
+    participant BPAPI as "Buyers::PropertiesController"
+    participant PM as "PropertyModel"
+
+    %% Auth
+    WebApp->>Auth: Request with JWT token
+    Auth->>Auth: Decode + verify token
+    Auth-->>BPAPI: Set current_user or reject (401)
+
+    %% GET /api/v1/buyers/properties
+    WebApp->>BPAPI: GET /api/v1/buyers/properties
+    BPAPI->>PM: .available_for_browsing(current_user)
+    PM-->>BPAPI: property list
+    BPAPI-->>WebApp: properties JSON
+
+    %% GET /api/v1/buyers/properties/:id
+    WebApp->>BPAPI: GET /api/v1/buyers/properties/:id
+    BPAPI->>PM: .find_by_id_and_visibility(id, current_user)
+    PM-->>BPAPI: property
+    BPAPI-->>WebApp: property JSON

@@ -1,0 +1,114 @@
+erDiagram
+    USERS ||--o{ PROPERTIES : realtor_id
+    USERS ||--o{ BOOKINGS : buyer_id
+    USERS ||--o{ TOURS : buyer_id
+    USERS ||--o{ TOURS : realtor_id
+    USERS ||--o{ TOUR_NOTES : user_id
+    USERS ||--o{ AUDIT_LOGS : user_id
+
+    PROPERTIES ||--o{ BOOKINGS : property_id
+    PROPERTIES ||--o{ TOURS : property_id
+
+    BOOKINGS ||--|| TOURS : booking_id
+    TOURS ||--|| CALLS : tour_id
+    TOURS ||--o{ TOUR_NOTES : tour_id
+    TOURS ||--|| TRANSCRIPTS : tour_id
+    TOURS ||--o{ HIGHLIGHTS : tour_id
+    TOURS ||--|| RECORDINGS : tour_id
+
+    USERS {
+        BIGINT id PK
+        VARCHAR full_name
+        VARCHAR email
+        VARCHAR role
+        VARCHAR cognito_sub
+    }
+
+    PROPERTIES {
+        BIGINT id PK
+        BIGINT realtor_id FK
+        TEXT address
+        VARCHAR mls_id
+        TEXT description
+        DECIMAL price
+        INTEGER bedrooms
+        INTEGER bathrooms
+        INTEGER sqft
+        VARCHAR status
+    }
+
+    BOOKINGS {
+        BIGINT id PK
+        BIGINT buyer_id FK
+        BIGINT property_id FK
+        TIMESTAMP scheduled_at
+        VARCHAR status
+        INTEGER duration_minutes
+        TEXT notes
+    }
+
+    TOURS {
+        BIGINT id PK
+        BIGINT property_id FK
+        BIGINT realtor_id FK
+        BIGINT buyer_id FK
+        BIGINT booking_id FK
+        VARCHAR status
+        TIMESTAMP scheduled_at
+        TIMESTAMP started_at
+        TIMESTAMP ended_at
+    }
+
+    CALLS {
+        BIGINT id PK
+        BIGINT tour_id FK
+        VARCHAR chime_meeting_id
+        VARCHAR status
+        TIMESTAMP started_at
+        TIMESTAMP ended_at
+    }
+
+    TOUR_NOTES {
+        BIGINT id PK
+        BIGINT tour_id FK
+        BIGINT user_id FK
+        TEXT content
+        VARCHAR tag
+        BIGINT timestamp_ms
+    }
+
+    TRANSCRIPTS {
+        BIGINT id PK
+        BIGINT tour_id FK
+        TEXT full_text
+        JSONB segments
+        DECIMAL confidence_score
+    }
+
+    HIGHLIGHTS {
+        BIGINT id PK
+        BIGINT tour_id FK
+        BIGINT timestamp_ms
+        TEXT note
+        VARCHAR image_url
+        VARCHAR highlight_type
+    }
+
+    RECORDINGS {
+        BIGINT id PK
+        BIGINT tour_id FK
+        VARCHAR mux_asset_id
+        VARCHAR playback_url
+        INTEGER duration_seconds
+        BIGINT file_size_bytes
+        TIMESTAMP recorded_at
+    }
+
+    AUDIT_LOGS {
+        BIGINT id PK
+        BIGINT user_id FK
+        VARCHAR action
+        VARCHAR resource_type
+        BIGINT resource_id
+        TEXT details
+    }

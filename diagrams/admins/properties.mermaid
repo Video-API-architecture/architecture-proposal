@@ -1,0 +1,52 @@
+sequenceDiagram
+    participant AdminUI
+    participant Auth as AuthMiddleware
+    participant APC as "Admin::PropertiesController"
+    participant Property as PropertyModel
+    participant Storage as "ImageStorageService"
+    participant ImageProcessingJob
+    participant AuditLog
+
+    %% Auth check (admin only)
+    AdminUI->>Auth: Request with JWT token
+    Auth->>Auth: Decode + verify + check admin scope
+    Auth-->>APC: Set current_user or reject (401/403)
+
+    %% List all properties
+    AdminUI->>APC: GET /admin/properties
+    APC->>Property: .all or .filter(params)
+    Property-->>APC: [ ...property_list ]
+    APC-->>AdminUI: Return JSON
+
+    %% Get property details
+    AdminUI->>APC: GET /admin/properties/:id
+    APC->>Property: .find(id)
+    Property-->>APC: property
+    APC-->>AdminUI: Return property JSON
+
+    %% Update property
+    AdminUI->>APC: PUT /admin/properties/:id
+    APC->>Property: .find(id)
+    Property->>Property: .update(params)
+    APC->>AuditLog: log("property_updated", user_id: current_user.id, property_id: property.id)
+    AuditLog-->>APC: ok
+    APC-->>AdminUI: Return updated property
+
+    %% Delete property
+    AdminUI->>APC: DELETE /admin/properties/:id
+    APC->>Property: .find(id)
+    Property->>Property: .destroy
+    APC->>AuditLog: log("property_deleted", user_id: current_user.id, property_id: property.id)
+    AuditLog-->>APC: ok
+    APC-->>AdminUI: Return confirmation
+
+    %% Upload property image
+    AdminUI->>APC: POST /admin/properties/:id/images (multipart/form-data)
+    APC->>Property: .find(id)
+    APC->>Storage: upload(image_file)
+    Storage-->>APC: URL / identifier
+    APC->>Property: property.images.attach(url)
+    APC->>ImageProcessingJob: perform_later(property.id, image_url)
+    APC->>AuditLog: log("image_uploaded", user_id: current_user.id, property_id: property.id, image_url: image_url)
+    AuditLog-->>APC: ok
+    APC-->>AdminUI: Return uploaded image metadata

@@ -1,0 +1,80 @@
+sequenceDiagram
+    participant WebApp
+    participant Auth as AuthMiddleware
+    participant RTC as "Realtor::ToursController"
+    participant TM as "TourModel"
+    participant NM as "NoteModel"
+    participant Logger as "AuditLogger"
+    participant ProcessingJob as "TourProcessingJob"
+
+    %% Auth
+    WebApp->>Auth: Request with JWT token
+    Auth->>Auth: Decode + verify token
+    Auth-->>RTC: Set current_user or reject (401)
+
+    %% List tours
+    WebApp->>RTC: GET /api/v1/realtors/tours
+    RTC->>TM: .for_user(current_user)
+    TM-->>RTC: tours
+    RTC-->>WebApp: tours JSON
+
+    %% Show tour
+    WebApp->>RTC: GET /api/v1/realtors/tours/:id
+    RTC->>TM: .find_by_user(id, current_user)
+    TM-->>RTC: tour
+    RTC-->>WebApp: tour JSON
+
+    %% Start tour
+    WebApp->>RTC: POST /api/v1/realtors/tours/:id/start
+    RTC->>TM: .find_by_user(id, current_user)
+    RTC->>TM: .start!
+    RTC->>Logger: log("tour_started", user_id: current_user.id, tour_id: tour.id)
+    Logger-->>RTC: ok
+    RTC-->>WebApp: 200 OK
+
+    %% End tour
+    WebApp->>RTC: POST /api/v1/realtors/tours/:id/end
+    RTC->>TM: .find_by_user(id, current_user)
+    RTC->>TM: .end!
+    TM->>ProcessingJob: perform_later(tour.id)
+    RTC->>Logger: log("tour_ended", user_id: current_user.id, tour_id: tour.id)
+    Logger-->>RTC: ok
+    RTC-->>WebApp: 200 OK
+
+    %% Notes
+    WebApp->>RTC: GET /api/v1/realtors/tours/:id/notes
+    RTC->>NM: .where(tour_id: id)
+    NM-->>RTC: notes
+    RTC-->>WebApp: notes JSON
+
+    %% Notes
+    WebApp->>RTC: POST /api/v1/realtors/tours/:id/notes
+    RTC->>NM: .create!(params.merge(user: current_user))
+    NM-->>RTC: note
+    RTC->>Logger: log("tour_note_created", user_id: current_user.id, tour_id: id, note_id: note.id)
+    Logger-->>RTC: ok
+    RTC-->>WebApp: note JSON
+
+    %% Recording
+    WebApp->>RTC: GET /api/v1/realtors/tours/:id/recording
+    RTC->>TM: .find_by_user(id, current_user)
+    TM-->>RTC: recording_url
+    RTC-->>WebApp: signed playback URL
+
+    %% Transcript
+    WebApp->>RTC: GET /api/v1/realtors/tours/:id/transcript
+    RTC->>TM: .find_by_user(id, current_user)
+    TM-->>RTC: transcript_data
+    RTC-->>WebApp: JSON
+
+    %% Highlights
+    WebApp->>RTC: GET /api/v1/realtors/tours/:id/highlights
+    RTC->>TM: .find_by_user(id, current_user)
+    TM-->>RTC: highlights_list
+    RTC-->>WebApp: JSON
+
+    %% Summary
+    WebApp->>RTC: GET /api/v1/realtors/tours/:id/summary
+    RTC->>TM: .find_by_user(id, current_user)
+    TM-->>RTC: summary_data
+    RTC-->>WebApp: JSON

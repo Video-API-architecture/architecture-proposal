@@ -1,0 +1,62 @@
+sequenceDiagram
+    participant WebApp
+    participant Auth as AuthMiddleware
+    participant BTAPI as "Buyers::ToursController"
+    participant TourModel
+    participant NoteModel
+    participant Logger as "TourAuditLogger"
+
+    %% Auth
+    WebApp->>Auth: Request with JWT token
+    Auth->>Auth: Decode + verify token
+    Auth-->>BTAPI: Set current_user or reject (401)
+
+    %% List tours
+    WebApp->>BTAPI: GET /api/v1/buyers/tours
+    BTAPI->>TourModel: .for_user(current_user)
+    TourModel-->>BTAPI: tours
+    BTAPI-->>WebApp: tours JSON
+
+    %% Show tour
+    WebApp->>BTAPI: GET /api/v1/buyers/tours/:id
+    BTAPI->>TourModel: .find_by_user(id, current_user)
+    TourModel-->>BTAPI: tour
+    BTAPI-->>WebApp: tour JSON
+
+    %% Get tour notes
+    WebApp->>BTAPI: GET /api/v1/buyers/tours/:id/notes
+    BTAPI->>NoteModel: .where(tour_id: id, user: current_user)
+    NoteModel-->>BTAPI: notes
+    BTAPI-->>WebApp: notes JSON
+
+    %% Add tour note (CREATE — logged)
+    WebApp->>BTAPI: POST /api/v1/buyers/tours/:id/notes
+    BTAPI->>NoteModel: .create!(params.merge(user: current_user, tour_id: id))
+    NoteModel-->>BTAPI: note
+    BTAPI->>Logger: log("tour_note_created", user_id: current_user.id, tour_id: id, note_id: note.id)
+    Logger-->>BTAPI: ok
+    BTAPI-->>WebApp: note JSON
+
+    %% Get recording
+    WebApp->>BTAPI: GET /api/v1/buyers/tours/:id/recording
+    BTAPI->>TourModel: .find_by_user(id, current_user)
+    TourModel-->>BTAPI: recording_url
+    BTAPI-->>WebApp: signed playback URL
+
+    %% Get transcript
+    WebApp->>BTAPI: GET /api/v1/buyers/tours/:id/transcript
+    BTAPI->>TourModel: .find_by_user(id, current_user)
+    TourModel-->>BTAPI: transcript_data
+    BTAPI-->>WebApp: transcript JSON
+
+    %% Get highlights
+    WebApp->>BTAPI: GET /api/v1/buyers/tours/:id/highlights
+    BTAPI->>TourModel: .find_by_user(id, current_user)
+    TourModel-->>BTAPI: highlights_list
+    BTAPI-->>WebApp: highlights JSON
+
+    %% Get summary
+    WebApp->>BTAPI: GET /api/v1/buyers/tours/:id/summary
+    BTAPI->>TourModel: .find_by_user(id, current_user)
+    TourModel-->>BTAPI: summary_data
+    BTAPI-->>WebApp: summary JSON

@@ -1,0 +1,44 @@
+sequenceDiagram
+    participant AdminUI
+    participant Auth as AuthMiddleware
+    participant ATC as "Admin::ToursController"
+    participant Tour as TourModel
+    participant AuditLog
+    participant NotificationJob
+
+    %% Auth check (admin only)
+    AdminUI->>Auth: Request with JWT token
+    Auth->>Auth: Decode + verify + check admin scope
+    Auth-->>ATC: Set current_user or reject (401/403)
+
+    %% List all tours
+    AdminUI->>ATC: GET /admin/tours
+    ATC->>Tour: .all or .filter(params)
+    Tour-->>ATC: [ ...tour_list ]
+    ATC-->>AdminUI: Return tour list JSON
+
+    %% Get tour details
+    AdminUI->>ATC: GET /admin/tours/:id
+    ATC->>Tour: .find(id)
+    Tour-->>ATC: tour
+    ATC-->>AdminUI: Return tour JSON
+
+    %% Update tour
+    AdminUI->>ATC: PUT /admin/tours/:id
+    ATC->>Tour: .find(id)
+    Tour->>Tour: .update(params)
+    ATC->>AuditLog: log("tour_updated", user_id: current_user.id, tour_id: tour.id)
+    AuditLog-->>ATC: ok
+    ATC->>NotificationJob: perform_later("tour_updated", { tour_id: tour.id })
+    NotificationJob-->>ATC: queued
+    ATC-->>AdminUI: Return updated tour
+
+    %% Delete tour
+    AdminUI->>ATC: DELETE /admin/tours/:id
+    ATC->>Tour: .find(id)
+    Tour->>Tour: .destroy
+    ATC->>AuditLog: log("tour_deleted", user_id: current_user.id, tour_id: tour.id)
+    AuditLog-->>ATC: ok
+    ATC->>NotificationJob: perform_later("tour_deleted", { tour_id: tour.id })
+    NotificationJob-->>ATC: queued
+    ATC-->>AdminUI: Return deletion confirmation

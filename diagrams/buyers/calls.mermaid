@@ -1,0 +1,46 @@
+sequenceDiagram
+    participant WebApp
+    participant Auth as AuthMiddleware
+    participant BC as "Buyers::BookingsController"
+    participant CC as "Buyers::CallsController"
+    participant Booking as "BookingModel"
+    participant Tour as "TourModel"
+    participant Call as "CallModel"
+    participant Recording as "RecordingModel"
+    participant VideoService as "VideoSessionService"
+    participant AuditLog
+
+    %% Auth
+    WebApp->>Auth: Request with JWT token
+    Auth->>Auth: Decode + verify token
+    Auth-->>CC: Set current_user or reject (401)
+
+    %% Get call details (after booking confirmation)
+    WebApp->>CC: GET /api/v1/buyers/calls/:id
+    CC->>Call: .find_by_tour_buyer(id, current_user)
+    Call-->>CC: call metadata
+    CC-->>WebApp: Return call JSON
+
+    %% POST /buyers/calls/:id/join (LOGGED)
+    WebApp->>CC: POST /api/v1/buyers/calls/:id/join
+    CC->>Call: .find_by_tour_buyer(id, current_user)
+    CC->>VideoService: start_or_join_session(call)
+    VideoService-->>CC: session_credentials
+    CC->>AuditLog: log("call_joined", user_id: current_user.id, call_id: call.id)
+    AuditLog-->>CC: ok
+    CC-->>WebApp: credentials JSON
+
+    %% POST /buyers/calls/:id/leave (LOGGED)
+    WebApp->>CC: POST /api/v1/buyers/calls/:id/leave
+    CC->>Call: .find_by_tour_buyer(id, current_user)
+    CC->>VideoService: leave_session(call, current_user)
+    CC->>AuditLog: log("call_left", user_id: current_user.id, call_id: call.id)
+    AuditLog-->>CC: ok
+    CC-->>WebApp: 200 OK
+
+    %% GET /buyers/calls/:id/recording (READ-ONLY, NOT LOGGED)
+    WebApp->>CC: GET /api/v1/buyers/calls/:id/recording
+    CC->>Call: .find_by_tour_buyer(id, current_user)
+    CC->>Recording: .find_by(tour_id: call.tour_id)
+    Recording-->>CC: playback_url
+    CC-->>WebApp: signed recording URL

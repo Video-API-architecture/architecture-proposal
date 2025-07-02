@@ -1,0 +1,61 @@
+sequenceDiagram
+    participant AdminPanel
+    participant AuthMiddleware
+    participant AdminUsersController
+    participant UserModel
+    participant AuthorizationService
+    participant AuditLog
+
+    %% All requests go through auth
+    AdminPanel->>AuthMiddleware: Request with JWT token
+    AuthMiddleware->>AuthMiddleware: Decode + verify token
+    AuthMiddleware-->>AdminUsersController: Set current_user or reject (401)
+
+    %% List all users
+    AdminPanel->>AdminUsersController: GET /admin/users
+    AdminUsersController->>AuthorizationService: admin?(current_user)
+    alt Admin
+        AdminUsersController->>UserModel: .all
+        UserModel-->>AdminUsersController: User list
+        AdminUsersController-->>AdminPanel: JSON list
+    else Not allowed
+        AdminUsersController-->>AdminPanel: 403 Forbidden
+    end
+
+    %% Get user details
+    AdminPanel->>AdminUsersController: GET /admin/users/:id
+    AdminUsersController->>AuthorizationService: admin?(current_user)
+    alt Admin
+        AdminUsersController->>UserModel: .find(id)
+        UserModel-->>AdminUsersController: User
+        AdminUsersController-->>AdminPanel: JSON user
+    else Not allowed
+        AdminUsersController-->>AdminPanel: 403 Forbidden
+    end
+
+    %% Update user
+    AdminPanel->>AdminUsersController: PUT /admin/users/:id
+    AdminUsersController->>AuthorizationService: admin?(current_user)
+    alt Admin
+        AdminUsersController->>UserModel: .find(id)
+        UserModel->>UserModel: .update(params)
+        AdminUsersController->>AuditLog: log("user_updated", user_id: current_user.id, target_user_id: user.id)
+        AuditLog-->>AdminUsersController: ok
+        UserModel-->>AdminUsersController: Updated user
+        AdminUsersController-->>AdminPanel: Success response
+    else Not allowed
+        AdminUsersController-->>AdminPanel: 403 Forbidden
+    end
+
+    %% Delete user
+    AdminPanel->>AdminUsersController: DELETE /admin/users/:id
+    AdminUsersController->>AuthorizationService: admin?(current_user)
+    alt Admin
+        AdminUsersController->>UserModel: .find(id)
+        UserModel->>UserModel: .destroy
+        AdminUsersController->>AuditLog: log("user_deleted", user_id: current_user.id, target_user_id: user.id)
+        AuditLog-->>AdminUsersController: ok
+        AdminUsersController-->>AdminPanel: 204 No Content
+    else Not allowed
+        AdminUsersController-->>AdminPanel: 403 Forbidden
+    end
