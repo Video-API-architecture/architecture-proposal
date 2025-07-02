@@ -113,6 +113,10 @@ Three separate tables support different layers of the tour experience. TOURS rep
 
 <img src="./diagrams/buyers/tour-participation.png" />
 
+### Post-Tour
+
+<img src="./diagrams/buyers/post-tour.png" />
+
 </details>
 
 <details>
@@ -133,10 +137,6 @@ Three separate tables support different layers of the tour experience. TOURS rep
 ### Tour Endpoints
 
 <img src="./diagrams/realtors/tours.png" />
-
-### Post-Tour
-
-<img src="./diagrams/buyers/post-tour.png" />
 
 </details>
 
