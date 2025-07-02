@@ -1289,7 +1289,9 @@ end
 spec/
 ├── controllers/
 │   └── api/v1/
-│       ├── auth_controller_spec.rb
+│       ├── auth/
+│       │   ├── sessions_controller_spec.rb
+│       │   ├── registrations_controller_spec.rb
 │       ├── realtors/
 │       │   ├── properties_controller_spec.rb
 │       │   ├── tours_controller_spec.rb
