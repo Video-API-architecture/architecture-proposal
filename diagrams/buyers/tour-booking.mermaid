@@ -3,7 +3,7 @@ sequenceDiagram
     participant Auth as AuthMiddleware
     participant BBAPI as "Api::V1::Buyers::BookingsController"
     participant BM as "BookingModel"
-    participant NotificationJob
+    participant NotificationWorker
     participant Logger as "BookingAuditLogger"
 
     %% All requests pass through auth first
@@ -23,7 +23,7 @@ sequenceDiagram
     BM-->>BBAPI: booking
     BBAPI->>Logger: log("booking_created", user_id: current_user.id, booking_id: booking.id)
     Logger-->>BBAPI: ok
-    BBAPI->>NotificationJob: perform_later(type: "new_booking_request", booking_id: booking.id)
+    BBAPI->>NotificationWorker: perform_async(type: "new_booking_request", booking_id: booking.id)
     BBAPI-->>WebApp: 201 Created
 
     %% Buyer: Get booking details

@@ -4,7 +4,7 @@ sequenceDiagram
     participant ATC as "Api::V1::Admin::ToursController"
     participant Tour as TourModel
     participant AuditLog
-    participant NotificationJob
+    participant NotificationWorker
 
     %% Auth check (admin only)
     AdminUI->>Auth: Request with JWT token
@@ -29,8 +29,8 @@ sequenceDiagram
     Tour->>Tour: .update(params)
     ATC->>AuditLog: log("tour_updated", user_id: current_user.id, tour_id: tour.id)
     AuditLog-->>ATC: ok
-    ATC->>NotificationJob: perform_later("tour_updated", { tour_id: tour.id })
-    NotificationJob-->>ATC: queued
+    ATC->>NotificationWorker: perform_async("tour_updated", { tour_id: tour.id })
+    NotificationWorker-->>ATC: queued
     ATC-->>AdminUI: Return updated tour
 
     %% Delete tour
@@ -39,6 +39,6 @@ sequenceDiagram
     Tour->>Tour: .destroy
     ATC->>AuditLog: log("tour_deleted", user_id: current_user.id, tour_id: tour.id)
     AuditLog-->>ATC: ok
-    ATC->>NotificationJob: perform_later("tour_deleted", { tour_id: tour.id })
-    NotificationJob-->>ATC: queued
+    ATC->>NotificationWorker: perform_async("tour_deleted", { tour_id: tour.id })
+    NotificationWorker-->>ATC: queued
     ATC-->>AdminUI: Return deletion confirmation

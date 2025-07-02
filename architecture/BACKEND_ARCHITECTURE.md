@@ -90,10 +90,10 @@ app/
 │   ├── highlight_detection_service.rb
 │   ├── summary_service.rb
 │   └── image_processing_service.rb
-├── jobs/
-│   ├── notification_job.rb
-│   ├── tour_processing_job.rb
-│   └── image_processing_job.rb
+├── workers/
+│   ├── notification_worker.rb
+│   ├── tour_processing_worker.rb
+│   └── image_processing_worker.rb
 └── concerns/
     ├── authentication.rb
     ├── caching.rb
@@ -616,13 +616,13 @@ end
 ```
 </details>
 
-## Background Jobs
+## Background Workers
 
-| Job Type | Description |
-|----------|-------------|
-| **Notification Job** | Email reminders, tour notifications, booking confirmations |
-| **Tour Processing Job** | Handle tour lifecycle, recordings, transcription, highlights, summaries |
-| **Image Processing Job** | Resize/compress property images on upload |
+| Worker Type | Description |
+|-------------|-------------|
+| **Notification Worker** | Email reminders, tour notifications, booking confirmations |
+| **Tour Processing Worker** | Handle tour lifecycle, recordings, transcription, highlights, summaries |
+| **Image Processing Worker** | Resize/compress property images on upload |
 
 <details>
 <summary><strong>Notification Jobs</strong></summary>
@@ -634,7 +634,7 @@ class Api::V1::Buyers::BookingsController < ApplicationController
     booking = current_user.bookings.create!(booking_params)
     
     # Send notification to realtor about new booking request
-    NotificationJob.perform_later('new_booking_request', { booking_id: booking.id })
+    NotificationWorker.perform_async('new_booking_request', { booking_id: booking.id })
     
     render json: booking, status: :created
   end
@@ -665,11 +665,11 @@ class Api::V1::Realtors::BookingsController < ApplicationController
       )
       
       # Send confirmation to both parties
-      NotificationJob.perform_later('booking_confirmation', { booking_id: booking.id })
+      NotificationWorker.perform_async('booking_confirmation', { booking_id: booking.id })
       
       # Schedule reminder 15 minutes before tour
       reminder_time = booking.scheduled_at - 15.minutes
-      NotificationJob.set(wait_until: reminder_time).perform_later('booking_reminder', { booking_id: booking.id })
+      NotificationWorker.perform_at(reminder_time, 'booking_reminder', { booking_id: booking.id })
       
       render json: { booking: booking, tour: tour, call: call }
     end
@@ -681,7 +681,7 @@ class Api::V1::Realtors::ToursController < ApplicationController
     tour = Tour.find(params[:id])
     
     # Start tour processing
-    TourProcessingJob.perform_later('start_tour', { tour_id: tour.id })
+    TourProcessingWorker.perform_async('start_tour', { tour_id: tour.id })
     
     render json: { message: 'Tour starting...' }
   end
@@ -690,15 +690,16 @@ class Api::V1::Realtors::ToursController < ApplicationController
     tour = Tour.find(params[:id])
     
     # End tour and process everything
-    TourProcessingJob.perform_later('end_tour', { tour_id: tour.id })
+    TourProcessingWorker.perform_async('end_tour', { tour_id: tour.id })
     
     render json: { message: 'Tour ending...' }
   end
 end
 
-# app/jobs/notification_job.rb
-class NotificationJob < ApplicationJob
-  queue_as :default
+# app/workers/notification_worker.rb
+class NotificationWorker
+  include Sidekiq::Worker
+  sidekiq_options queue: 'default'
 
   def perform(notification_type, data)
     case notification_type
@@ -751,9 +752,10 @@ end
 <summary><strong>Tour Processing Jobs</strong></summary>
 
 ```ruby
-# app/jobs/tour_processing_job.rb
-class TourProcessingJob < ApplicationJob
-  queue_as :default
+# app/workers/tour_processing_worker.rb
+class TourProcessingWorker
+  include Sidekiq::Worker
+  sidekiq_options queue: 'default'
 
   def perform(processing_type, data)
     case processing_type
@@ -785,7 +787,7 @@ class TourProcessingJob < ApplicationJob
     )
     
     # Send notification
-    NotificationJob.perform_later('tour_start', { tour_id: tour_id })
+    NotificationWorker.perform_async('tour_start', { tour_id: tour_id })
   end
 
   def end_tour(tour_id)
@@ -801,7 +803,7 @@ class TourProcessingJob < ApplicationJob
     process_recording(tour_id)
     
     # Send notification
-    NotificationJob.perform_later('tour_end', { tour_id: tour_id })
+    NotificationWorker.perform_async('tour_end', { tour_id: tour_id })
   end
 
   def process_recording(tour_id)
@@ -868,9 +870,10 @@ end
 <summary><strong>Image Processing Job</strong></summary>
 
 ```ruby
-# app/jobs/image_processing_job.rb
-class ImageProcessingJob < ApplicationJob
-  queue_as :default
+# app/workers/image_processing_worker.rb
+class ImageProcessingWorker
+  include Sidekiq::Worker
+  sidekiq_options queue: 'default'
 
   def perform(image_id)
     image = PropertyImage.find(image_id)
@@ -1321,10 +1324,10 @@ spec/
 │   ├── summary_service_spec.rb
 │   ├── image_processing_service_spec.rb
 │   └── booking_confirmation_service_spec.rb
-├── jobs/
-│   ├── notification_job_spec.rb
-│   ├── tour_processing_job_spec.rb
-│   └── image_processing_job_spec.rb
+├── workers/
+│   ├── notification_worker_spec.rb
+│   ├── tour_processing_worker_spec.rb
+│   └── image_processing_worker_spec.rb
 ├── concerns/
 │   ├── authentication_spec.rb
 │   ├── logging_spec.rb

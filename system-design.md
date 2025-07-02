@@ -74,7 +74,7 @@ Three separate tables support different layers of the tour experience. TOURS rep
 </details>
 
 <details>
-<summary><strong>Admins API namespace</strong></summary>
+<summary><strong>Admin API namespace</strong></summary>
 
 ### Property Endpoints
 

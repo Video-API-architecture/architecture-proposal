@@ -3,7 +3,7 @@ sequenceDiagram
     participant Auth as AuthMiddleware
     participant ABC as "Api::V1::Admin::BookingsController"
     participant Booking as BookingModel
-    participant NotificationJob
+    participant NotificationWorker
     participant AuditLog
 
     %% Auth check (admin only)
@@ -29,8 +29,8 @@ sequenceDiagram
     Booking->>Booking: .update(params)
     ABC->>AuditLog: log("booking_updated", user_id: current_user.id, booking_id: booking.id)
     AuditLog-->>ABC: ok
-    ABC->>NotificationJob: perform_later("booking_update", { booking_id: booking.id })
-    NotificationJob-->>ABC: queued
+    ABC->>NotificationWorker: perform_async("booking_update", { booking_id: booking.id })
+    NotificationWorker-->>ABC: queued
     ABC-->>AdminUI: Return updated booking
 
     %% Cancel booking
@@ -39,6 +39,6 @@ sequenceDiagram
     Booking->>Booking: .cancel!
     ABC->>AuditLog: log("booking_cancelled", user_id: current_user.id, booking_id: booking.id)
     AuditLog-->>ABC: ok
-    ABC->>NotificationJob: perform_later("booking_cancelled", { booking_id: booking.id })
-    NotificationJob-->>ABC: queued
+    ABC->>NotificationWorker: perform_async("booking_cancelled", { booking_id: booking.id })
+    NotificationWorker-->>ABC: queued
     ABC-->>AdminUI: Return cancellation confirmation

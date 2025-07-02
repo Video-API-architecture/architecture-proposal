@@ -5,7 +5,7 @@ sequenceDiagram
     participant TM as "TourModel"
     participant NM as "NoteModel"
     participant Logger as "AuditLogger"
-    participant ProcessingJob as "TourProcessingJob"
+    participant ProcessingWorker as "TourProcessingWorker"
 
     %% Auth
     WebApp->>Auth: Request with JWT token
@@ -36,7 +36,7 @@ sequenceDiagram
     WebApp->>RTC: POST /api/v1/realtors/tours/:id/end
     RTC->>TM: .find_by_user(id, current_user)
     RTC->>TM: .end!
-    TM->>ProcessingJob: perform_later(tour.id)
+    TM->>ProcessingWorker: perform_async(tour.id)
     RTC->>Logger: log("tour_ended", user_id: current_user.id, tour_id: tour.id)
     Logger-->>RTC: ok
     RTC-->>WebApp: 200 OK

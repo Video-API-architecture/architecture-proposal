@@ -1,14 +1,14 @@
 sequenceDiagram
     participant ToursController as "Api::V1::Buyers::ToursController"
     participant TourModel
-    participant TourProcessingJob
-    participant NotificationJob
+    participant TourProcessingWorker
+    participant NotificationWorker
     participant DB
 
     %% Step 1: End tour
     ToursController->>TourModel: .end!
-    TourModel->>TourProcessingJob: perform_later(tour.id)
+    TourModel->>TourProcessingWorker: perform_async(tour.id)
 
-    %% Step 2: Background processing inside TourProcessingJob
-    TourProcessingJob->>DB: Save recording, transcript, highlights, summary
-    TourProcessingJob->>NotificationJob: send_email(type: "tour_summary", tour_id)
+    %% Step 2: Background processing inside TourProcessingWorker
+    TourProcessingWorker->>DB: Save recording, transcript, highlights, summary
+    TourProcessingWorker->>NotificationWorker: perform_async(type: "tour_summary", tour_id)

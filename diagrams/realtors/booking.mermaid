@@ -3,7 +3,7 @@ sequenceDiagram
     participant Auth as AuthMiddleware
     participant RBC as "Api::V1::Realtors::BookingsController"
     participant BM as "BookingModel"
-    participant NotificationJob
+    participant NotificationWorker
     participant Logger as "BookingAuditLogger"
     participant RPC as "Api::V1::Realtors::PropertiesController"
 
@@ -51,9 +51,9 @@ sequenceDiagram
     BM-->>RBC: booking
     RBC->>Logger: log("booking_created", user_id: current_user.id, booking_id: booking.id)
     Logger-->>RBC: ok
-    RBC->>NotificationJob: perform_later(type: "booking_confirmation", booking_id: booking.id)
-    NotificationJob-->>RBC: queued
-    RBC->>NotificationJob: perform_later(type: "booking_reminder", booking_id: booking.id, delay: X)
-    NotificationJob-->>RBC: queued
+    RBC->>NotificationWorker: perform_async(type: "booking_confirmation", booking_id: booking.id)
+    NotificationWorker-->>RBC: queued
+    RBC->>NotificationWorker: perform_async(type: "booking_reminder", booking_id: booking.id, delay: X)
+    NotificationWorker-->>RBC: queued
     RBC-->>WebApp: 201 Created + booking JSON
     

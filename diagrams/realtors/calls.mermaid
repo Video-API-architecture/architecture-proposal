@@ -8,7 +8,7 @@ sequenceDiagram
     participant Call as "CallModel"
     participant Chime as "ChimeSDK"
     participant Recorder as "RecordingService"
-    participant NotificationJob
+    participant NotificationWorker
     participant AuditLogger
 
     %% Auth check
@@ -23,8 +23,8 @@ sequenceDiagram
     BC->>Tour: .create!(booking: booking, property: booking.property, realtor: current_user, buyer: booking.buyer)
     BC->>Call: .create!(tour: tour, status: 'created', chime_meeting_id: SecureRandom.uuid)
     BC->>AuditLogger: log("booking_confirmed", user_id: current_user.id, booking: booking.id, call: call.id)
-    BC->>NotificationJob: perform_later("booking_confirmation", { booking_id: booking.id })
-    BC->>NotificationJob: perform_later("booking_reminder", { booking_id: booking.id }, delay: 15.minutes)
+    BC->>NotificationWorker: perform_async("booking_confirmation", { booking_id: booking.id })
+    BC->>NotificationWorker: perform_async("booking_reminder", { booking_id: booking.id }, delay: 15.minutes)
     BC-->>WebApp: Return booking, tour, and call data
 
     %% Get call details (after confirmation)
@@ -67,4 +67,4 @@ sequenceDiagram
     CC-->>WebApp: Status confirmation
 
     %% Optional email notification after recording
-    Recorder->>NotificationJob: perform_later(type: "call_recording_ready", call_id: call.id)
+    Recorder->>NotificationWorker: perform_async(type: "call_recording_ready", call_id: call.id)
