@@ -1,7 +1,7 @@
 sequenceDiagram
     participant AdminPanel
     participant AuthMiddleware
-    participant AdminUsersController
+    participant AdminUsersController as 'Api::V1::Admin::UsersController'
     participant UserModel
     participant AuthorizationService
     participant AuditLog
@@ -12,7 +12,7 @@ sequenceDiagram
     AuthMiddleware-->>AdminUsersController: Set current_user or reject (401)
 
     %% List all users
-    AdminPanel->>AdminUsersController: GET /admin/users
+    AdminPanel->>AdminUsersController: GET /api/v1/admin/users
     AdminUsersController->>AuthorizationService: admin?(current_user)
     alt Admin
         AdminUsersController->>UserModel: .all
@@ -23,7 +23,7 @@ sequenceDiagram
     end
 
     %% Get user details
-    AdminPanel->>AdminUsersController: GET /admin/users/:id
+    AdminPanel->>AdminUsersController: GET /api/v1/admin/users/:id
     AdminUsersController->>AuthorizationService: admin?(current_user)
     alt Admin
         AdminUsersController->>UserModel: .find(id)
@@ -34,7 +34,7 @@ sequenceDiagram
     end
 
     %% Update user
-    AdminPanel->>AdminUsersController: PUT /admin/users/:id
+    AdminPanel->>AdminUsersController: PUT /api/v1/admin/users/:id
     AdminUsersController->>AuthorizationService: admin?(current_user)
     alt Admin
         AdminUsersController->>UserModel: .find(id)
@@ -48,7 +48,7 @@ sequenceDiagram
     end
 
     %% Delete user
-    AdminPanel->>AdminUsersController: DELETE /admin/users/:id
+    AdminPanel->>AdminUsersController: DELETE /api/v1/admin/users/:id
     AdminUsersController->>AuthorizationService: admin?(current_user)
     alt Admin
         AdminUsersController->>UserModel: .find(id)

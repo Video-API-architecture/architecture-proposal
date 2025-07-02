@@ -1,8 +1,8 @@
 sequenceDiagram
     participant WebApp
     participant Auth as AuthMiddleware
-    participant RPC as "Realtor::PropertiesController"
-    participant BPC as "Buyers::PropertiesController"
+    participant RPC as "Api::V1::Realtors::PropertiesController"
+    participant BPC as "Api::V1::Buyers::PropertiesController"
     participant Property as "PropertyModel"
     participant ImageUploader as "PropertyImageUploader"
     participant ImageJob as "ImageProcessingJob"

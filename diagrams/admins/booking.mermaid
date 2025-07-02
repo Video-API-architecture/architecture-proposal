@@ -1,7 +1,7 @@
 sequenceDiagram
     participant AdminUI
     participant Auth as AuthMiddleware
-    participant ABC as "Admin::BookingsController"
+    participant ABC as "Api::V1::Admin::BookingsController"
     participant Booking as BookingModel
     participant NotificationJob
     participant AuditLog
@@ -12,19 +12,19 @@ sequenceDiagram
     Auth-->>ABC: Set current_user or reject (401/403)
 
     %% List all bookings
-    AdminUI->>ABC: GET /admin/bookings
+    AdminUI->>ABC: GET /api/v1/admin/bookings
     ABC->>Booking: .all or .filter(params)
     Booking-->>ABC: [ ...booking_list ]
     ABC-->>AdminUI: Return bookings JSON
 
     %% Get booking details
-    AdminUI->>ABC: GET /admin/bookings/:id
+    AdminUI->>ABC: GET /api/v1/admin/bookings/:id
     ABC->>Booking: .find(id)
     Booking-->>ABC: booking
     ABC-->>AdminUI: Return booking JSON
 
     %% Update booking
-    AdminUI->>ABC: PUT /admin/bookings/:id
+    AdminUI->>ABC: PUT /api/v1/admin/bookings/:id
     ABC->>Booking: .find(id)
     Booking->>Booking: .update(params)
     ABC->>AuditLog: log("booking_updated", user_id: current_user.id, booking_id: booking.id)
@@ -34,7 +34,7 @@ sequenceDiagram
     ABC-->>AdminUI: Return updated booking
 
     %% Cancel booking
-    AdminUI->>ABC: DELETE /admin/bookings/:id
+    AdminUI->>ABC: DELETE /api/v1/admin/bookings/:id
     ABC->>Booking: .find(id)
     Booking->>Booking: .cancel!
     ABC->>AuditLog: log("booking_cancelled", user_id: current_user.id, booking_id: booking.id)

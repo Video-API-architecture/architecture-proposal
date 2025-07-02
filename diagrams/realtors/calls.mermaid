@@ -1,8 +1,8 @@
 sequenceDiagram
     participant WebApp
     participant Auth as AuthMiddleware
-    participant BC as "Realtor::BookingsController"
-    participant CC as "Realtor::CallsController"
+    participant BC as "Api::V1::Realtors::BookingsController"
+    participant CC as "Api::V1::Realtors::CallsController"
     participant Booking as "BookingModel"
     participant Tour as "TourModel"
     participant Call as "CallModel"

@@ -67,6 +67,8 @@ Three separate tables support different layers of the tour experience. TOURS rep
 <details>
 <summary><strong>Backend Components</strong></summary>
 
+> Note that the controllers are missing the Api::V1:: in the diagram below, because draw.io does not allow me to resize the objects, therefore many names were broken and it was better to keep without it.
+
 <img src="./imgs/c4-components.png" />
 
 </details>

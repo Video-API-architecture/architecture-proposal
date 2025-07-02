@@ -1,11 +1,11 @@
 sequenceDiagram
     participant WebApp
     participant Auth as AuthMiddleware
-    participant RBC as "Realtor::BookingsController"
+    participant RBC as "Api::V1::Realtors::BookingsController"
     participant BM as "BookingModel"
     participant NotificationJob
     participant Logger as "BookingAuditLogger"
-    participant RPC as "Realtor::PropertiesController"
+    participant RPC as "Api::V1::Realtors::PropertiesController"
 
     %% Auth
     WebApp->>Auth: Request with JWT token
