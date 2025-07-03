@@ -21,7 +21,9 @@ sequenceDiagram
     BC->>Booking: .find_by_property_realtor(id, current_user)
     BC->>Booking: .update!(status: 'confirmed')
     BC->>Tour: .create!(booking: booking, property: booking.property, realtor: current_user, buyer: booking.buyer)
-    BC->>Call: .create!(tour: tour, status: 'created', chime_meeting_id: SecureRandom.uuid)
+    BC->>Chime: CreateMeeting(tour)
+    Chime-->>BC: meeting_id
+    BC->>Call: .create!(tour: tour, status: 'created', chime_meeting_id: meeting_id)
     BC->>AuditLogger: log("booking_confirmed", user_id: current_user.id, booking: booking.id, call: call.id)
     BC->>NotificationWorker: perform_async("booking_confirmation", { booking_id: booking.id })
     BC->>NotificationWorker: perform_async("booking_reminder", { booking_id: booking.id }, delay: 15.minutes)

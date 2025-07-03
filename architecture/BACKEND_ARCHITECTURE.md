@@ -657,11 +657,15 @@ class Api::V1::Realtors::BookingsController < ApplicationController
         scheduled_at: booking.scheduled_at
       )
       
+      # Create Chime meeting and call
+      chime_service = ChimeService.new
+      meeting = chime_service.create_meeting(tour)
+      
       # Create call
       call = Call.create!(
         tour: tour,
         status: 'created',
-        chime_meeting_id: SecureRandom.uuid
+        chime_meeting_id: meeting.meeting_id
       )
       
       # Send confirmation to both parties
